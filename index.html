@@ -2,2634 +2,419 @@
 <html lang="lo">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ລະບົບສ້າງຟາຍ Excel ຕັດເກຣດ ແລະ ໃບຢັ້ງຢືນຜົນການຮຽນ (Grade Calculation & Transcript Generator)</title>
-  
-  <!-- Google Fonts for Lao & English Typography -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Lao:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Noto+Serif+Lao:wght@600;700&display=swap" rel="stylesheet">
-  
-  <!-- FontAwesome for UI Icons -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-  <!-- External CDN Libraries with Fallbacks -->
-  <script src="https://cdn.jsdelivr.net/npm/exceljs@4.4.0/dist/exceljs.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
-  
+  <title>ລະບົບສ້າງຟາຍຄິດໄລ່ຄະແນນຄົບ 8 ພາກຮຽນ (Complete 16 Sheets)</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.3.0/exceljs.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
   <style>
-    :root {
-      --primary: #1e3a8a;       /* Academic Navy */
-      --primary-hover: #172554;
-      --primary-light: #eff6ff;
-      --secondary: #0d9488;     /* Teal */
-      --accent: #b45309;        /* Gold/Amber */
-      --success: #15803d;
-      --danger: #b91c1c;
-      --warning: #d97706;
-      --gray-50: #f8fafc;
-      --gray-100: #f1f5f9;
-      --gray-200: #e2e8f0;
-      --gray-300: #cbd5e1;
-      --gray-600: #475569;
-      --gray-700: #334155;
-      --gray-800: #1e293b;
-      --gray-900: #0f172a;
-      --radius-sm: 6px;
-      --radius-md: 10px;
-      --radius-lg: 16px;
-      --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-      --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-      --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    body {
-      font-family: 'Phetsarath OT', 'Noto Sans Lao', 'Plus Jakarta Sans', Tahoma, sans-serif;
-      background-color: #f1f5f9;
-      color: var(--gray-800);
-      line-height: 1.6;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 24px 16px;
-      width: 100%;
-    }
-
-    /* Header styling */
-    header {
-      background: linear-gradient(135deg, #1e3a8a 0%, #1e1b4b 100%);
-      color: white;
-      padding: 32px 0 28px 0;
-      box-shadow: 0 4px 20px rgba(15, 23, 42, 0.15);
-      border-bottom: 3px solid #f59e0b;
-    }
-
-    .header-content {
-      display: flex;
-      align-items: center;
-      gap: 20px;
-    }
-
-    .header-logo-preview {
-      width: 76px;
-      height: 76px;
-      border-radius: 50%;
-      background: white;
-      border: 3px solid #fbbf24;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      overflow: hidden;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-      flex-shrink: 0;
-    }
-
-    .header-logo-preview img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-
-    .header-titles h1 {
-      font-size: 1.55rem;
-      font-weight: 700;
-      letter-spacing: -0.01em;
-      line-height: 1.35;
-      color: #ffffff;
-    }
-
-    .header-titles p {
-      font-size: 0.95rem;
-      color: #cbd5e1;
-      margin-top: 4px;
-    }
-
-    .badge-client {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 3px 10px;
-      background: rgba(16, 185, 129, 0.2);
-      border: 1px solid rgba(16, 185, 129, 0.4);
-      color: #34d399;
-      border-radius: 9999px;
-      font-size: 0.78rem;
-      font-weight: 600;
-      margin-top: 6px;
-    }
-
-    /* Cards */
-    .card {
-      background: white;
-      border-radius: var(--radius-lg);
-      padding: 24px;
-      margin-bottom: 24px;
-      box-shadow: var(--shadow-sm);
-      border: 1px solid var(--gray-200);
-      transition: box-shadow 0.2s ease;
-    }
-
-    .card:hover {
-      box-shadow: var(--shadow-md);
-    }
-
-    .card-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 20px;
-      padding-bottom: 14px;
-      border-bottom: 2px solid var(--gray-100);
-    }
-
-    .card-title {
-      font-size: 1.25rem;
-      font-weight: 700;
-      color: var(--primary);
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .card-title i {
-      color: var(--secondary);
-    }
-
-    /* Grid Form */
-    .form-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 18px;
-    }
-
-    .form-group {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-
-    .form-group label {
-      font-size: 0.88rem;
-      font-weight: 600;
-      color: var(--gray-700);
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .form-group label span.sublabel {
-      font-size: 0.75rem;
-      font-weight: normal;
-      color: var(--gray-600);
-    }
-
-    .form-control {
-      padding: 10px 14px;
-      border: 1.5px solid var(--gray-200);
-      border-radius: var(--radius-sm);
-      font-size: 0.95rem;
-      font-family: inherit;
-      color: var(--gray-800);
-      transition: all 0.2s ease;
-      background: white;
-    }
-
-    .form-control:focus {
-      outline: none;
-      border-color: var(--primary);
-      box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.12);
-    }
-
-    /* Logo Upload Zone */
-    .logo-uploader-card {
-      background: var(--gray-50);
-      border: 2px dashed var(--gray-300);
-      border-radius: var(--radius-md);
-      padding: 18px;
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      gap: 20px;
-      margin-top: 14px;
-      transition: all 0.2s;
-    }
-
-    .logo-uploader-card.dragover {
-      border-color: var(--primary);
-      background: var(--primary-light);
-    }
-
-    .logo-box {
-      width: 80px;
-      height: 80px;
-      border-radius: var(--radius-sm);
-      border: 1px solid var(--gray-300);
-      background: white;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      overflow: hidden;
-      box-shadow: var(--shadow-sm);
-      position: relative;
-    }
-
-    .logo-box img {
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-    }
-
-    .logo-details {
-      flex: 1;
-      min-width: 220px;
-    }
-
-    .logo-title {
-      font-weight: 600;
-      font-size: 0.95rem;
-      color: var(--gray-800);
-    }
-
-    .logo-status {
-      font-size: 0.8rem;
-      margin-top: 4px;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .status-badge {
-      display: inline-block;
-      padding: 2px 8px;
-      border-radius: 9999px;
-      font-size: 0.72rem;
-      font-weight: 600;
-    }
-
-    .status-badge.active {
-      background: #dcfce7;
-      color: #15803d;
-      border: 1px solid #86efac;
-    }
-
-    .status-badge.warning {
-      background: #fef3c7;
-      color: #b45309;
-      border: 1px solid #fde68a;
-    }
-
-    /* Buttons */
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      padding: 10px 18px;
-      font-size: 0.92rem;
-      font-weight: 600;
-      border-radius: var(--radius-sm);
-      cursor: pointer;
-      border: none;
-      transition: all 0.2s ease;
-      font-family: inherit;
-      text-decoration: none;
-    }
-
-    .btn-primary {
-      background: var(--primary);
-      color: white;
-    }
-    .btn-primary:hover {
-      background: var(--primary-hover);
-    }
-
-    .btn-secondary {
-      background: var(--gray-100);
-      color: var(--gray-700);
-      border: 1px solid var(--gray-300);
-    }
-    .btn-secondary:hover {
-      background: var(--gray-200);
-      color: var(--gray-900);
-    }
-
-    .btn-success {
-      background: #16a34a;
-      color: white;
-    }
-    .btn-success:hover {
-      background: #15803d;
-    }
-
-    .btn-danger {
-      background: #ef4444;
-      color: white;
-    }
-    .btn-danger:hover {
-      background: #dc2626;
-    }
-
-    .btn-sm {
-      padding: 6px 12px;
-      font-size: 0.8rem;
-    }
-
-    .btn-lg {
-      padding: 14px 28px;
-      font-size: 1.1rem;
-      border-radius: var(--radius-md);
-      box-shadow: 0 4px 12px rgba(30, 58, 138, 0.25);
-    }
-
-    /* Tabs */
-    .tabs-header {
-      display: flex;
-      gap: 8px;
-      border-bottom: 2px solid var(--gray-200);
-      margin-bottom: 18px;
-      overflow-x: auto;
-      padding-bottom: 2px;
-    }
-
-    .tab-btn {
-      padding: 10px 18px;
-      background: transparent;
-      border: none;
-      font-family: inherit;
-      font-size: 0.95rem;
-      font-weight: 600;
-      color: var(--gray-600);
-      cursor: pointer;
-      border-bottom: 3px solid transparent;
-      margin-bottom: -4px;
-      border-radius: var(--radius-sm) var(--radius-sm) 0 0;
-      transition: all 0.2s;
-      white-space: nowrap;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .tab-btn:hover {
-      color: var(--primary);
-      background: var(--gray-100);
-    }
-
-    .tab-btn.active {
-      color: var(--primary);
-      border-bottom-color: var(--primary);
-      background: var(--primary-light);
-    }
-
-    /* Course Table */
-    .table-container {
-      overflow-x: auto;
-      border: 1px solid var(--gray-200);
-      border-radius: var(--radius-md);
-      background: white;
-    }
-
-    .styled-table {
-      width: 100%;
-      border-collapse: collapse;
-      text-align: left;
-      font-size: 0.9rem;
-    }
-
-    .styled-table th {
-      background: var(--gray-100);
-      color: var(--gray-700);
-      font-weight: 700;
-      padding: 12px 14px;
-      border-bottom: 2px solid var(--gray-200);
-      white-space: nowrap;
-    }
-
-    .styled-table td {
-      padding: 10px 14px;
-      border-bottom: 1px solid var(--gray-200);
-      vertical-align: middle;
-    }
-
-    .styled-table tr:hover {
-      background-color: var(--primary-light);
-    }
-
-    .styled-table input.table-input {
-      width: 100%;
-      padding: 6px 10px;
-      border: 1px solid var(--gray-300);
-      border-radius: 4px;
-      font-family: inherit;
-      font-size: 0.88rem;
-    }
-
-    .styled-table input.table-input:focus {
-      outline: none;
-      border-color: var(--primary);
-      background: white;
-    }
-
-    /* Semester stats bar */
-    .sem-stats {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background: var(--gray-50);
-      padding: 12px 18px;
-      border-radius: var(--radius-sm);
-      margin-top: 14px;
-      font-size: 0.9rem;
-      border: 1px solid var(--gray-200);
-    }
-
-    .badge-pill {
-      background: var(--primary);
-      color: white;
-      padding: 3px 10px;
-      border-radius: 9999px;
-      font-weight: 600;
-      font-size: 0.8rem;
-    }
-
-    /* Excel Layer Structure visual guide */
-    .layer-cards-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 16px;
-      margin-top: 14px;
-    }
-
-    .layer-card {
-      border: 1px solid var(--gray-200);
-      border-radius: var(--radius-md);
-      padding: 18px;
-      background: white;
-      border-left: 5px solid var(--primary);
-      position: relative;
-    }
-
-    .layer-card.layer-1 { border-left-color: #2563eb; }
-    .layer-card.layer-2 { border-left-color: #0d9488; }
-    .layer-card.layer-3 { border-left-color: #d97706; }
-
-    .layer-tag {
-      font-size: 0.72rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      color: var(--gray-600);
-      margin-bottom: 4px;
-    }
-
-    .layer-sheet-name {
-      font-size: 1.05rem;
-      font-weight: 700;
-      color: var(--gray-900);
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .layer-desc {
-      font-size: 0.84rem;
-      color: var(--gray-600);
-      margin-top: 6px;
-      line-height: 1.5;
-    }
-
-    .formula-badge {
-      font-family: monospace;
-      font-size: 0.76rem;
-      background: #f1f5f9;
-      padding: 4px 8px;
-      border-radius: 4px;
-      border: 1px solid #cbd5e1;
-      color: #0f172a;
-      display: inline-block;
-      margin-top: 6px;
-      word-break: break-all;
-    }
-
-    /* Export Box */
-    .export-card {
-      background: linear-gradient(135deg, #1e3a8a 0%, #172554 100%);
-      color: white;
-      border-radius: var(--radius-lg);
-      padding: 32px 24px;
-      text-align: center;
-      box-shadow: 0 10px 25px -5px rgba(30, 58, 138, 0.4);
-      margin-top: 24px;
-    }
-
-    .export-card h2 {
-      font-size: 1.5rem;
-      font-weight: 700;
-      margin-bottom: 8px;
-    }
-
-    .export-card p {
-      color: #cbd5e1;
-      max-width: 680px;
-      margin: 0 auto 24px auto;
-      font-size: 0.95rem;
-    }
-
-    .btn-download-excel {
-      background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
-      color: #0f172a;
-      font-weight: 800;
-      font-size: 1.15rem;
-      padding: 16px 36px;
-      border-radius: var(--radius-md);
-      border: none;
-      cursor: pointer;
-      box-shadow: 0 6px 20px rgba(245, 158, 11, 0.4);
-      transition: all 0.25s ease;
-      display: inline-flex;
-      align-items: center;
-      gap: 12px;
-      font-family: inherit;
-    }
-
-    .btn-download-excel:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 10px 25px rgba(245, 158, 11, 0.5);
-      background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
-    }
-
-    .btn-download-excel:active {
-      transform: translateY(0);
-    }
-
-    .btn-download-excel:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
-      transform: none;
-    }
-
-    /* Alert / Notice */
-    .notice {
-      padding: 14px 18px;
-      border-radius: var(--radius-md);
-      font-size: 0.88rem;
-      margin-bottom: 20px;
-      display: flex;
-      align-items: flex-start;
-      gap: 12px;
-    }
-
-    .notice-info {
-      background: #eff6ff;
-      border: 1px solid #bfdbfe;
-      color: #1e40af;
-    }
-
-    .notice-info i {
-      font-size: 1.15rem;
-      color: #3b82f6;
-      margin-top: 2px;
-    }
-
-    /* Modal / Popups */
-    .collapsible-trigger {
-      cursor: pointer;
-      user-select: none;
-    }
-
-    footer {
-      margin-top: auto;
-      background: #0f172a;
-      color: #94a3b8;
-      text-align: center;
-      padding: 20px;
-      font-size: 0.85rem;
-      border-top: 1px solid #1e293b;
-    }
-
-    /* Animations */
-    .spin {
-      animation: spin 1s linear infinite;
-    }
-    @keyframes spin {
-      100% { transform: rotate(360deg); }
-    }
-
-    @media (max-width: 768px) {
-      .header-content {
-        flex-direction: column;
-        text-align: center;
-      }
-      .header-titles h1 {
-        font-size: 1.3rem;
-      }
-      .card {
-        padding: 16px;
-      }
-      .form-grid {
-        grid-template-columns: 1fr;
-      }
-    }
+    body { font-family: 'Phetsarath OT', 'Segoe UI', Tahoma, sans-serif; background: #eef2f7; margin: 0; padding: 20px; color: #333; }
+    .container { max-width: 1100px; margin: auto; background: #fff; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); }
+    h2 { text-align: center; color: #1a365d; margin-bottom: 25px; }
+    .grid-header { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 15px; margin-bottom: 25px; background: #f8fafc; padding: 15px; border-radius: 8px; border: 1px solid #e2e8f0; }
+    .form-group label { display: block; font-weight: 600; margin-bottom: 6px; font-size: 14px; }
+    .form-group input { width: 100%; padding: 8px 12px; border: 1px solid #cbd5e1; border-radius: 6px; box-sizing: border-box; }
+    
+    /* Tabs สำหรับเลือกเทอม */
+    .tabs-nav { display: flex; flex-wrap: wrap; gap: 6px; border-bottom: 2px solid #e2e8f0; padding-bottom: 10px; margin-bottom: 20px; }
+    .tab-btn { padding: 10px 16px; border: none; background: #e2e8f0; border-radius: 6px; cursor: pointer; font-weight: 600; transition: 0.2s; }
+    .tab-btn.active { background: #2563eb; color: #fff; }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+    
+    table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+    th, td { border: 1px solid #e2e8f0; padding: 8px 12px; text-align: left; }
+    th { background: #f1f5f9; font-size: 13px; color: #475569; }
+    .btn { padding: 6px 12px; border-radius: 4px; border: none; cursor: pointer; font-weight: 500; }
+    .btn-add { background: #10b981; color: #fff; margin-top: 10px; }
+    .btn-del { background: #ef4444; color: #fff; }
+    .btn-gen { background: #1e40af; color: #fff; font-size: 18px; width: 100%; padding: 15px; margin-top: 30px; border-radius: 8px; cursor: pointer; border: none; font-weight: bold; }
+    .btn-gen:hover { background: #1d4ed8; }
+    .sem-title { font-weight: bold; font-size: 16px; color: #1e293b; margin-top: 10px; }
   </style>
 </head>
 <body>
 
-  <!-- Header Banner -->
-  <header>
-    <div class="container header-content">
-      <div class="header-logo-preview" id="headerLogoContainer" title="Logo Preview">
-        <img id="headerLogoImg" src="Logo.jpeg" alt="Logo" onerror="handleLogoLoadError()">
-      </div>
-      <div class="header-titles">
-        <h1>ລະບົບສ້າງຟາຍ Excel ຕັດເກຣດ ແລະ ໃບຢັ້ງຢືນຜົນການຮຽນ</h1>
-        <p>University Grade Calculation & Official Academic Transcript Generator (Calculate.xlsx Standard)</p>
-        <div class="badge-client">
-          <i class="fa-solid fa-shield-halved"></i> 100% Client-Side Generator (ເຮັດວຽກເທິງ Browser ບໍ່ມີ Backend)
-        </div>
-      </div>
+<div class="container">
+  <h2>ລະບົບສ້າງຟາຍຄິດໄລ່ຄະແນນ (Calculate.xlsx - ຄົບ 16 Sheets)</h2>
+  
+  <div class="grid-header">
+    <div class="form-group">
+      <label>ພາກວິຊາ (ພາສາລາວ):</label>
+      <input type="text" id="deptLao" value="ພາກວິຊາພາສາຍີ່ປຸ່ນ">
     </div>
-  </header>
-
-  <main class="container">
-
-    <!-- Notice info -->
-    <div class="notice notice-info">
-      <i class="fa-solid fa-circle-info"></i>
-      <div>
-        <strong>ໂຄງສ້າງລະບົບຕາມມາດຕະຖານມະຫາວິທະຍາໄລ:</strong> ລະບົບຈະສ້າງຟາຍ Excel (.xlsx) ປະກອບດ້ວຍ <strong>3 Layer</strong> (Sheet Sem1-2 ຕັດເກຣດ, Sheet CGPA2 ສະຫຼຸບຄະແນນສະສົມ, ແລະ Sheet ໃບ Transcript ພາສາລາວ + ພາສາອັງກິດ ທີ່ມີສູດ VLOOKUP ອັດຕະໂນມັດ ພ້ອມຝັງຮູບ <code>Logo.jpeg</code> ທີ່ຫົວເຈ້ຍ).
-      </div>
+    <div class="form-group">
+      <label>ພາກວິຊາ (ພາສາອັງກິດ):</label>
+      <input type="text" id="deptEng" value="Department of Japanese">
     </div>
-
-    <!-- Section 1: General Settings -->
-    <div class="card">
-      <div class="card-header">
-        <div class="card-title">
-          <i class="fa-solid fa-sliders"></i>
-          <span>1. ຕັ້ງຄ່າທົ່ວໄປ (General Settings)</span>
-        </div>
-      </div>
-
-      <div class="form-grid">
-        <div class="form-group">
-          <label for="deptLao">
-            ຊື່ພາກວິຊາ (ພາສາລາວ) <span class="sublabel">* ຄ່າເລີ່ມຕົ້ນ</span>
-          </label>
-          <input type="text" id="deptLao" class="form-control" value="ພາກວິຊາພາສາຍີ່ປຸ່ນ" placeholder="ຕົວຢ່າງ: ພາກວິຊາພາສາຍີ່ປຸ່ນ">
-        </div>
-
-        <div class="form-group">
-          <label for="deptEng">
-            ຊື່ພາກວິຊາ (ພາສາອັງກິດ) <span class="sublabel">Department (Eng)</span>
-          </label>
-          <input type="text" id="deptEng" class="form-control" value="Department of Japanese Language" placeholder="e.g. Department of Japanese Language">
-        </div>
-
-        <div class="form-group">
-          <label for="academicYear">
-            ສົກຮຽນ / ປີການສຶກສາ <span class="sublabel">Academic Year</span>
-          </label>
-          <input type="text" id="academicYear" class="form-control" value="2023-2024" placeholder="ຕົວຢ່າງ: 2023-2024">
-        </div>
-
-        <div class="form-group">
-          <label for="batchNo">
-            ຮຸ່ນ / ລຸ້ນ <span class="sublabel">Batch / Generation</span>
-          </label>
-          <input type="text" id="batchNo" class="form-control" value="ຮຸ່ນທີ 19" placeholder="ຕົວຢ່າງ: ຮຸ່ນທີ 19 (Batch 19)">
-        </div>
-
-        <div class="form-group">
-          <label for="univLao">
-            ມະຫາວິທະຍາໄລ <span class="sublabel">University (Lao)</span>
-          </label>
-          <input type="text" id="univLao" class="form-control" value="ມະຫາວິທະຍາໄລແຫ່ງຊາດ" placeholder="ມະຫາວິທະຍາໄລແຫ່ງຊາດ">
-        </div>
-
-        <div class="form-group">
-          <label for="facultyLao">
-            ຄະນະວິຊາ <span class="sublabel">Faculty (Lao)</span>
-          </label>
-          <input type="text" id="facultyLao" class="form-control" value="ຄະນະອັກສອນສາດ" placeholder="ຄະນະອັກສອນສາດ">
-        </div>
-      </div>
-
-      <!-- Logo Management Card -->
-      <div class="logo-uploader-card" id="logoDropZone">
-        <div class="logo-box">
-          <img id="logoPreviewImg" src="Logo.jpeg" alt="Logo preview" onerror="handleLogoLoadError()">
-        </div>
-        <div class="logo-details">
-          <div class="logo-title">
-            <i class="fa-solid fa-image"></i> ຮູບໂລໂກ້ / ຕາປະທັບມະຫາວິທະຍາໄລ (<code>Logo.jpeg</code>)
-          </div>
-          <div class="logo-status">
-            <span id="logoStatusBadge" class="status-badge active">
-              <i class="fa-solid fa-check"></i> ພົບໄຟລ໌ Logo.jpeg ແລ້ວ
-            </span>
-            <span id="logoStatusText" style="color: var(--gray-600); font-size: 0.8rem;">
-              ພ້ອມຝັງລົງຫົວໃບ Transcript ອັດຕະໂນມັດ
-            </span>
-          </div>
-        </div>
-        <div>
-          <input type="file" id="logoFileInput" accept="image/jpeg,image/png,image/jpg" style="display: none;" onchange="onLogoFileSelected(event)">
-          <button type="button" class="btn btn-secondary btn-sm" onclick="document.getElementById('logoFileInput').click()">
-            <i class="fa-solid fa-arrow-up-from-bracket"></i> ເລືອກໄຟລ໌ຮູບໃໝ່
-          </button>
-          <button type="button" class="btn btn-secondary btn-sm" onclick="resetDefaultLogo()">
-            <i class="fa-solid fa-rotate-left"></i> ຄ່າເລີ່ມຕົ້ນ
-          </button>
-        </div>
-      </div>
+    <div class="form-group">
+      <label>ສົກຮຽນເລີ່ມຕົ້ນ (ເຊັ່ນ 2023-2024):</label>
+      <input type="text" id="acadYear" value="2023-2024">
     </div>
+  </div>
 
-    <!-- Section 2: Course Management per Semester -->
-    <div class="card">
-      <div class="card-header">
-        <div class="card-title">
-          <i class="fa-solid fa-book-bookmark"></i>
-          <span>2. ຈັດການລາຍວິຊາໃນແຕ່ລະພາກຮຽນ (Course Management per Semester)</span>
-        </div>
-        <div>
-          <button type="button" class="btn btn-primary btn-sm" onclick="addNewCourseRow()">
-            <i class="fa-solid fa-plus"></i> + ເພີ່ມລາຍວິຊາ (+ Add Course)
-          </button>
-        </div>
-      </div>
+  <!-- แถบเลือกปีที่ 1 ถึง 4 (8 ภาคเรียน) -->
+  <div class="tabs-nav" id="tabsNav"></div>
+  <div id="tabsContainer"></div>
 
-      <!-- Semester Tabs -->
-      <div class="tabs-header">
-        <button type="button" class="tab-btn active" id="tabSem1" onclick="switchSemesterTab(1)">
-          <i class="fa-solid fa-layer-group"></i> ພາກຮຽນທີ 1 (Semester 1)
-        </button>
-        <button type="button" class="tab-btn" id="tabSem2" onclick="switchSemesterTab(2)">
-          <i class="fa-solid fa-layer-group"></i> ພາກຮຽນທີ 2 (Semester 2)
-        </button>
-      </div>
+  <button type="button" class="btn-gen" onclick="generateCompleteExcel()">
+    ສ້າງແລະດາວໂຫຼດຟາຍ Excel (ຄົບ 16 Sheets)
+  </button>
+</div>
 
-      <!-- Course Table -->
-      <div class="table-container">
-        <table class="styled-table" id="coursesTable">
-          <thead>
-            <tr>
-              <th style="width: 55px; text-align: center;">ລ/ດ</th>
-              <th style="width: 140px;">ລະຫັດວິຊາ (Code)</th>
-              <th>ຊື່ວິຊາ (ພາສາລາວ)</th>
-              <th>ຊື່ວິຊາ (ພາສາອັງກິດ)</th>
-              <th style="width: 100px; text-align: center;">ໜ່ວຍກິດ (Cr.)</th>
-              <th style="width: 70px; text-align: center;">ຈັດການ</th>
-            </tr>
-          </thead>
-          <tbody id="courseTableBody">
-            <!-- Rendered by JS -->
-          </tbody>
-        </table>
-      </div>
+<script>
+  // สร้างโครงสร้าง 8 ภาคเรียน
+  const semesterDefs = [
+    { id: 'sem1', name: 'ປີ 1 ພາກຮຽน 1 (Sem 1)', semNum: 1, pair: 'Sem1-2' },
+    { id: 'sem2', name: 'ປີ 1 ພາກຮຽน 2 (Sem 2)', semNum: 2, pair: 'Sem1-2' },
+    { id: 'sem3', name: 'ປີ 2 ພາກຮຽน 1 (Sem 3)', semNum: 3, pair: 'Sem3-4 ' },
+    { id: 'sem4', name: 'ປີ 2 ພາກຮຽน 2 (Sem 4)', semNum: 4, pair: 'Sem3-4 ' },
+    { id: 'sem5', name: 'ປີ 3 ພາກຮຽน 1 (Sem 5)', semNum: 5, pair: 'Sem5-6' },
+    { id: 'sem6', name: 'ປີ 3 ພາກຮຽน 2 (Sem 6)', semNum: 6, pair: 'Sem5-6' },
+    { id: 'sem7', name: 'ປີ 4 ພາກຮຽน 1 (Sem 7)', semNum: 7, pair: 'Sem7-8' },
+    { id: 'sem8', name: 'ປີ 4 ພາກຮຽน 2 (Sem 8)', semNum: 8, pair: 'Sem7-8' }
+  ];
 
-      <div class="sem-stats">
-        <div>
-          <span>ລວມລາຍວິຊາ: <strong id="courseCountDisplay">0</strong> ວິຊາ</span>
-        </div>
-        <div>
-          <span>ຈຳນວນໜ່ວຍກິດລວມພາກຮຽນນີ້: <span class="badge-pill" id="totalCreditsDisplay">0</span> ໜ່ວຍກິດ</span>
-        </div>
-      </div>
-    </div>
+  // ข้อมูลตั้งต้นบางส่วน
+  const defaultSubjects = {
+    sem1: [
+      { code: '125 JP 121', nameLao: 'ພາສາຍີ່ປຸ່ນ 1', nameEng: 'Japanese 1', credits: 3 },
+      { code: '125 LS 121', nameLao: 'ການຟັງ-ການເວົ້າ 1', nameEng: 'Listening & Speaking 1', credits: 2 },
+      { code: '125 PL 111', nameLao: 'ສຽງ ແລະ ຕົວອັກສອນ', nameEng: 'Phonetics & Letters', credits: 1 },
+      { code: '125 KJ 111', nameLao: 'ຄັນຈິ 1', nameEng: 'Kanji 1', credits: 1 },
+      { code: '125 JG 121', nameLao: 'ໄວຍາກອນຍີ່ປຸ່ນ 1', nameEng: 'Japanese Grammar 1', credits: 2 }
+    ],
+    sem2: [
+      { code: '125 JP 122', nameLao: 'ພາສາຍີ່ປຸ່ນ 2', nameEng: 'Japanese 2', credits: 3 },
+      { code: '125 LS 122', nameLao: 'ການເວົ້າ-ການຟັງ 2', nameEng: 'Listening & Speaking 2', credits: 2 }
+    ]
+  };
 
-    <!-- Section 3: Architecture Overview (3 Layers) -->
-    <div class="card">
-      <div class="card-header">
-        <div class="card-title">
-          <i class="fa-solid fa-sitemap"></i>
-          <span>3. ໂຄງສ້າງໄຟລ໌ Excel ທີ່ຈະຖືກສ້າງ (3 Layers Architecture)</span>
-        </div>
-      </div>
+  // Render UI Tabs
+  const tabsNav = document.getElementById('tabsNav');
+  const tabsContainer = document.getElementById('tabsContainer');
 
-      <p style="font-size: 0.9rem; color: var(--gray-600); margin-bottom: 12px;">
-        ລະບົບໄດ້ອອກແບບຕາມຮູບແບບ Calculate.xlsx ຂອງມະຫາວິທະຍາໄລຢ່າງຖືກຕ້ອງ 100%:
-      </p>
+  semesterDefs.forEach((sem, idx) => {
+    // Tab Button
+    const btn = document.createElement('button');
+    btn.className = `tab-btn ${idx === 0 ? 'active' : ''}`;
+    btn.textContent = sem.name;
+    btn.onclick = () => switchTab(sem.id);
+    tabsNav.appendChild(btn);
 
-      <div class="layer-cards-grid">
-        <!-- Layer 1 -->
-        <div class="layer-card layer-1">
-          <div class="layer-tag">Layer 1: Grade Recording</div>
-          <div class="layer-sheet-name">
-            <i class="fa-solid fa-file-excel" style="color: #2563eb;"></i> Sheet <code>Sem1-2</code>
-          </div>
-          <div class="layer-desc">
-            ບັນທຶກຄະແນນນັກສຶກສາແຖວ 7-37. ແຕ່ລະວິຊາມີ 3 ຖັນ: ຄະແນນດິບ, ຄ່າລະດັບ (ສູດ IF 8 ຊັ້ນ), ແລະ ເກຣດ (A-F). ທ້າຍພາກຮຽນຄິດໄລ່ GPA ດ້ວຍສູດຖ່ວງນ້ຳໜັກໜ່ວຍກິດ.
-          </div>
-          <div class="formula-badge">
-            =IF(I7&gt;90,"4.00",IF(I7&gt;80,"3.50",...))
-          </div>
-        </div>
+    // Tab Pane
+    const pane = document.createElement('div');
+    pane.id = sem.id;
+    pane.className = `tab-content ${idx === 0 ? 'active' : ''}`;
+    pane.innerHTML = `
+      <div class="sem-title">${sem.name}</div>
+      <table>
+        <thead>
+          <tr>
+            <th style="width: 140px;">ລະຫັດວິຊາ</th>
+            <th>ຊື່ວິຊາ (ພາສາລາວ)</th>
+            <th>ຊື່ວິຊາ (ພາສາອັງກິດ)</th>
+            <th style="width: 80px;">ໜ່ວຍກິດ</th>
+            <th style="width: 50px;">ລຶບ</th>
+          </tr>
+        </thead>
+        <tbody id="tbody_${sem.id}"></tbody>
+      </table>
+      <button type="button" class="btn btn-add" onclick="addSubjectRow('${sem.id}')">+ ເພີ່ມວິຊາໃນພາກຮຽນນີ້</button>
+    `;
+    tabsContainer.appendChild(pane);
 
-        <!-- Layer 2 -->
-        <div class="layer-card layer-2">
-          <div class="layer-tag">Layer 2: Cumulative Summary</div>
-          <div class="layer-sheet-name">
-            <i class="fa-solid fa-chart-line" style="color: #0d9488;"></i> Sheet <code>CGPA2</code>
-          </div>
-          <div class="layer-desc">
-            ດຶງລະຫັດ ແລະ GPA ຂອງແຕ່ລະພາກຮຽນມາຈາກ Sheet <code>Sem1-2</code> ແບບ Dynamic ຜ່ານສູດເຊື່ອມໂຍງຂ້າມ Sheet ແລ້ວຄິດໄລ່ CGPA ສະສົມສະເລ່ຍ.
-          </div>
-          <div class="formula-badge">
-            ='Sem1-2'!B7 | =(G7+H7)/2
-          </div>
-        </div>
+    // เติมข้อมูลเริ่มต้น
+    const initData = defaultSubjects[sem.id] || [{ code: '', nameLao: '', nameEng: '', credits: 2 }];
+    initData.forEach(s => addSubjectRow(sem.id, s.code, s.nameLao, s.nameEng, s.credits));
+  });
 
-        <!-- Layer 3 -->
-        <div class="layer-card layer-3">
-          <div class="layer-tag">Layer 3: Official Transcripts</div>
-          <div class="layer-sheet-name">
-            <i class="fa-solid fa-graduation-cap" style="color: #d97706;"></i> <code>Lao_transcript</code> & <code>Eng_transcript</code>
-          </div>
-          <div class="layer-desc">
-            ໃບສະແດງຜົນການຮຽນທາງການ 2 ພາສາ. ຫົວເຈ້ຍຝັງ <code>Logo.jpeg</code>. ພຽງແຕ່ປ້ອນລະຫັດນັກສຶກສາທີ່ຫ້ອງ <strong>F12</strong> ສູດ <code>VLOOKUP</code> ຈະດຶງຂໍ້ມູນ, ຊື່-ສະກຸນ, ຄະແນນ ແລະ ເກຣດທຸກວິຊາມາສະແດງພ້ອມພິມທັນທີ!
-          </div>
-          <div class="formula-badge">
-            =VLOOKUP($F$12, 'Sem1-2'!$B$7:$ZZ$100, Col, FALSE)
-          </div>
-        </div>
-      </div>
-    </div>
+  function switchTab(semId) {
+    document.querySelectorAll('.tab-btn').forEach((b, i) => {
+      b.classList.toggle('active', semesterDefs[i].id === semId);
+    });
+    document.querySelectorAll('.tab-content').forEach(p => {
+      p.classList.toggle('active', p.id === semId);
+    });
+  }
 
-    <!-- Section 4: Sample Student Data Preview (Collapsible) -->
-    <div class="card">
-      <div class="card-header collapsible-trigger" onclick="toggleStudentPreview()">
-        <div class="card-title">
-          <i class="fa-solid fa-users"></i>
-          <span>4. ຂໍ້ມູນນັກສຶກສາຕົວຢ່າງ (ແຖວ 7 ເຖິງ 37 = 31 ຄົນ)</span>
-        </div>
-        <div>
-          <button type="button" class="btn btn-secondary btn-sm" id="btnToggleStudent">
-            <i class="fa-solid fa-eye"></i> ສະແດງຕົວຢ່າງ / ซ่อน
-          </button>
-        </div>
-      </div>
+  function addSubjectRow(semId, code='', nameLao='', nameEng='', credits=2) {
+    const tbody = document.getElementById(`tbody_${semId}`);
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td><input type="text" class="sub-code" value="${code}"></td>
+      <td><input type="text" class="sub-lao" value="${nameLao}"></td>
+      <td><input type="text" class="sub-eng" value="${nameEng}"></td>
+      <td><input type="number" class="sub-credit" value="${credits}"></td>
+      <td><button class="btn btn-del" onclick="this.closest('tr').remove()">X</button></td>
+    `;
+    tbody.appendChild(tr);
+  }
 
-      <div id="studentPreviewContainer" style="display: none;">
-        <p style="font-size: 0.85rem; color: var(--gray-600); margin-bottom: 12px;">
-          * ຂໍ້ມູນຕົວຢ່າງ 31 ຄົນຖືກສ້າງໄວ້ພ້ອມຄະແນນດິບເພື່ອທົດສອບສູດ Excel. ເມື່ອດາວໂຫຼດໄປແລ້ວ ອາຈານສາມາດປ່ຽນຄະແນນໃນ Sheet Sem1-2 ໄດ້ຕາມຕົວຈິງ:
-        </p>
-        <div class="table-container" style="max-height: 280px; overflow-y: auto;">
-          <table class="styled-table" id="sampleStudentTable">
-            <thead>
-              <tr>
-                <th style="width: 50px;">ລ/ດ</th>
-                <th style="width: 110px;">ລະຫັດ (ID)</th>
-                <th style="width: 65px;">ເພດ</th>
-                <th>ຊື່ ແລະ ນາມສະກຸນ (ລາວ)</th>
-                <th>Full Name (Eng)</th>
-                <th style="width: 110px;">ວ/ດ/ປ ເກີດ</th>
-              </tr>
-            </thead>
-            <tbody id="studentTableBody">
-              <!-- Filled by JS -->
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
+  function getColLetter(colIdx) {
+    let letter = '';
+    while (colIdx > 0) {
+      let mod = (colIdx - 1) % 26;
+      letter = String.fromCharCode(65 + mod) + letter;
+      colIdx = Math.floor((colIdx - mod) / 26);
+    }
+    return letter;
+  }
 
-    <!-- Section 5: Export Action Card -->
-    <div class="export-card">
-      <h2>ສ້າງໄຟລ໌ Excel ຕັດເກຣດ ແລະ ໃບ Transcript (.xlsx)</h2>
-      <p>
-        ກົດປຸ່ມດ້ານລຸ່ມເພື່ອ Export ໄຟລ໌ Excel ທີ່ມີສູດຄົບຖ້ວນທັງ 3 Layer, ຝັງຮູບໂລໂກ້ <code>Logo.jpeg</code> ທີ່ຫົວເຈ້ຍ ແລະ ຮອງຮັບຕົວອັກສອນພາສາລາວ Phetsarath OT / Tahoma ຢ່າງສົມບູນ.
-      </p>
+  async function generateCompleteExcel() {
+    const workbook = new ExcelJS.Workbook();
+
+    // ดึงข้อมูลรูปภาพ Logo.jpeg (ถ้ามีในโฟลเดอร์)
+    let logoImageId = null;
+    try {
+      const resp = await fetch('Logo.jpeg');
+      if (resp.ok) {
+        const blob = await resp.blob();
+        const arrayBuf = await blob.arrayBuffer();
+        logoImageId = workbook.addImage({
+          buffer: arrayBuf,
+          extension: 'jpeg',
+        });
+      }
+    } catch(e) {
+      console.log('Logo.jpeg not found or CORS blocked, skipping logo.');
+    }
+
+    // รวบรวมข้อมูลทุกเทอม
+    const allSemestersData = {};
+    semesterDefs.forEach(s => {
+      const rows = document.querySelectorAll(`#tbody_${s.id} tr`);
+      allSemestersData[s.id] = [];
+      rows.forEach(r => {
+        const code = r.querySelector('.sub-code').value.trim();
+        const nameLao = r.querySelector('.sub-lao').value.trim();
+        const nameEng = r.querySelector('.sub-eng').value.trim();
+        const credits = parseInt(r.querySelector('.sub-credit').value) || 0;
+        if (code || nameLao) {
+          allSemestersData[s.id].push({ code, nameLao, nameEng, credits });
+        }
+      });
+    });
+
+    // -------------------------------------------------------------
+    // 1. LAYER 1: ສ້າງ 4 Sheets Sem (Sem1-2, Sem3-4 , Sem5-6, Sem7-8)
+    // -------------------------------------------------------------
+    const semPairs = [
+      { name: 'Sem1-2', semA: 'sem1', semB: 'sem2', labelA: 'ພາກຮຽນ 1', labelB: 'ພາກຮຽນ 2' },
+      { name: 'Sem3-4 ', semA: 'sem3', semB: 'sem4', labelA: 'ພາກຮຽນ 3', labelB: 'ພາກຮຽນ 4' },
+      { name: 'Sem5-6', semA: 'sem5', semB: 'sem6', labelA: 'ພາກຮຽນ 5', labelB: 'ພາກຮຽນ 6' },
+      { name: 'Sem7-8', semA: 'sem7', semB: 'sem8', labelA: 'ພາກຮຽນ 7', labelB: 'ພາກຮຽນ 8' }
+    ];
+
+    const semMetaInfo = {}; // เก็บพิกัดคอลัมน์ของแต่ละเทอม
+
+    semPairs.forEach(pair => {
+      const ws = workbook.addWorksheet(pair.name);
       
-      <button type="button" class="btn-download-excel" id="btnGenerateExcel" onclick="generateAndDownloadExcel()">
-        <i class="fa-solid fa-file-excel fa-lg"></i>
-        <span>ສ້າງ ແລະ ດາວໂຫຼດໄຟລ໌ Excel (.xlsx)</span>
-      </button>
+      // ส่วนหัวข้อมูลพื้นฐาน (แถว 2)
+      const baseHeaders = ["ລ/ດ", "ລະຫັດນສ", "ເພດ", "ຊື່ພາສາລາວ", "ນາມສະກຸນພາສາລາວ", "ຊື່ພາສາອັງກິດ", "ນາມສະກຸນພາສາອັງກິດ", "ວ.ດ.ປີເກີດ", "ແຂວງເກີດ", "ຫ້ອງ"];
+      baseHeaders.forEach((h, i) => ws.getRow(2).getCell(i + 1).value = h);
 
-      <div id="exportStatus" style="margin-top: 14px; font-size: 0.95rem; font-weight: 500; min-height: 24px;"></div>
-    </div>
+      let currentCol = baseHeaders.length + 1;
+      semMetaInfo[pair.name] = {};
 
-  </main>
+      [ { id: pair.semA, label: pair.labelA }, { id: pair.semB, label: pair.labelB } ].forEach(subTerm => {
+        const subs = allSemestersData[subTerm.id] || [];
+        const gpaTerms = [];
+        let totalCr = 0;
+        semMetaInfo[pair.name][subTerm.id] = { subjects: [] };
 
-  <footer>
-    <div class="container">
-      ລະບົບຄຳນວਣເກຣດ ແລະ ພິມໃບຜົນການຮຽນ (University Grade Calculation & Transcript System) &bull; ຮອງຮັບຟອນ Phetsarath OT / Tahoma &bull; UTF-8
-    </div>
-  </footer>
+        subs.forEach(subj => {
+          const scCol = currentCol;
+          const ptCol = currentCol + 1;
+          const grCol = currentCol + 2;
 
-  <!-- Core JavaScript Application Logic -->
-  <script>
-    // State management
-    const appState = {
-      activeSemester: 1,
-      logoBase64: null,
-      semesters: {
-        1: [
-          { code: 'JAP101', nameLao: 'ພາສາຍີ່ປຸ່ນພື້ນຖານ 1', nameEng: 'Basic Japanese I', credits: 3 },
-          { code: 'JAP102', nameLao: 'ໄວຍາກອນຍີ່ປຸ່ນ 1', nameEng: 'Japanese Grammar I', credits: 3 },
-          { code: 'JAP103', nameLao: 'ການຟັງ ແລະ ການເວົ້າ 1', nameEng: 'Listening & Speaking I', credits: 2 },
-          { code: 'JAP104', nameLao: 'ຕົວອັກສອນຄັນຈິ 1', nameEng: 'Kanji Characters I', credits: 2 },
-          { code: 'LAO101', nameLao: 'ພາສາລາວນຳໃຊ້', nameEng: 'Applied Lao Language', credits: 2 },
-          { code: 'ENG101', nameLao: 'ພາສາອັງກິດທົ່ວໄປ 1', nameEng: 'General English I', credits: 2 }
-        ],
-        2: [
-          { code: 'JAP105', nameLao: 'ພາສາຍີ່ປຸ່ນພື້ນຖານ 2', nameEng: 'Basic Japanese II', credits: 3 },
-          { code: 'JAP106', nameLao: 'ໄວຍາກອນຍີ່ປຸ່ນ 2', nameEng: 'Japanese Grammar II', credits: 3 },
-          { code: 'JAP107', nameLao: 'ການຟັງ ແລະ ການເວົ້າ 2', nameEng: 'Listening & Speaking II', credits: 2 },
-          { code: 'JAP108', nameLao: 'ຕົວອັກສອນຄັນຈິ 2', nameEng: 'Kanji Characters II', credits: 2 },
-          { code: 'JAP109', nameLao: 'ວັດທະນະທຳຍີ່ປຸ່ນ', nameEng: 'Japanese Culture', credits: 2 },
-          { code: 'COM101', nameLao: 'ຄອມພິວເຕີພື້ນຖານ', nameEng: 'Basic Computer Application', credits: 2 }
-        ]
-      },
-      // 31 Sample Students (Rows 7 to 37)
-      students: [
-        { id: 'B2023001', gender: 'M', firstNameLao: 'ສົມສັກ', lastNameLao: 'ວົງສາ', firstNameEng: 'Somsak', lastNameEng: 'Vongsa', dob: '12/03/2004' },
-        { id: 'B2023002', gender: 'F', firstNameLao: 'ມະນີວອນ', lastNameLao: 'ແກ້ວມະນີ', firstNameEng: 'Manivone', lastNameEng: 'Keomany', dob: '25/07/2004' },
-        { id: 'B2023003', gender: 'F', firstNameLao: 'ດາວອນ', lastNameLao: 'ສີສຸລາດ', firstNameEng: 'Davone', lastNameEng: 'Sisoulath', dob: '18/01/2004' },
-        { id: 'B2023004', gender: 'M', firstNameLao: 'ທະນູສິນ', lastNameLao: 'ພົມມະຈັນ', firstNameEng: 'Thanousin', lastNameEng: 'Phommachanh', dob: '09/11/2003' },
-        { id: 'B2023005', gender: 'F', firstNameLao: 'ອາລຸນີ', lastNameLao: 'ຄຳປະເສີດ', firstNameEng: 'Alouny', lastNameEng: 'Khampaseuth', dob: '04/05/2004' },
-        { id: 'B2023006', gender: 'M', firstNameLao: 'ບຸນມີ', lastNameLao: 'ໄຊຍະວົງ', firstNameEng: 'Bounmy', lastNameEng: 'Xayyavong', dob: '14/08/2003' },
-        { id: 'B2023007', gender: 'F', firstNameLao: 'ແສງເດືອນ', lastNameLao: 'ວຽງສະຫວັນ', firstNameEng: 'Sengdeuan', lastNameEng: 'Viengsavanh', dob: '22/02/2004' },
-        { id: 'B2023008', gender: 'M', firstNameLao: 'ຄຳຫຼ້າ', lastNameLao: 'ລັດຕະນະວົງ', firstNameEng: 'Khamla', lastNameEng: 'Rattanavong', dob: '30/09/2003' },
-        { id: 'B2023009', gender: 'F', firstNameLao: 'ທິບພະສອນ', lastNameLao: 'ສຸລິຍະ', firstNameEng: 'Thipphasone', lastNameEng: 'Souliya', dob: '11/12/2004' },
-        { id: 'B2023010', gender: 'M', firstNameLao: 'ວິລະສັກ', lastNameLao: 'ແສງທອງ', firstNameEng: 'Vilasak', lastNameEng: 'Sengthong', dob: '05/06/2004' },
-        { id: 'B2023011', gender: 'F', firstNameLao: 'ຈັນທອນ', lastNameLao: 'ພິລາວົງ', firstNameEng: 'Chanthone', lastNameEng: 'Philavong', dob: '19/04/2004' },
-        { id: 'B2023012', gender: 'M', firstNameLao: 'ພອນໄຊ', lastNameLao: 'ສຸວັນນະສີ', firstNameEng: 'Phonexay', lastNameEng: 'Souvannasy', dob: '28/08/2003' },
-        { id: 'B2023013', gender: 'F', firstNameLao: 'ສຸພະພອນ', lastNameLao: 'ອິນທະວົງ', firstNameEng: 'Souphaphone', lastNameEng: 'Inthavong', dob: '17/10/2004' },
-        { id: 'B2023014', gender: 'M', firstNameLao: 'ອານຸສອນ', lastNameLao: 'ແກ້ວດວງດີ', firstNameEng: 'Anousone', lastNameEng: 'Keodouangdy', dob: '02/03/2004' },
-        { id: 'B2023015', gender: 'F', firstNameLao: 'ວັນນິສາ', lastNameLao: 'ສີທະວີ', firstNameEng: 'Vannisa', lastNameEng: 'Sithavy', dob: '15/05/2004' },
-        { id: 'B2023016', gender: 'M', firstNameLao: 'ໄຊຊະນະ', lastNameLao: 'ບຸນປະເສີດ', firstNameEng: 'Xaixana', lastNameEng: 'Bounpaseuth', dob: '08/07/2003' },
-        { id: 'B2023017', gender: 'F', firstNameLao: 'ປານີ', lastNameLao: 'ລັດສະໝີ', firstNameEng: 'Pany', lastNameEng: 'Ratsamy', dob: '23/09/2004' },
-        { id: 'B2023018', gender: 'M', firstNameLao: 'ສົມບູນ', lastNameLao: 'ຈັນທະລາ', firstNameEng: 'Somboun', lastNameEng: 'Chanthala', dob: '10/12/2003' },
-        { id: 'B2023019', gender: 'F', firstNameLao: 'ແກ້ວມະນີ', lastNameLao: 'ອິນທະປັນຍາ', firstNameEng: 'Keomany', lastNameEng: 'Inthapanya', dob: '03/01/2004' },
-        { id: 'B2023020', gender: 'M', firstNameLao: 'ພຸດທະວົງ', lastNameLao: 'ສີສະຫວາດ', firstNameEng: 'Phoutthavong', lastNameEng: 'Sisavath', dob: '16/04/2004' },
-        { id: 'B2023021', gender: 'F', firstNameLao: 'ສິຣິພອນ', lastNameLao: 'ແສງດາວ', firstNameEng: 'Siriphone', lastNameEng: 'Sengdao', dob: '29/06/2004' },
-        { id: 'B2023022', gender: 'M', firstNameLao: 'ເດດສັກດາ', lastNameLao: 'ວົງວິຈິດ', firstNameEng: 'Detsakda', lastNameEng: 'Vongvichit', dob: '13/02/2004' },
-        { id: 'B2023023', gender: 'F', firstNameLao: 'ມາລີວັນ', lastNameLao: 'ພົງສະຫວັນ', firstNameEng: 'Malivanh', lastNameEng: 'Phongsavanh', dob: '27/08/2004' },
-        { id: 'B2023024', gender: 'M', firstNameLao: 'ບຸນທັນ', lastNameLao: 'ດວງພະຈັນ', firstNameEng: 'Bounthan', lastNameEng: 'Douangphachanh', dob: '06/11/2003' },
-        { id: 'B2023025', gender: 'F', firstNameLao: 'ນິດາວັນ', lastNameLao: 'ໄຊຍະສິດ', firstNameEng: 'Nidavanh', lastNameEng: 'Xayyasith', dob: '21/03/2004' },
-        { id: 'B2023026', gender: 'M', firstNameLao: 'ວັນໄຊ', lastNameLao: 'ພູມມະເທບ', firstNameEng: 'Vanxay', lastNameEng: 'Phoummathep', dob: '01/05/2004' },
-        { id: 'B2023027', gender: 'F', firstNameLao: 'ສຸດາພອນ', lastNameLao: 'ມະນີຈັນ', firstNameEng: 'Soudaphone', lastNameEng: 'Manichanh', dob: '14/09/2004' },
-        { id: 'B2023028', gender: 'M', firstNameLao: 'ທະວີສັກ', lastNameLao: 'ພົມວິຫານ', firstNameEng: 'Thavisak', lastNameEng: 'Phomvihane', dob: '26/10/2003' },
-        { id: 'B2023029', gender: 'F', firstNameLao: 'ບົວຄຳ', lastNameLao: 'ສີອຳພອນ', firstNameEng: 'Bouakham', lastNameEng: 'Siamphone', dob: '07/12/2004' },
-        { id: 'B2023030', gender: 'M', firstNameLao: 'ອາທິດ', lastNameLao: 'ວົງພະຈັນ', firstNameEng: 'Athit', lastNameEng: 'Vongphachanh', dob: '18/02/2004' },
-        { id: 'B2023031', gender: 'F', firstNameLao: 'ພອນທິບ', lastNameLao: 'ແກ້ວວິໄລ', firstNameEng: 'Phonethip', lastNameEng: 'Keovilay', dob: '30/07/2004' }
-      ]
-    };
+          ws.getRow(3).getCell(scCol).value = `${subj.nameLao} (${subj.credits})`;
+          ws.getRow(4).getCell(scCol).value = "ຄະແນນລວມ";
+          ws.getRow(4).getCell(ptCol).value = "ຄ່າລະດັບ";
+          ws.getRow(4).getCell(grCol).value = "ລະດັບ";
 
-    // Pre-calculate realistic sample scores for students (deterministic seeded scores)
-    appState.studentScores = {};
-    appState.students.forEach((s, idx) => {
-      appState.studentScores[s.id] = {};
-      // Base score variance based on index
-      const baseScore = 68 + ((idx * 7) % 27); // between 68 and 94
-      [1, 2].forEach(sem => {
-        appState.studentScores[s.id][sem] = {};
-        appState.semesters[sem].forEach((c, cIdx) => {
-          let score = baseScore + ((cIdx * 5 - idx * 3) % 11);
-          if (score > 98) score = 98;
-          if (score < 50) score = 52;
-          appState.studentScores[s.id][sem][c.code] = score;
+          semMetaInfo[pair.name][subTerm.id].subjects.push({
+            ...subj,
+            scoreCol: scCol,
+            pointCol: ptCol,
+            gradeCol: grCol
+          });
+
+          // สูตรค่างวดและเกรด แถว 7 ถึง 37
+          for (let r = 7; r <= 37; r++) {
+            const scL = getColLetter(scCol);
+            ws.getRow(r).getCell(ptCol).value = {
+              formula: `IF(${scL}${r}>90,"4.00",IF(${scL}${r}>80,"3.50",IF(${scL}${r}>69,"3.00",IF(${scL}${r}>64,"2.50",IF(${scL}${r}>59,"2.00",IF(${scL}${r}>54,"1.50",IF(${scL}${r}>49,"1.00","0.00")))))))`
+            };
+            ws.getRow(r).getCell(grCol).value = {
+              formula: `IF(${scL}${r}>=91,"A",IF(${scL}${r}>=81,"B+",IF(${scL}${r}>=70,"B",IF(${scL}${r}>=65,"C+",IF(${scL}${r}>=60,"C",IF(${scL}${r}>=55,"D+",IF(${scL}${r}>=50,"D",IF(${scL}${r}>=0,"F"))))))))`
+            };
+          }
+
+          gpaTerms.push({ col: ptCol, cr: subj.credits });
+          totalCr += subj.credits;
+          currentCol += 3;
         });
+
+        // คอลัมน์คำนวณ GPA รายเทอม
+        const gpaCol = currentCol;
+        ws.getRow(3).getCell(gpaCol).value = `GPA (${subTerm.label})`;
+        for (let r = 7; r <= 37; r++) {
+          if (totalCr > 0) {
+            const sumP = gpaTerms.map(t => `${getColLetter(t.col)}${r}*${t.cr}`).join('+');
+            ws.getRow(r).getCell(gpaCol).value = { formula: `(${sumP})/${totalCr}` };
+          }
+        }
+        semMetaInfo[pair.name][subTerm.id].gpaCol = gpaCol;
+        currentCol += 1;
       });
     });
 
-    // Helper: Convert 1-based column number to Excel column letters (1 -> A, 27 -> AA)
-    function colToLetter(col) {
-      let temp = '';
-      let letter = '';
-      while (col > 0) {
-        temp = (col - 1) % 26;
-        letter = String.fromCharCode(temp + 65) + letter;
-        col = Math.floor((col - temp - 1) / 26);
-      }
-      return letter;
-    }
+    // -------------------------------------------------------------
+    // 2. LAYER 2: ສ້າງ 4 Sheets CGPA (CGPA2, CGPA4, CGPA6, CGPA8)
+    // -------------------------------------------------------------
+    const cgpaConfigs = [
+      { name: 'CGPA2', gpas: [{ sheet: 'Sem1-2', col: semMetaInfo['Sem1-2']['sem1'].gpaCol, lbl: 'GPA1' }, { sheet: 'Sem1-2', col: semMetaInfo['Sem1-2']['sem2'].gpaCol, lbl: 'GPA2' }] },
+      { name: 'CGPA4', gpas: [{ sheet: 'Sem1-2', col: semMetaInfo['Sem1-2']['sem1'].gpaCol, lbl: 'GPA1' }, { sheet: 'Sem1-2', col: semMetaInfo['Sem1-2']['sem2'].gpaCol, lbl: 'GPA2' }, { sheet: 'Sem3-4 ', col: semMetaInfo['Sem3-4 ']['sem3'].gpaCol, lbl: 'GPA3' }, { sheet: 'Sem3-4 ', col: semMetaInfo['Sem3-4 ']['sem4'].gpaCol, lbl: 'GPA4' }] },
+      { name: 'CGPA6', gpas: [{ sheet: 'Sem1-2', col: semMetaInfo['Sem1-2']['sem1'].gpaCol, lbl: 'GPA1' }, { sheet: 'Sem1-2', col: semMetaInfo['Sem1-2']['sem2'].gpaCol, lbl: 'GPA2' }, { sheet: 'Sem3-4 ', col: semMetaInfo['Sem3-4 ']['sem3'].gpaCol, lbl: 'GPA3' }, { sheet: 'Sem3-4 ', col: semMetaInfo['Sem3-4 ']['sem4'].gpaCol, lbl: 'GPA4' }, { sheet: 'Sem5-6', col: semMetaInfo['Sem5-6']['sem5'].gpaCol, lbl: 'GPA5' }, { sheet: 'Sem5-6', col: semMetaInfo['Sem5-6']['sem6'].gpaCol, lbl: 'GPA6' }] },
+      { name: 'CGPA8', gpas: [{ sheet: 'Sem1-2', col: semMetaInfo['Sem1-2']['sem1'].gpaCol, lbl: 'GPA1' }, { sheet: 'Sem1-2', col: semMetaInfo['Sem1-2']['sem2'].gpaCol, lbl: 'GPA2' }, { sheet: 'Sem3-4 ', col: semMetaInfo['Sem3-4 ']['sem3'].gpaCol, lbl: 'GPA3' }, { sheet: 'Sem3-4 ', col: semMetaInfo['Sem3-4 ']['sem4'].gpaCol, lbl: 'GPA4' }, { sheet: 'Sem5-6', col: semMetaInfo['Sem5-6']['sem5'].gpaCol, lbl: 'GPA5' }, { sheet: 'Sem5-6', col: semMetaInfo['Sem5-6']['sem6'].gpaCol, lbl: 'GPA6' }, { sheet: 'Sem7-8', col: semMetaInfo['Sem7-8']['sem7'].gpaCol, lbl: 'GPA7' }, { sheet: 'Sem7-8', col: semMetaInfo['Sem7-8']['sem8'].gpaCol, lbl: 'GPA8' }] }
+    ];
 
-    // Initialize UI on Page Load
-    document.addEventListener('DOMContentLoaded', () => {
-      renderCourseTable();
-      renderStudentPreview();
-      initLogo();
-      setupDragAndDrop();
+    cgpaConfigs.forEach(cfg => {
+      const ws = workbook.addWorksheet(cfg.name);
+      ws.getCell('A2').value = "ລ/ດ";
+      ws.getCell('B2').value = "ລະຫັດນສ";
+      ws.getCell('C2').value = "ເພດ";
+      ws.getCell('D2').value = "ຊື່";
+      ws.getCell('E2').value = "ນາມສະກຸນ";
+
+      let gpaStartCol = 8; // Column H
+      cfg.gpas.forEach((g, i) => {
+        ws.getRow(2).getCell(gpaStartCol + i).value = g.lbl;
+      });
+      const cgpaCol = gpaStartCol + cfg.gpas.length;
+      ws.getRow(2).getCell(cgpaCol).value = cfg.name;
+
+      for (let r = 3; r <= 33; r++) {
+        const semRow = r + 4;
+        ws.getCell(`A${r}`).value = r - 2;
+        ws.getCell(`B${r}`).value = { formula: `='Sem1-2'!B${semRow}` };
+        ws.getCell(`C${r}`).value = { formula: `='Sem1-2'!C${semRow}` };
+        ws.getCell(`D${r}`).value = { formula: `='Sem1-2'!D${semRow}` };
+        ws.getCell(`E${r}`).value = { formula: `='Sem1-2'!E${semRow}` };
+
+        const gpaCells = [];
+        cfg.gpas.forEach((g, i) => {
+          const colL = getColLetter(gpaStartCol + i);
+          const refColL = getColLetter(g.col);
+          ws.getCell(`${colL}${r}`).value = { formula: `='${g.sheet}'!${refColL}${semRow}` };
+          gpaCells.push(`${colL}${r}`);
+        });
+
+        // คำนวณ CGPA สะสม
+        const cgpaColL = getColLetter(cgpaCol);
+        ws.getCell(`${cgpaColL}${r}`).value = { formula: `=(${gpaCells.join('+')})/${gpaCells.length}` };
+      }
     });
 
-    // ==========================================
-    // Logo Handling Logic
-    // ==========================================
-    async function initLogo() {
-      // 1. Try to fetch Logo.jpeg directly
-      try {
-        const response = await fetch('Logo.jpeg');
-        if (response.ok) {
-          const blob = await response.blob();
-          const reader = new FileReader();
-          reader.onload = function(e) {
-            appState.logoBase64 = e.target.result;
-            updateLogoPreview(appState.logoBase64, 'ພົບໄຟລ໌ Logo.jpeg ແລ້ວ (Auto-detected)');
-          };
-          reader.readAsDataURL(blob);
-          return;
-        }
-      } catch (e) {
-        console.warn('Auto fetch of Logo.jpeg failed (likely file:// origin). Using canvas fallback.');
+    // -------------------------------------------------------------
+    // 3. LAYER 3: ສ້າງ 8 Sheets Transcript (Lao & Eng ສຳລັບ ປີ 1 - ປີ 4)
+    // -------------------------------------------------------------
+    const years = [
+      { y: 1, laoName: 'Lao_transcript(year1)', engName: 'Eng_transcript(year1)', pair: 'Sem1-2', s1: 'sem1', s2: 'sem2' },
+      { y: 2, laoName: 'Lao_transcript(year2) ', engName: 'Eng_transcript(year2)', pair: 'Sem3-4 ', s1: 'sem3', s2: 'sem4' },
+      { y: 3, laoName: 'Lao_transcript(year3)', engName: 'Eng_transcript(year3)', pair: 'Sem5-6', s1: 'sem5', s2: 'sem6' },
+      { y: 4, laoName: 'Lao_transcript(year4)', engName: 'Eng_transcript(year4)', pair: 'Sem7-8', s1: 'sem7', s2: 'sem8' }
+    ];
+
+    years.forEach(yr => {
+      // 3.1 Lao Transcript
+      const wsLao = workbook.addWorksheet(yr.laoName);
+      wsLao.getCell('A9').value = "ໃບຕິດຕາມຜົນການຮຽນ";
+      wsLao.getCell('A10').value = "ຊື່ ແລະນາມສະກຸນ";
+      wsLao.getCell('F10').value = { formula: `=IF(OR(VLOOKUP($F$12,'Sem1-2'!$B$7:$BS$37,2,FALSE)="ຊາຍ", VLOOKUP($F$12,'Sem1-2'!$B$7:$BS$37,2,FALSE)="ທ້າວ"),"ທ້າວ","ນາງ")&" "&VLOOKUP($F$12,'Sem1-2'!$B$7:$BS$37,3,FALSE)&" "&VLOOKUP($F$12,'Sem1-2'!$B$7:$BS$37,4,FALSE)` };
+      wsLao.getCell('A11').value = "ວັນ/ເດືອນ/ປີເກີດ";
+      wsLao.getCell('F11').value = { formula: `=VLOOKUP($F$12,'Sem1-2'!$B$7:$BX$37,7,FALSE)` };
+      wsLao.getCell('A12').value = "ເລກທະບຽນ";
+      wsLao.getCell('F12').value = "125N0622/23"; // ช่องกรอกรหัสนักศึกษาค้นหา
+
+      wsLao.getCell('C14').value = "ລດ";
+      wsLao.getCell('D14').value = "ເລກລະຫັດ";
+      wsLao.getCell('E14').value = "ຊື່ວິຊາ";
+      wsLao.getCell('G14').value = "ຈຳນວນໜ່ວຍກິດ";
+      wsLao.getCell('H14').value = "ຄະແນນ";
+      wsLao.getCell('I14').value = "ຄ່າລະດັບ";
+      wsLao.getCell('J14').value = "ເກຣດ";
+
+      let trRow = 16;
+      const subs1 = semMetaInfo[yr.pair][yr.s1].subjects;
+      const subs2 = semMetaInfo[yr.pair][yr.s2].subjects;
+
+      // วนวางวิชาเทอม 1 ของปีนั้น
+      subs1.forEach((s, idx) => {
+        wsLao.getCell(`C${trRow}`).value = idx + 1;
+        wsLao.getCell(`D${trRow}`).value = s.code;
+        wsLao.getCell(`E${trRow}`).value = s.nameLao;
+        wsLao.getCell(`G${trRow}`).value = s.credits;
+        wsLao.getCell(`H${trRow}`).value = { formula: `=VLOOKUP($F$12,'${yr.pair}'!$B$7:$ZZ$37,${s.scoreCol - 1},FALSE)` };
+        wsLao.getCell(`I${trRow}`).value = { formula: `=IF(H${trRow}>90,"4.00",IF(H${trRow}>80,"3.50",IF(H${trRow}>69,"3.00",IF(H${trRow}>64,"2.50",IF(H${trRow}>59,"2.00",IF(H${trRow}>54,"1.50",IF(H${trRow}>49,"1.00","0.00")))))))` };
+        wsLao.getCell(`J${trRow}`).value = { formula: `=IF(H${trRow}>=91,"A",IF(H${trRow}>=81,"B+",IF(H${trRow}>=70,"B",IF(H${trRow}>=65,"C+",IF(H${trRow}>=60,"C",IF(H${trRow}>=55,"D+",IF(H${trRow}>=50,"D",IF(H${trRow}>=0,"F"))))))))` };
+        trRow++;
+      });
+
+      // วนวางวิชาเทอม 2 ของปีนั้น
+      trRow += 2;
+      subs2.forEach((s, idx) => {
+        wsLao.getCell(`C${trRow}`).value = idx + 1;
+        wsLao.getCell(`D${trRow}`).value = s.code;
+        wsLao.getCell(`E${trRow}`).value = s.nameLao;
+        wsLao.getCell(`G${trRow}`).value = s.credits;
+        wsLao.getCell(`H${trRow}`).value = { formula: `=VLOOKUP($F$12,'${yr.pair}'!$B$7:$ZZ$37,${s.scoreCol - 1},FALSE)` };
+        wsLao.getCell(`I${trRow}`).value = { formula: `=IF(H${trRow}>90,"4.00",IF(H${trRow}>80,"3.50",IF(H${trRow}>69,"3.00",IF(H${trRow}>64,"2.50",IF(H${trRow}>59,"2.00",IF(H${trRow}>54,"1.50",IF(H${trRow}>49,"1.00","0.00")))))))` };
+        wsLao.getCell(`J${trRow}`).value = { formula: `=IF(H${trRow}>=91,"A",IF(H${trRow}>=81,"B+",IF(H${trRow}>=70,"B",IF(H${trRow}>=65,"C+",IF(H${trRow}>=60,"C",IF(H${trRow}>=55,"D+",IF(H${trRow}>=50,"D",IF(H${trRow}>=0,"F"))))))))` };
+        trRow++;
+      });
+
+      // แปะรูปโลโก้ถ้ามี
+      if (logoImageId !== null) {
+        wsLao.addImage(logoImageId, {
+          tl: { col: 0.5, row: 1 },
+          ext: { width: 90, height: 90 }
+        });
       }
 
-      // 2. If fetch fails, generate a beautiful university seal fallback
-      generateDefaultUniversitySeal();
-    }
+      // 3.2 Eng Transcript
+      const wsEng = workbook.addWorksheet(yr.engName);
+      wsEng.getCell('A9').value = "ACADEMIC TRANSCRIPT";
+      wsEng.getCell('A10').value = "Full Name";
+      wsEng.getCell('F10').value = { formula: `=VLOOKUP($F$12,'Sem1-2'!$B$7:$BX$37,5,FALSE)&" "&VLOOKUP($F$12,'Sem1-2'!$B$7:$BX$37,6,FALSE)` };
+      wsEng.getCell('A12').value = "Student ID";
+      wsEng.getCell('F12').value = "125N0622/23";
 
-    function handleLogoLoadError() {
-      generateDefaultUniversitySeal();
-    }
-
-    function generateDefaultUniversitySeal() {
-      const canvas = document.createElement('canvas');
-      canvas.width = 300;
-      canvas.height = 300;
-      const ctx = canvas.getContext('2d');
-
-      // Outer background circle
-      ctx.fillStyle = '#1e3a8a';
-      ctx.beginPath();
-      ctx.arc(150, 150, 140, 0, Math.PI * 2);
-      ctx.fill();
-
-      // Gold ring
-      ctx.strokeStyle = '#f59e0b';
-      ctx.lineWidth = 8;
-      ctx.stroke();
-
-      // Inner circle
-      ctx.fillStyle = '#ffffff';
-      ctx.beginPath();
-      ctx.arc(150, 150, 115, 0, Math.PI * 2);
-      ctx.fill();
-
-      // Inner decorative border
-      ctx.strokeStyle = '#1e3a8a';
-      ctx.lineWidth = 3;
-      ctx.stroke();
-
-      // Seal Graphics: Open Book & Star
-      ctx.fillStyle = '#1e3a8a';
-      // Book
-      ctx.beginPath();
-      ctx.moveTo(95, 140);
-      ctx.quadraticCurveTo(150, 120, 205, 140);
-      ctx.lineTo(205, 185);
-      ctx.quadraticCurveTo(150, 165, 95, 185);
-      ctx.closePath();
-      ctx.fill();
-
-      // Star above book
-      ctx.fillStyle = '#d97706';
-      ctx.beginPath();
-      ctx.arc(150, 105, 14, 0, Math.PI * 2);
-      ctx.fill();
-
-      // Text in banner
-      ctx.fillStyle = '#1e3a8a';
-      ctx.font = 'bold 15px "Noto Sans Lao", Tahoma, sans-serif';
-      ctx.textAlign = 'center';
-      ctx.fillText('NUOL ມຊ', 150, 215);
-
-      appState.logoBase64 = canvas.toDataURL('image/jpeg', 0.92);
-      updateLogoPreview(appState.logoBase64, 'ກຳລັງໃຊ້ຕາປະທັບມະຫາວິທະຍາໄລມາດຕະຖານ (Default Seal)');
-    }
-
-    function updateLogoPreview(base64Data, statusMsg) {
-      document.getElementById('headerLogoImg').src = base64Data;
-      document.getElementById('logoPreviewImg').src = base64Data;
-      const badge = document.getElementById('logoStatusBadge');
-      const text = document.getElementById('logoStatusText');
-      badge.className = 'status-badge active';
-      badge.innerHTML = '<i class="fa-solid fa-check"></i> ໂລໂກ້ພ້ອມໃຊ້ງານ';
-      text.textContent = statusMsg;
-    }
-
-    function onLogoFileSelected(event) {
-      const file = event.target.files[0];
-      if (!file) return;
-      readAndSetLogo(file);
-    }
-
-    function readAndSetLogo(file) {
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        appState.logoBase64 = e.target.result;
-        updateLogoPreview(appState.logoBase64, `ເລືອກໄຟລ໌: ${file.name} (${Math.round(file.size / 1024)} KB)`);
-      };
-      reader.readAsDataURL(file);
-    }
-
-    function resetDefaultLogo() {
-      initLogo();
-    }
-
-    function setupDragAndDrop() {
-      const dropZone = document.getElementById('logoDropZone');
-      ['dragenter', 'dragover'].forEach(eventName => {
-        dropZone.addEventListener(eventName, (e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          dropZone.classList.add('dragover');
-        }, false);
-      });
-      ['dragleave', 'drop'].forEach(eventName => {
-        dropZone.addEventListener(eventName, (e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          dropZone.classList.remove('dragover');
-        }, false);
-      });
-      dropZone.addEventListener('drop', (e) => {
-        const dt = e.dataTransfer;
-        const file = dt.files[0];
-        if (file && file.type.startsWith('image/')) {
-          readAndSetLogo(file);
-        }
-      }, false);
-    }
-
-    // ==========================================
-    // Course Management UI
-    // ==========================================
-    function switchSemesterTab(sem) {
-      appState.activeSemester = sem;
-      document.getElementById('tabSem1').classList.toggle('active', sem === 1);
-      document.getElementById('tabSem2').classList.toggle('active', sem === 2);
-      renderCourseTable();
-    }
-
-    function renderCourseTable() {
-      const tbody = document.getElementById('courseTableBody');
-      tbody.innerHTML = '';
-      const courses = appState.semesters[appState.activeSemester] || [];
-
-      let totalCredits = 0;
-      courses.forEach((course, index) => {
-        totalCredits += Number(course.credits) || 0;
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td style="text-align: center; font-weight: 600; color: var(--gray-600);">${index + 1}</td>
-          <td>
-            <input type="text" class="table-input" value="${escapeHtml(course.code)}" onchange="updateCourseField(${index}, 'code', this.value)" placeholder="e.g. JAP101">
-          </td>
-          <td>
-            <input type="text" class="table-input" value="${escapeHtml(course.nameLao)}" onchange="updateCourseField(${index}, 'nameLao', this.value)" placeholder="ຊື່ວິຊາພາສາລາວ">
-          </td>
-          <td>
-            <input type="text" class="table-input" value="${escapeHtml(course.nameEng)}" onchange="updateCourseField(${index}, 'nameEng', this.value)" placeholder="Course Title in English">
-          </td>
-          <td style="text-align: center;">
-            <input type="number" min="1" max="10" class="table-input" style="text-align: center; width: 60px;" value="${course.credits}" onchange="updateCourseField(${index}, 'credits', parseInt(this.value) || 1)">
-          </td>
-          <td style="text-align: center;">
-            <button type="button" class="btn btn-danger btn-sm" onclick="deleteCourseRow(${index})" title="ລົບລາຍວິຊານີ້">
-              <i class="fa-solid fa-trash-can"></i>
-            </button>
-          </td>
-        `;
-        tbody.appendChild(tr);
+      let engRow = 16;
+      subs1.forEach((s, idx) => {
+        wsEng.getCell(`C${engRow}`).value = idx + 1;
+        wsEng.getCell(`D${engRow}`).value = s.code;
+        wsEng.getCell(`E${engRow}`).value = s.nameEng || s.nameLao;
+        wsEng.getCell(`G${engRow}`).value = s.credits;
+        wsEng.getCell(`H${engRow}`).value = { formula: `='${yr.laoName}'!H${16 + idx}` };
+        wsEng.getCell(`I${engRow}`).value = { formula: `='${yr.laoName}'!I${16 + idx}` };
+        wsEng.getCell(`J${engRow}`).value = { formula: `='${yr.laoName}'!J${16 + idx}` };
+        engRow++;
       });
 
-      document.getElementById('courseCountDisplay').textContent = courses.length;
-      document.getElementById('totalCreditsDisplay').textContent = totalCredits;
-    }
-
-    function updateCourseField(index, field, value) {
-      const courses = appState.semesters[appState.activeSemester];
-      if (courses[index]) {
-        courses[index][field] = value;
-        if (field === 'credits') {
-          renderCourseTable();
-        }
+      if (logoImageId !== null) {
+        wsEng.addImage(logoImageId, {
+          tl: { col: 0.5, row: 1 },
+          ext: { width: 90, height: 90 }
+        });
       }
-    }
+    });
 
-    function addNewCourseRow() {
-      const courses = appState.semesters[appState.activeSemester];
-      const newNum = courses.length + 1;
-      const sem = appState.activeSemester;
-      courses.push({
-        code: `SUB${sem}0${newNum}`,
-        nameLao: `ວິຊາໃໝ່ ${newNum}`,
-        nameEng: `New Subject ${newNum}`,
-        credits: 2
-      });
-      renderCourseTable();
-    }
+    // ดาวน์โหลดไฟล์ Excel ทันที
+    const buffer = await workbook.xlsx.writeBuffer();
+    saveAs(new Blob([buffer]), "Calculate.xlsx");
+  }
+</script>
 
-    function deleteCourseRow(index) {
-      const courses = appState.semesters[appState.activeSemester];
-      if (courses.length <= 1) {
-        alert('ຕ້ອງມີຢ່າງໜ້ອຍ 1 ລາຍວິຊາໃນແຕ່ລະພາກຮຽນ');
-        return;
-      }
-      courses.splice(index, 1);
-      renderCourseTable();
-    }
-
-    function escapeHtml(text) {
-      if (!text) return '';
-      return String(text).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/'/g, '&#39;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-    }
-
-    // ==========================================
-    // Student Preview UI
-    // ==========================================
-    function renderStudentPreview() {
-      const tbody = document.getElementById('studentTableBody');
-      tbody.innerHTML = '';
-      appState.students.forEach((s, idx) => {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td style="text-align: center;">${idx + 1}</td>
-          <td><strong>${s.id}</strong></td>
-          <td style="text-align: center;">${s.gender}</td>
-          <td>${s.firstNameLao} ${s.lastNameLao}</td>
-          <td>${s.firstNameEng} ${s.lastNameEng}</td>
-          <td>${s.dob}</td>
-        `;
-        tbody.appendChild(tr);
-      });
-    }
-
-    function toggleStudentPreview() {
-      const container = document.getElementById('studentPreviewContainer');
-      const isHidden = container.style.display === 'none';
-      container.style.display = isHidden ? 'block' : 'none';
-      const btn = document.getElementById('btnToggleStudent');
-      btn.innerHTML = isHidden 
-        ? '<i class="fa-solid fa-eye-slash"></i> ເຊື່ອງຕົວຢ່າງ' 
-        : '<i class="fa-solid fa-eye"></i> ສະແດງຕົວຢ່າງ / ซ่อน';
-    }
-
-    // ==========================================
-    // Excel Generation Engine (ExcelJS)
-    // ==========================================
-    async function generateAndDownloadExcel() {
-      const btn = document.getElementById('btnGenerateExcel');
-      const statusDiv = document.getElementById('exportStatus');
-
-      try {
-        btn.disabled = true;
-        btn.innerHTML = '<i class="fa-solid fa-spinner spin"></i> ກຳລັງສ້າງໄຟລ໌ Excel...';
-        statusDiv.innerHTML = '<span style="color: #60a5fa;"><i class="fa-solid fa-gear spin"></i> ກຳລັງສ້າງ Sheet Sem1-2, CGPA2, ແລະ Transcripts...</span>';
-
-        if (typeof ExcelJS === 'undefined') {
-          throw new Error('ExcelJS library is not loaded. ກະລຸນາກວດສອບການເຊື່ອມຕໍ່ອິນເຕີເນັດ ຫຼື CDN.');
-        }
-
-        const deptLao = document.getElementById('deptLao').value.trim() || 'ພາກວິຊາພາສາຍີ່ປຸ່ນ';
-        const deptEng = document.getElementById('deptEng').value.trim() || 'Department of Japanese Language';
-        const academicYear = document.getElementById('academicYear').value.trim() || '2023-2024';
-        const batchNo = document.getElementById('batchNo').value.trim() || 'ຮຸ່ນທີ 19';
-        const univLao = document.getElementById('univLao').value.trim() || 'ມະຫາວິທະຍາໄລແຫ່ງຊາດ';
-        const facultyLao = document.getElementById('facultyLao').value.trim() || 'ຄະນະອັກສອນສາດ';
-
-        // 1. Create a new Workbook
-        const workbook = new ExcelJS.Workbook();
-        workbook.creator = 'Academic Grading & Transcript System';
-        workbook.lastModifiedBy = 'Academic Office';
-        workbook.created = new Date();
-        workbook.modified = new Date();
-
-        // Register font standard
-        const FONT_NAME = 'Phetsarath OT';
-        const FONT_FALLBACK = 'Tahoma';
-
-        // Add Logo to Workbook if available
-        let logoImageId = null;
-        if (appState.logoBase64) {
-          try {
-            const cleanBase64 = appState.logoBase64.replace(/^data:image\/\w+;base64,/, '');
-            logoImageId = workbook.addImage({
-              base64: cleanBase64,
-              extension: 'jpeg'
-            });
-          } catch (e) {
-            console.warn('Could not add image to workbook:', e);
-          }
-        }
-
-        // ========================================================
-        // LAYER 1: Sheet Sem1-2 (Grade Recording & Formulas)
-        // ========================================================
-        const wsSem = workbook.addWorksheet('Sem1-2', {
-          views: [{ showGridLines: true }]
-        });
-
-        // Setup Header rows
-        wsSem.mergeCells('A1:O1');
-        wsSem.getCell('A1').value = 'ສາທາລະນະລັດ ປະຊາທິປະໄຕ ປະຊາຊົນລາວ';
-        wsSem.getCell('A1').font = { name: FONT_NAME, size: 14, bold: true };
-        wsSem.getCell('A1').alignment = { horizontal: 'center', vertical: 'middle' };
-
-        wsSem.mergeCells('A2:O2');
-        wsSem.getCell('A2').value = 'ສັນຕິພາບ ເອກະລາດ ປະຊາທິປະໄຕ ເອກະພາບ ວັດທະນະຖາວອນ';
-        wsSem.getCell('A2').font = { name: FONT_NAME, size: 11 };
-        wsSem.getCell('A2').alignment = { horizontal: 'center', vertical: 'middle' };
-
-        wsSem.mergeCells('A3:O3');
-        wsSem.getCell('A3').value = `${univLao} - ${facultyLao} - ${deptLao}`;
-        wsSem.getCell('A3').font = { name: FONT_NAME, size: 12, bold: true, color: { argb: 'FF1E3A8A' } };
-        wsSem.getCell('A3').alignment = { horizontal: 'center', vertical: 'middle' };
-
-        wsSem.mergeCells('A4:O4');
-        wsSem.getCell('A4').value = `ຕາຕະລາງບັນທຶກຄະແນນ ແລະ ຕັດເກຣດ (Grade Calculation) ສົກຮຽນ ${academicYear} (${batchNo})`;
-        wsSem.getCell('A4').font = { name: FONT_NAME, size: 11, bold: true };
-        wsSem.getCell('A4').alignment = { horizontal: 'center', vertical: 'middle' };
-
-        // Column Setup for Sheet Sem1-2
-        // A: No, B: ID, C: Gender, D: NameLao, E: SurnameLao, F: NameEng, G: SurnameEng, H: DOB
-        const baseHeaders = [
-          { header: 'ລ/ດ', width: 6 },
-          { header: 'ລະຫັດ', width: 14 },
-          { header: 'ເພດ', width: 8 },
-          { header: 'ຊື່', width: 16 },
-          { header: 'ນາມສະກຸນ', width: 16 },
-          { header: 'First Name', width: 16 },
-          { header: 'Last Name', width: 16 },
-          { header: 'ວ/ດ/ປ ເກີດ', width: 14 }
-        ];
-
-        // Track course columns positions for dynamic formulas
-        const sem1Courses = appState.semesters[1];
-        const sem2Courses = appState.semesters[2];
-        const courseColMap = {}; // key: `sem_code` -> { scoreCol, gpCol, letterCol }
-
-        let currentColIndex = 9; // Starts after H (col 8)
-
-        // Semester 1 Courses (3 columns each: Score, Grade Point, Letter Grade)
-        sem1Courses.forEach(c => {
-          courseColMap[`1_${c.code}`] = {
-            scoreCol: currentColIndex,
-            gpCol: currentColIndex + 1,
-            letterCol: currentColIndex + 2,
-            credits: c.credits,
-            nameLao: c.nameLao,
-            code: c.code
-          };
-          currentColIndex += 3;
-        });
-        const gpaSem1Col = currentColIndex;
-        currentColIndex += 1;
-
-        // Semester 2 Courses
-        sem2Courses.forEach(c => {
-          courseColMap[`2_${c.code}`] = {
-            scoreCol: currentColIndex,
-            gpCol: currentColIndex + 1,
-            letterCol: currentColIndex + 2,
-            credits: c.credits,
-            nameLao: c.nameLao,
-            code: c.code
-          };
-          currentColIndex += 3;
-        });
-        const gpaSem2Col = currentColIndex;
-
-        // Write Row 5 (Course Group Headers) and Row 6 (Sub Headers)
-        // Static columns
-        baseHeaders.forEach((bh, idx) => {
-          const colNum = idx + 1;
-          wsSem.mergeCells(5, colNum, 6, colNum);
-          const cell = wsSem.getCell(5, colNum);
-          cell.value = bh.header;
-          cell.font = { name: FONT_NAME, bold: true, size: 10, color: { argb: 'FFFFFFFF' } };
-          cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF1E3A8A' } };
-          cell.alignment = { horizontal: 'center', vertical: 'middle', wrapText: true };
-          wsSem.getColumn(colNum).width = bh.width;
-        });
-
-        // Style helper for borders
-        const thinBorder = {
-          top: { style: 'thin', color: { argb: 'FFCBD5E1' } },
-          left: { style: 'thin', color: { argb: 'FFCBD5E1' } },
-          bottom: { style: 'thin', color: { argb: 'FFCBD5E1' } },
-          right: { style: 'thin', color: { argb: 'FFCBD5E1' } }
-        };
-
-        // Course group headers for Sem 1
-        sem1Courses.forEach(c => {
-          const info = courseColMap[`1_${c.code}`];
-          wsSem.mergeCells(5, info.scoreCol, 5, info.letterCol);
-          const headCell = wsSem.getCell(5, info.scoreCol);
-          headCell.value = `${c.code}\n${c.nameLao} (${c.credits}cr)`;
-          headCell.font = { name: FONT_NAME, bold: true, size: 9, color: { argb: 'FFFFFFFF' } };
-          headCell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF1E40AF' } };
-          headCell.alignment = { horizontal: 'center', vertical: 'middle', wrapText: true };
-
-          // Sub headers (Row 6)
-          const subHeaders = ['ຄະແນນ', 'ຄ່າລະດັບ', 'ເກຣດ'];
-          [info.scoreCol, info.gpCol, info.letterCol].forEach((col, sIdx) => {
-            const sc = wsSem.getCell(6, col);
-            sc.value = subHeaders[sIdx];
-            sc.font = { name: FONT_NAME, bold: true, size: 9 };
-            sc.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFDBEAFE' } };
-            sc.alignment = { horizontal: 'center', vertical: 'middle' };
-            wsSem.getColumn(col).width = (sIdx === 0) ? 9 : 8;
-          });
-        });
-
-        // Sem 1 GPA Header
-        wsSem.mergeCells(5, gpaSem1Col, 6, gpaSem1Col);
-        const gpa1Head = wsSem.getCell(5, gpaSem1Col);
-        gpa1Head.value = 'GPA\nພາກ 1';
-        gpa1Head.font = { name: FONT_NAME, bold: true, size: 10, color: { argb: 'FFFFFFFF' } };
-        gpa1Head.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF0D9488' } };
-        gpa1Head.alignment = { horizontal: 'center', vertical: 'middle', wrapText: true };
-        wsSem.getColumn(gpaSem1Col).width = 10;
-
-        // Course group headers for Sem 2
-        sem2Courses.forEach(c => {
-          const info = courseColMap[`2_${c.code}`];
-          wsSem.mergeCells(5, info.scoreCol, 5, info.letterCol);
-          const headCell = wsSem.getCell(5, info.scoreCol);
-          headCell.value = `${c.code}\n${c.nameLao} (${c.credits}cr)`;
-          headCell.font = { name: FONT_NAME, bold: true, size: 9, color: { argb: 'FFFFFFFF' } };
-          headCell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF1E3A8A' } };
-          headCell.alignment = { horizontal: 'center', vertical: 'middle', wrapText: true };
-
-          // Sub headers (Row 6)
-          const subHeaders = ['ຄະແນນ', 'ຄ່າລະດັບ', 'ເກຣດ'];
-          [info.scoreCol, info.gpCol, info.letterCol].forEach((col, sIdx) => {
-            const sc = wsSem.getCell(6, col);
-            sc.value = subHeaders[sIdx];
-            sc.font = { name: FONT_NAME, bold: true, size: 9 };
-            sc.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFEDE9FE' } };
-            sc.alignment = { horizontal: 'center', vertical: 'middle' };
-            wsSem.getColumn(col).width = (sIdx === 0) ? 9 : 8;
-          });
-        });
-
-        // Sem 2 GPA Header
-        wsSem.mergeCells(5, gpaSem2Col, 6, gpaSem2Col);
-        const gpa2Head = wsSem.getCell(5, gpaSem2Col);
-        gpa2Head.value = 'GPA\nພາກ 2';
-        gpa2Head.font = { name: FONT_NAME, bold: true, size: 10, color: { argb: 'FFFFFFFF' } };
-        gpa2Head.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF0D9488' } };
-        gpa2Head.alignment = { horizontal: 'center', vertical: 'middle', wrapText: true };
-        wsSem.getColumn(gpaSem2Col).width = 10;
-
-        wsSem.getRow(5).height = 28;
-        wsSem.getRow(6).height = 24;
-
-        // Populate Student Rows 7 to 37 (31 Students)
-        appState.students.forEach((student, sIdx) => {
-          const rowNum = 7 + sIdx;
-          const row = wsSem.getRow(rowNum);
-          row.height = 22;
-
-          // A: Index
-          row.getCell(1).value = sIdx + 1;
-          row.getCell(1).alignment = { horizontal: 'center' };
-          // B: Student ID
-          row.getCell(2).value = student.id;
-          row.getCell(2).alignment = { horizontal: 'center' };
-          row.getCell(2).font = { bold: true };
-          // C: Gender
-          row.getCell(3).value = student.gender;
-          row.getCell(3).alignment = { horizontal: 'center' };
-          // D: Lao Name
-          row.getCell(4).value = student.firstNameLao;
-          // E: Lao Surname
-          row.getCell(5).value = student.lastNameLao;
-          // F: Eng Name
-          row.getCell(6).value = student.firstNameEng;
-          // G: Eng Surname
-          row.getCell(7).value = student.lastNameEng;
-          // H: DOB
-          row.getCell(8).value = student.dob;
-          row.getCell(8).alignment = { horizontal: 'center' };
-
-          // Sem 1 Course Scores & Exact Formulas
-          let totalCred1 = 0;
-          let sem1NumeratorParts = [];
-
-          sem1Courses.forEach(c => {
-            const info = courseColMap[`1_${c.code}`];
-            const rawScore = (appState.studentScores[student.id] && appState.studentScores[student.id][1][c.code]) || 75;
-            const scoreColLet = colToLetter(info.scoreCol);
-            const gpColLet = colToLetter(info.gpCol);
-            const scoreCellRef = `${scoreColLet}${rowNum}`;
-            const gpCellRef = `${gpColLet}${rowNum}`;
-
-            totalCred1 += c.credits;
-            sem1NumeratorParts.push(`(${gpCellRef}*${c.credits})`);
-
-            // 1. Raw Score Cell (number)
-            const cScore = row.getCell(info.scoreCol);
-            cScore.value = rawScore;
-            cScore.alignment = { horizontal: 'right' };
-            cScore.numFmt = '0.00';
-
-            // 2. Grade Point Cell (Formula)
-            // =IF([Cell]>90,"4.00",IF([Cell]>80,"3.50",IF([Cell]>69,"3.00",IF([Cell]>64,"2.50",IF([Cell]>59,"2.00",IF([Cell]>54,"1.50",IF([Cell]>49,"1.00","0.00")))))))
-            const cGP = row.getCell(info.gpCol);
-            cGP.value = {
-              formula: `IF(${scoreCellRef}>90,"4.00",IF(${scoreCellRef}>80,"3.50",IF(${scoreCellRef}>69,"3.00",IF(${scoreCellRef}>64,"2.50",IF(${scoreCellRef}>59,"2.00",IF(${scoreCellRef}>54,"1.50",IF(${scoreCellRef}>49,"1.00","0.00")))))))`,
-              result: calculateGradePoint(rawScore)
-            };
-            cGP.alignment = { horizontal: 'center' };
-            cGP.numFmt = '0.00';
-
-            // 3. Letter Grade Cell (Formula)
-            // =IF([Cell]>=91,"A",IF([Cell]>=81,"B+",IF([Cell]>=70,"B",IF([Cell]>=65,"C+",IF([Cell]>=60,"C",IF([Cell]>=55,"D+",IF([Cell]>=50,"D",IF([Cell]>=0,"F"))))))))
-            const cLetter = row.getCell(info.letterCol);
-            cLetter.value = {
-              formula: `IF(${scoreCellRef}>=91,"A",IF(${scoreCellRef}>=81,"B+",IF(${scoreCellRef}>=70,"B",IF(${scoreCellRef}>=65,"C+",IF(${scoreCellRef}>=60,"C",IF(${scoreCellRef}>=55,"D+",IF(${scoreCellRef}>=50,"D",IF(${scoreCellRef}>=0,"F"))))))))`,
-              result: calculateLetterGrade(rawScore)
-            };
-            cLetter.alignment = { horizontal: 'center' };
-            cLetter.font = { bold: true };
-          });
-
-          // Sem 1 GPA Formula: =(GP1*cr1 + GP2*cr2 + ...)/totalCred
-          const cGpa1 = row.getCell(gpaSem1Col);
-          const sem1GpaFormula = `ROUND((${sem1NumeratorParts.join('+')})/${totalCred1}, 2)`;
-          cGpa1.value = {
-            formula: sem1GpaFormula,
-            result: calculateStudentSemGpa(student.id, 1)
-          };
-          cGpa1.alignment = { horizontal: 'center' };
-          cGpa1.font = { bold: true, color: { argb: 'FF0F766E' } };
-          cGpa1.numFmt = '0.00';
-
-          // Sem 2 Course Scores & Exact Formulas
-          let totalCred2 = 0;
-          let sem2NumeratorParts = [];
-
-          sem2Courses.forEach(c => {
-            const info = courseColMap[`2_${c.code}`];
-            const rawScore = (appState.studentScores[student.id] && appState.studentScores[student.id][2][c.code]) || 78;
-            const scoreColLet = colToLetter(info.scoreCol);
-            const gpColLet = colToLetter(info.gpCol);
-            const scoreCellRef = `${scoreColLet}${rowNum}`;
-            const gpCellRef = `${gpColLet}${rowNum}`;
-
-            totalCred2 += c.credits;
-            sem2NumeratorParts.push(`(${gpCellRef}*${c.credits})`);
-
-            // Raw Score
-            const cScore = row.getCell(info.scoreCol);
-            cScore.value = rawScore;
-            cScore.alignment = { horizontal: 'right' };
-            cScore.numFmt = '0.00';
-
-            // Grade Point
-            const cGP = row.getCell(info.gpCol);
-            cGP.value = {
-              formula: `IF(${scoreCellRef}>90,"4.00",IF(${scoreCellRef}>80,"3.50",IF(${scoreCellRef}>69,"3.00",IF(${scoreCellRef}>64,"2.50",IF(${scoreCellRef}>59,"2.00",IF(${scoreCellRef}>54,"1.50",IF(${scoreCellRef}>49,"1.00","0.00")))))))`,
-              result: calculateGradePoint(rawScore)
-            };
-            cGP.alignment = { horizontal: 'center' };
-            cGP.numFmt = '0.00';
-
-            // Letter Grade
-            const cLetter = row.getCell(info.letterCol);
-            cLetter.value = {
-              formula: `IF(${scoreCellRef}>=91,"A",IF(${scoreCellRef}>=81,"B+",IF(${scoreCellRef}>=70,"B",IF(${scoreCellRef}>=65,"C+",IF(${scoreCellRef}>=60,"C",IF(${scoreCellRef}>=55,"D+",IF(${scoreCellRef}>=50,"D",IF(${scoreCellRef}>=0,"F"))))))))`,
-              result: calculateLetterGrade(rawScore)
-            };
-            cLetter.alignment = { horizontal: 'center' };
-            cLetter.font = { bold: true };
-          });
-
-          // Sem 2 GPA Formula
-          const cGpa2 = row.getCell(gpaSem2Col);
-          const sem2GpaFormula = `ROUND((${sem2NumeratorParts.join('+')})/${totalCred2}, 2)`;
-          cGpa2.value = {
-            formula: sem2GpaFormula,
-            result: calculateStudentSemGpa(student.id, 2)
-          };
-          cGpa2.alignment = { horizontal: 'center' };
-          cGpa2.font = { bold: true, color: { argb: 'FF0F766E' } };
-          cGpa2.numFmt = '0.00';
-
-          // Apply standard font & thin borders across the row
-          for (let col = 1; col <= gpaSem2Col; col++) {
-            const cell = row.getCell(col);
-            cell.font = Object.assign({ name: FONT_NAME, size: 10 }, cell.font || {});
-            cell.border = thinBorder;
-          }
-        });
-
-        // ========================================================
-        // LAYER 2: Sheet CGPA2 (Cumulative GPA Calculation)
-        // ========================================================
-        const wsCGPA = workbook.addWorksheet('CGPA2', {
-          views: [{ showGridLines: true }]
-        });
-
-        // Header Rows for CGPA2
-        wsCGPA.mergeCells('A1:I1');
-        wsCGPA.getCell('A1').value = 'ໃບສະຫຼຸບຄະແນນສະສົມ ແລະ ຕັດເກຣດ (Cumulative GPA Summary)';
-        wsCGPA.getCell('A1').font = { name: FONT_NAME, size: 14, bold: true, color: { argb: 'FF1E3A8A' } };
-        wsCGPA.getCell('A1').alignment = { horizontal: 'center', vertical: 'middle' };
-
-        wsCGPA.mergeCells('A2:I2');
-        wsCGPA.getCell('A2').value = `${univLao} - ${facultyLao} - ${deptLao} | ສົກຮຽນ: ${academicYear} (${batchNo})`;
-        wsCGPA.getCell('A2').font = { name: FONT_NAME, size: 11 };
-        wsCGPA.getCell('A2').alignment = { horizontal: 'center', vertical: 'middle' };
-
-        // Column Setup for CGPA2
-        const cgpaHeaders = [
-          { header: 'ລ/ດ', width: 6 },
-          { header: 'ລະຫັດນັກສຶກສາ', width: 15 },
-          { header: 'ເພດ', width: 8 },
-          { header: 'ຊື່ ແລະ ນາມສະກຸນ (ລາວ)', width: 26 },
-          { header: 'Full Name (Eng)', width: 26 },
-          { header: 'ວ/ດ/ປ ເກີດ', width: 14 },
-          { header: 'GPA ພາກ 1', width: 14 },
-          { header: 'GPA ພາກ 2', width: 14 },
-          { header: 'CGPA ສະສົມ', width: 16 }
-        ];
-
-        wsCGPA.getRow(4).height = 26;
-        cgpaHeaders.forEach((h, idx) => {
-          const colNum = idx + 1;
-          const cell = wsCGPA.getCell(4, colNum);
-          cell.value = h.header;
-          cell.font = { name: FONT_NAME, bold: true, size: 10, color: { argb: 'FFFFFFFF' } };
-          cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF0D9488' } };
-          cell.alignment = { horizontal: 'center', vertical: 'middle' };
-          cell.border = thinBorder;
-          wsCGPA.getColumn(colNum).width = h.width;
-        });
-
-        // Rows 5 to 35 in CGPA2 linking dynamically from Sheet 'Sem1-2'
-        const gpa1ColLet = colToLetter(gpaSem1Col);
-        const gpa2ColLet = colToLetter(gpaSem2Col);
-
-        appState.students.forEach((student, sIdx) => {
-          const semRow = 7 + sIdx;
-          const cgpaRow = 5 + sIdx;
-          const row = wsCGPA.getRow(cgpaRow);
-          row.height = 22;
-
-          // A: No
-          row.getCell(1).value = sIdx + 1;
-          row.getCell(1).alignment = { horizontal: 'center' };
-
-          // B: Student ID linked with formula: ='Sem1-2'!B7
-          row.getCell(2).value = {
-            formula: `'Sem1-2'!B${semRow}`,
-            result: student.id
-          };
-          row.getCell(2).alignment = { horizontal: 'center' };
-          row.getCell(2).font = { bold: true };
-
-          // C: Gender: ='Sem1-2'!C7
-          row.getCell(3).value = {
-            formula: `'Sem1-2'!C${semRow}`,
-            result: student.gender
-          };
-          row.getCell(3).alignment = { horizontal: 'center' };
-
-          // D: Full Name Lao: ='Sem1-2'!D7&" "&'Sem1-2'!E7
-          row.getCell(4).value = {
-            formula: `'Sem1-2'!D${semRow}&" "&'Sem1-2'!E${semRow}`,
-            result: `${student.firstNameLao} ${student.lastNameLao}`
-          };
-
-          // E: Full Name Eng: ='Sem1-2'!F7&" "&'Sem1-2'!G7
-          row.getCell(5).value = {
-            formula: `'Sem1-2'!F${semRow}&" "&'Sem1-2'!G${semRow}`,
-            result: `${student.firstNameEng} ${student.lastNameEng}`
-          };
-
-          // F: DOB: ='Sem1-2'!H7
-          row.getCell(6).value = {
-            formula: `'Sem1-2'!H${semRow}`,
-            result: student.dob
-          };
-          row.getCell(6).alignment = { horizontal: 'center' };
-
-          // G: GPA Sem 1: ='Sem1-2'!ColLetter7
-          row.getCell(7).value = {
-            formula: `'Sem1-2'!${gpa1ColLet}${semRow}`,
-            result: calculateStudentSemGpa(student.id, 1)
-          };
-          row.getCell(7).alignment = { horizontal: 'center' };
-          row.getCell(7).numFmt = '0.00';
-
-          // H: GPA Sem 2: ='Sem1-2'!ColLetter7
-          row.getCell(8).value = {
-            formula: `'Sem1-2'!${gpa2ColLet}${semRow}`,
-            result: calculateStudentSemGpa(student.id, 2)
-          };
-          row.getCell(8).alignment = { horizontal: 'center' };
-          row.getCell(8).numFmt = '0.00';
-
-          // I: CGPA formula: =(G5+H5)/2
-          const gCell = `G${cgpaRow}`;
-          const hCell = `H${cgpaRow}`;
-          const sem1G = parseFloat(calculateStudentSemGpa(student.id, 1));
-          const sem2G = parseFloat(calculateStudentSemGpa(student.id, 2));
-          const cgpaRes = ((sem1G + sem2G) / 2).toFixed(2);
-
-          row.getCell(9).value = {
-            formula: `ROUND((${gCell}+${hCell})/2, 2)`,
-            result: cgpaRes
-          };
-          row.getCell(9).alignment = { horizontal: 'center' };
-          row.getCell(9).font = { bold: true, color: { argb: 'FFB45309' } };
-          row.getCell(9).numFmt = '0.00';
-
-          // Formatting
-          for (let col = 1; col <= 9; col++) {
-            const cell = row.getCell(col);
-            cell.font = Object.assign({ name: FONT_NAME, size: 10 }, cell.font || {});
-            cell.border = thinBorder;
-          }
-        });
-
-        // ========================================================
-        // LAYER 3: Sheet Lao_transcript (Official Lao Transcript)
-        // ========================================================
-        const wsLao = workbook.addWorksheet('Lao_transcript', {
-          views: [{ showGridLines: true }],
-          pageSetup: {
-            paperSize: 9, // A4
-            orientation: 'portrait',
-            fitToWidth: 1,
-            fitToHeight: 0
-          }
-        });
-
-        // Set Column Widths for Transcript
-        wsLao.getColumn(1).width = 6;   // A: No
-        wsLao.getColumn(2).width = 14;  // B: Code
-        wsLao.getColumn(3).width = 30;  // C: Name
-        wsLao.getColumn(4).width = 11;  // D: Credits
-        wsLao.getColumn(5).width = 11;  // E: Score
-        wsLao.getColumn(6).width = 11;  // F: Grade Point
-        wsLao.getColumn(7).width = 11;  // G: Letter Grade
-
-        // Embed Logo in Lao Transcript Header
-        if (logoImageId !== null) {
-          wsLao.addImage(logoImageId, {
-            tl: { col: 0.2, row: 0.8 },
-            ext: { width: 75, height: 75 }
-          });
-        }
-
-        // Header Text for Lao Transcript
-        wsLao.mergeCells('B1:G1');
-        wsLao.getCell('B1').value = 'ສາທາລະນະລັດ ປະຊາທິປະໄຕ ປະຊາຊົນລາວ';
-        wsLao.getCell('B1').font = { name: FONT_NAME, size: 13, bold: true };
-        wsLao.getCell('B1').alignment = { horizontal: 'center', vertical: 'middle' };
-
-        wsLao.mergeCells('B2:G2');
-        wsLao.getCell('B2').value = 'ສັນຕິພາບ ເອກະລາດ ປະຊາທິປະໄຕ ເອກະພາບ ວັດທະນະຖາວອນ';
-        wsLao.getCell('B2').font = { name: FONT_NAME, size: 10 };
-        wsLao.getCell('B2').alignment = { horizontal: 'center', vertical: 'middle' };
-
-        wsLao.mergeCells('B3:G3');
-        wsLao.getCell('B3').value = '---------------- *** ----------------';
-        wsLao.getCell('B3').font = { name: FONT_NAME, size: 10 };
-        wsLao.getCell('B3').alignment = { horizontal: 'center', vertical: 'middle' };
-
-        wsLao.mergeCells('B4:G4');
-        wsLao.getCell('B4').value = `${univLao} - ${facultyLao}`;
-        wsLao.getCell('B4').font = { name: FONT_NAME, size: 11, bold: true };
-        wsLao.getCell('B4').alignment = { horizontal: 'center', vertical: 'middle' };
-
-        wsLao.mergeCells('B5:G5');
-        wsLao.getCell('B5').value = `${deptLao}`;
-        wsLao.getCell('B5').font = { name: FONT_NAME, size: 11, bold: true, color: { argb: 'FF1E3A8A' } };
-        wsLao.getCell('B5').alignment = { horizontal: 'center', vertical: 'middle' };
-
-        wsLao.mergeCells('A7:G7');
-        wsLao.getCell('A7').value = 'ໃບຢັ້ງຢືນຜົນການຮຽນ (OFFICIAL TRANSCRIPT)';
-        wsLao.getCell('A7').font = { name: FONT_NAME, size: 14, bold: true, color: { argb: 'FF1E3A8A' } };
-        wsLao.getCell('A7').alignment = { horizontal: 'center', vertical: 'middle' };
-        wsLao.getCell('A7').fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFF1F5F9' } };
-        wsLao.getRow(7).height = 28;
-
-        // Student Info Block (Rows 9-13)
-        // Specific requirement: Cell F12 is the lookup target cell
-        // We set up labels and VLOOKUP references
-        const lookupRange = `'Sem1-2'!$B$7:$ZZ$100`;
-
-        // Row 9: Student ID Input Box (F12 as per specification)
-        // Let's place the ID Input prominently at row 9 or exactly at F12:
-        // The user explicitly stated: "มีช่องสำหรับกรอกรหัสนักศึกษาที่เซลล์ F12"
-        // Let's place Student ID input at Cell F12!
-        
-        // Row 9: Name Lao
-        wsLao.getCell('B9').value = 'ຊື່ ແລະ ນາມສະກຸນ:';
-        wsLao.getCell('B9').font = { name: FONT_NAME, bold: true };
-        wsLao.mergeCells('C9:D9');
-        wsLao.getCell('C9').value = {
-          formula: `IFERROR(VLOOKUP($F$12, ${lookupRange}, 3, FALSE)&" "&VLOOKUP($F$12, ${lookupRange}, 4, FALSE), "")`,
-          result: `${appState.students[0].firstNameLao} ${appState.students[0].lastNameLao}`
-        };
-        wsLao.getCell('C9').font = { name: FONT_NAME, bold: true, size: 11 };
-
-        wsLao.getCell('E9').value = 'ເພດ (Gender):';
-        wsLao.getCell('E9').font = { name: FONT_NAME, bold: true };
-        wsLao.getCell('F9').value = {
-          formula: `IFERROR(VLOOKUP($F$12, ${lookupRange}, 2, FALSE), "")`,
-          result: appState.students[0].gender
-        };
-        wsLao.getCell('F9').alignment = { horizontal: 'center' };
-
-        // Row 10: Name Eng
-        wsLao.getCell('B10').value = 'Full Name (Eng):';
-        wsLao.getCell('B10').font = { name: FONT_NAME, bold: true };
-        wsLao.mergeCells('C10:D10');
-        wsLao.getCell('C10').value = {
-          formula: `IFERROR(VLOOKUP($F$12, ${lookupRange}, 5, FALSE)&" "&VLOOKUP($F$12, ${lookupRange}, 6, FALSE), "")`,
-          result: `${appState.students[0].firstNameEng} ${appState.students[0].lastNameEng}`
-        };
-
-        wsLao.getCell('E10').value = 'ວ/ດ/ປ ເກີດ (DOB):';
-        wsLao.getCell('E10').font = { name: FONT_NAME, bold: true };
-        wsLao.getCell('F10').value = {
-          formula: `IFERROR(VLOOKUP($F$12, ${lookupRange}, 7, FALSE), "")`,
-          result: appState.students[0].dob
-        };
-        wsLao.getCell('F10').alignment = { horizontal: 'center' };
-
-        // Row 11: Department & Batch
-        wsLao.getCell('B11').value = 'ພາກວິຊາ / ສາຂາ:';
-        wsLao.getCell('B11').font = { name: FONT_NAME, bold: true };
-        wsLao.mergeCells('C11:D11');
-        wsLao.getCell('C11').value = deptLao;
-
-        wsLao.getCell('E11').value = 'ສົກຮຽນ / ຮຸ່ນ:';
-        wsLao.getCell('E11').font = { name: FONT_NAME, bold: true };
-        wsLao.getCell('F11').value = `${academicYear} (${batchNo})`;
-
-        // Row 12: SPECIFIC REQUIREMENT -> F12 is the Student ID Input Cell
-        wsLao.mergeCells('B12:E12');
-        const f12Label = wsLao.getCell('B12');
-        f12Label.value = '👉 ລະຫັດນັກສຶກສາ (ປ້ອນລະຫັດທີ່ຫ້ອງສີເຫຼືອງ F12 ເພື່ອດຶງຂໍ້ມູນອັດຕະໂນມັດ):';
-        f12Label.font = { name: FONT_NAME, bold: true, color: { argb: 'FFB45309' } };
-        f12Label.alignment = { horizontal: 'right', vertical: 'middle' };
-
-        const f12Cell = wsLao.getCell('F12');
-        f12Cell.value = 'B2023001'; // Default student ID
-        f12Cell.font = { name: FONT_NAME, bold: true, size: 12, color: { argb: 'FF1E3A8A' } };
-        f12Cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFEF08A' } }; // Soft Yellow
-        f12Cell.border = {
-          top: { style: 'medium', color: { argb: 'FFD97706' } },
-          bottom: { style: 'medium', color: { argb: 'FFD97706' } },
-          left: { style: 'medium', color: { argb: 'FFD97706' } },
-          right: { style: 'medium', color: { argb: 'FFD97706' } }
-        };
-        f12Cell.alignment = { horizontal: 'center', vertical: 'middle' };
-        wsLao.getRow(12).height = 26;
-
-        // Table Headers (Row 14)
-        const tHeaders = ['ລ/ດ', 'ລະຫັດວິຊາ', 'ຊື່ລາຍວິຊາ', 'ໜ່ວຍກິດ', 'ຄະແນນ', 'ຄ່າລະດັບ', 'ເກຣດ'];
-        wsLao.getRow(14).height = 24;
-        tHeaders.forEach((th, idx) => {
-          const colNum = idx + 1;
-          const cell = wsLao.getCell(14, colNum);
-          cell.value = th;
-          cell.font = { name: FONT_NAME, bold: true, size: 10, color: { argb: 'FFFFFFFF' } };
-          cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF1E3A8A' } };
-          cell.alignment = { horizontal: 'center', vertical: 'middle' };
-          cell.border = thinBorder;
-        });
-
-        // Semester 1 Section Header
-        let curTCellRow = 15;
-        wsLao.mergeCells(curTCellRow, 1, curTCellRow, 7);
-        const s1Title = wsLao.getCell(curTCellRow, 1);
-        s1Title.value = 'ພາກຮຽນທີ 1 (Semester 1)';
-        s1Title.font = { name: FONT_NAME, bold: true, size: 10, color: { argb: 'FF1E3A8A' } };
-        s1Title.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFDBEAFE' } };
-        s1Title.alignment = { horizontal: 'left', vertical: 'middle', indent: 1 };
-        s1Title.border = thinBorder;
-        wsLao.getRow(curTCellRow).height = 20;
-
-        // Semester 1 Course Rows with VLOOKUP
-        const sem1StartRow = curTCellRow + 1;
-        sem1Courses.forEach((c, cIdx) => {
-          curTCellRow++;
-          const row = wsLao.getRow(curTCellRow);
-          row.height = 20;
-
-          // A: No
-          row.getCell(1).value = cIdx + 1;
-          row.getCell(1).alignment = { horizontal: 'center' };
-
-          // B: Code
-          row.getCell(2).value = c.code;
-          row.getCell(2).alignment = { horizontal: 'center' };
-          row.getCell(2).font = { bold: true };
-
-          // C: Name Lao
-          row.getCell(3).value = c.nameLao;
-
-          // D: Credits
-          row.getCell(4).value = c.credits;
-          row.getCell(4).alignment = { horizontal: 'center' };
-
-          // E: Score -> Dynamic VLOOKUP from Sem1-2!
-          // Note: In Sem1-2, col 2 is ID (Column B).
-          // Score col index relative to Col B = info.scoreCol - 2 + 1 = info.scoreCol - 1
-          const info = courseColMap[`1_${c.code}`];
-          const vlookupColIdx = info.scoreCol - 1; // 1-based index relative to Col B
-
-          row.getCell(5).value = {
-            formula: `IFERROR(VLOOKUP($F$12, ${lookupRange}, ${vlookupColIdx}, FALSE), 0)`,
-            result: appState.studentScores['B2023001'][1][c.code] || 80
-          };
-          row.getCell(5).alignment = { horizontal: 'right' };
-          row.getCell(5).numFmt = '0.00';
-
-          // F: Grade Point -> Formula referencing Col E
-          // =IF([Cell]>90,"4.00",IF([Cell]>80,"3.50",IF([Cell]>69,"3.00",IF([Cell]>64,"2.50",IF([Cell]>59,"2.00",IF([Cell]>54,"1.50",IF([Cell]>49,"1.00","0.00")))))))
-          const scoreCell = `E${curTCellRow}`;
-          row.getCell(6).value = {
-            formula: `IF(${scoreCell}>90,"4.00",IF(${scoreCell}>80,"3.50",IF(${scoreCell}>69,"3.00",IF(${scoreCell}>64,"2.50",IF(${scoreCell}>59,"2.00",IF(${scoreCell}>54,"1.50",IF(${scoreCell}>49,"1.00","0.00")))))))`,
-            result: calculateGradePoint(appState.studentScores['B2023001'][1][c.code] || 80)
-          };
-          row.getCell(6).alignment = { horizontal: 'center' };
-          row.getCell(6).numFmt = '0.00';
-
-          // G: Letter Grade -> Formula referencing Col E
-          row.getCell(7).value = {
-            formula: `IF(${scoreCell}>=91,"A",IF(${scoreCell}>=81,"B+",IF(${scoreCell}>=70,"B",IF(${scoreCell}>=65,"C+",IF(${scoreCell}>=60,"C",IF(${scoreCell}>=55,"D+",IF(${scoreCell}>=50,"D",IF(${scoreCell}>=0,"F"))))))))`,
-            result: calculateLetterGrade(appState.studentScores['B2023001'][1][c.code] || 80)
-          };
-          row.getCell(7).alignment = { horizontal: 'center' };
-          row.getCell(7).font = { bold: true };
-
-          for (let col = 1; col <= 7; col++) {
-            row.getCell(col).border = thinBorder;
-            row.getCell(col).font = Object.assign({ name: FONT_NAME, size: 9.5 }, row.getCell(col).font || {});
-          }
-        });
-        const sem1EndRow = curTCellRow;
-
-        // Sem 1 Summary Row
-        curTCellRow++;
-        const s1SummaryRow = curTCellRow;
-        wsLao.mergeCells(s1SummaryRow, 1, s1SummaryRow, 3);
-        wsLao.getCell(s1SummaryRow, 1).value = 'ລວມໜ່ວຍກິດ & ຄະແນນສະເລ່ຍ ພາກຮຽນ 1 (GPA Sem 1):';
-        wsLao.getCell(s1SummaryRow, 1).font = { name: FONT_NAME, bold: true, size: 9.5 };
-        wsLao.getCell(s1SummaryRow, 1).alignment = { horizontal: 'right' };
-        wsLao.getCell(s1SummaryRow, 1).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFF8FAFC' } };
-
-        // Total Credits Sem 1
-        wsLao.getCell(s1SummaryRow, 4).value = {
-          formula: `SUM(D${sem1StartRow}:D${sem1EndRow})`,
-          result: sem1Courses.reduce((sum, c) => sum + c.credits, 0)
-        };
-        wsLao.getCell(s1SummaryRow, 4).alignment = { horizontal: 'center' };
-        wsLao.getCell(s1SummaryRow, 4).font = { bold: true };
-
-        // GPA Sem 1 (VLOOKUP from Sem1-2 GPA col)
-        wsLao.mergeCells(s1SummaryRow, 5, s1SummaryRow, 7);
-        const gpaSem1VlookupCol = gpaSem1Col - 1;
-        wsLao.getCell(s1SummaryRow, 5).value = {
-          formula: `IFERROR(VLOOKUP($F$12, ${lookupRange}, ${gpaSem1VlookupCol}, FALSE), 0)`,
-          result: calculateStudentSemGpa('B2023001', 1)
-        };
-        wsLao.getCell(s1SummaryRow, 5).alignment = { horizontal: 'center' };
-        wsLao.getCell(s1SummaryRow, 5).font = { bold: true, color: { argb: 'FF0D9488' } };
-        wsLao.getCell(s1SummaryRow, 5).numFmt = '0.00';
-
-        for (let col = 1; col <= 7; col++) {
-          wsLao.getCell(s1SummaryRow, col).border = thinBorder;
-        }
-
-        // Semester 2 Section Header
-        curTCellRow++;
-        wsLao.mergeCells(curTCellRow, 1, curTCellRow, 7);
-        const s2Title = wsLao.getCell(curTCellRow, 1);
-        s2Title.value = 'ພາກຮຽນທີ 2 (Semester 2)';
-        s2Title.font = { name: FONT_NAME, bold: true, size: 10, color: { argb: 'FF1E3A8A' } };
-        s2Title.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFEDE9FE' } };
-        s2Title.alignment = { horizontal: 'left', vertical: 'middle', indent: 1 };
-        s2Title.border = thinBorder;
-        wsLao.getRow(curTCellRow).height = 20;
-
-        // Semester 2 Course Rows
-        const sem2StartRow = curTCellRow + 1;
-        sem2Courses.forEach((c, cIdx) => {
-          curTCellRow++;
-          const row = wsLao.getRow(curTCellRow);
-          row.height = 20;
-
-          // A: No
-          row.getCell(1).value = cIdx + 1;
-          row.getCell(1).alignment = { horizontal: 'center' };
-
-          // B: Code
-          row.getCell(2).value = c.code;
-          row.getCell(2).alignment = { horizontal: 'center' };
-          row.getCell(2).font = { bold: true };
-
-          // C: Name Lao
-          row.getCell(3).value = c.nameLao;
-
-          // D: Credits
-          row.getCell(4).value = c.credits;
-          row.getCell(4).alignment = { horizontal: 'center' };
-
-          // E: Score -> VLOOKUP
-          const info = courseColMap[`2_${c.code}`];
-          const vlookupColIdx = info.scoreCol - 1;
-
-          row.getCell(5).value = {
-            formula: `IFERROR(VLOOKUP($F$12, ${lookupRange}, ${vlookupColIdx}, FALSE), 0)`,
-            result: appState.studentScores['B2023001'][2][c.code] || 82
-          };
-          row.getCell(5).alignment = { horizontal: 'right' };
-          row.getCell(5).numFmt = '0.00';
-
-          // F: Grade Point
-          const scoreCell = `E${curTCellRow}`;
-          row.getCell(6).value = {
-            formula: `IF(${scoreCell}>90,"4.00",IF(${scoreCell}>80,"3.50",IF(${scoreCell}>69,"3.00",IF(${scoreCell}>64,"2.50",IF(${scoreCell}>59,"2.00",IF(${scoreCell}>54,"1.50",IF(${scoreCell}>49,"1.00","0.00")))))))`,
-            result: calculateGradePoint(appState.studentScores['B2023001'][2][c.code] || 82)
-          };
-          row.getCell(6).alignment = { horizontal: 'center' };
-          row.getCell(6).numFmt = '0.00';
-
-          // G: Letter Grade
-          row.getCell(7).value = {
-            formula: `IF(${scoreCell}>=91,"A",IF(${scoreCell}>=81,"B+",IF(${scoreCell}>=70,"B",IF(${scoreCell}>=65,"C+",IF(${scoreCell}>=60,"C",IF(${scoreCell}>=55,"D+",IF(${scoreCell}>=50,"D",IF(${scoreCell}>=0,"F"))))))))`,
-            result: calculateLetterGrade(appState.studentScores['B2023001'][2][c.code] || 82)
-          };
-          row.getCell(7).alignment = { horizontal: 'center' };
-          row.getCell(7).font = { bold: true };
-
-          for (let col = 1; col <= 7; col++) {
-            row.getCell(col).border = thinBorder;
-            row.getCell(col).font = Object.assign({ name: FONT_NAME, size: 9.5 }, row.getCell(col).font || {});
-          }
-        });
-        const sem2EndRow = curTCellRow;
-
-        // Sem 2 Summary Row
-        curTCellRow++;
-        const s2SummaryRow = curTCellRow;
-        wsLao.mergeCells(s2SummaryRow, 1, s2SummaryRow, 3);
-        wsLao.getCell(s2SummaryRow, 1).value = 'ລວມໜ່ວຍກິດ & ຄະແນນສະເລ່ຍ ພາກຮຽນ 2 (GPA Sem 2):';
-        wsLao.getCell(s2SummaryRow, 1).font = { name: FONT_NAME, bold: true, size: 9.5 };
-        wsLao.getCell(s2SummaryRow, 1).alignment = { horizontal: 'right' };
-        wsLao.getCell(s2SummaryRow, 1).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFF8FAFC' } };
-
-        // Total Credits Sem 2
-        wsLao.getCell(s2SummaryRow, 4).value = {
-          formula: `SUM(D${sem2StartRow}:D${sem2EndRow})`,
-          result: sem2Courses.reduce((sum, c) => sum + c.credits, 0)
-        };
-        wsLao.getCell(s2SummaryRow, 4).alignment = { horizontal: 'center' };
-        wsLao.getCell(s2SummaryRow, 4).font = { bold: true };
-
-        // GPA Sem 2
-        wsLao.mergeCells(s2SummaryRow, 5, s2SummaryRow, 7);
-        const gpaSem2VlookupCol = gpaSem2Col - 1;
-        wsLao.getCell(s2SummaryRow, 5).value = {
-          formula: `IFERROR(VLOOKUP($F$12, ${lookupRange}, ${gpaSem2VlookupCol}, FALSE), 0)`,
-          result: calculateStudentSemGpa('B2023001', 2)
-        };
-        wsLao.getCell(s2SummaryRow, 5).alignment = { horizontal: 'center' };
-        wsLao.getCell(s2SummaryRow, 5).font = { bold: true, color: { argb: 'FF0D9488' } };
-        wsLao.getCell(s2SummaryRow, 5).numFmt = '0.00';
-
-        for (let col = 1; col <= 7; col++) {
-          wsLao.getCell(s2SummaryRow, col).border = thinBorder;
-        }
-
-        // Overall Cumulative GPA (CGPA) Row
-        curTCellRow++;
-        const totalCredSumRow = curTCellRow;
-        wsLao.mergeCells(totalCredSumRow, 1, totalCredSumRow, 3);
-        wsLao.getCell(totalCredSumRow, 1).value = 'ລວມໜ່ວຍກິດສະສົມທັງໝົດ (Total Credits) & ຄະແນນສະເລ່ຍສະສົມ (CGPA):';
-        wsLao.getCell(totalCredSumRow, 1).font = { name: FONT_NAME, bold: true, size: 10, color: { argb: 'FF1E3A8A' } };
-        wsLao.getCell(totalCredSumRow, 1).alignment = { horizontal: 'right' };
-        wsLao.getCell(totalCredSumRow, 1).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFEF3C7' } };
-
-        // Total Credits
-        wsLao.getCell(totalCredSumRow, 4).value = {
-          formula: `D${s1SummaryRow}+D${s2SummaryRow}`,
-          result: sem1Courses.reduce((sum, c) => sum + c.credits, 0) + sem2Courses.reduce((sum, c) => sum + c.credits, 0)
-        };
-        wsLao.getCell(totalCredSumRow, 4).alignment = { horizontal: 'center' };
-        wsLao.getCell(totalCredSumRow, 4).font = { bold: true };
-        wsLao.getCell(totalCredSumRow, 4).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFEF3C7' } };
-
-        // CGPA Formula (VLOOKUP from CGPA2 sheet or average of sem GPAs)
-        wsLao.mergeCells(totalCredSumRow, 5, totalCredSumRow, 7);
-        wsLao.getCell(totalCredSumRow, 5).value = {
-          formula: `ROUND((E${s1SummaryRow}+E${s2SummaryRow})/2, 2)`,
-          result: ((parseFloat(calculateStudentSemGpa('B2023001', 1)) + parseFloat(calculateStudentSemGpa('B2023001', 2))) / 2).toFixed(2)
-        };
-        wsLao.getCell(totalCredSumRow, 5).alignment = { horizontal: 'center' };
-        wsLao.getCell(totalCredSumRow, 5).font = { bold: true, size: 11, color: { argb: 'FFB45309' } };
-        wsLao.getCell(totalCredSumRow, 5).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFEF3C7' } };
-        wsLao.getCell(totalCredSumRow, 5).numFmt = '0.00';
-
-        for (let col = 1; col <= 7; col++) {
-          wsLao.getCell(totalCredSumRow, col).border = {
-            top: { style: 'medium', color: { argb: 'FFD97706' } },
-            bottom: { style: 'medium', color: { argb: 'FFD97706' } },
-            left: { style: 'thin', color: { argb: 'FFD97706' } },
-            right: { style: 'thin', color: { argb: 'FFD97706' } }
-          };
-        }
-
-        // Grading Scale Legend (Rows +2)
-        curTCellRow += 2;
-        wsLao.mergeCells(curTCellRow, 1, curTCellRow, 7);
-        wsLao.getCell(curTCellRow, 1).value = 'ເກນມາດຕະຖານຄິດໄລ່ຄ່າລະດັບ: A (91-100 = 4.00), B+ (81-90 = 3.50), B (70-80 = 3.00), C+ (65-69 = 2.50), C (60-64 = 2.00), D+ (55-59 = 1.50), D (50-54 = 1.00), F (0-49 = 0.00)';
-        wsLao.getCell(curTCellRow, 1).font = { name: FONT_NAME, size: 8.5, italic: true, color: { argb: 'FF64748B' } };
-        wsLao.getCell(curTCellRow, 1).alignment = { horizontal: 'center' };
-
-        // Signatures Block
-        curTCellRow += 2;
-        wsLao.mergeCells(curTCellRow, 5, curTCellRow, 7);
-        wsLao.getCell(curTCellRow, 5).value = 'ນະຄອນຫຼວງວຽງຈັນ, ວັນທີ ..............................';
-        wsLao.getCell(curTCellRow, 5).font = { name: FONT_NAME, size: 9.5 };
-        wsLao.getCell(curTCellRow, 5).alignment = { horizontal: 'center' };
-
-        curTCellRow += 1;
-        wsLao.mergeCells(curTCellRow, 2, curTCellRow, 3);
-        wsLao.getCell(curTCellRow, 2).value = 'ຫົວໜ້າພາກວິຊາ';
-        wsLao.getCell(curTCellRow, 2).font = { name: FONT_NAME, bold: true, size: 10 };
-        wsLao.getCell(curTCellRow, 2).alignment = { horizontal: 'center' };
-
-        wsLao.mergeCells(curTCellRow, 5, curTCellRow, 7);
-        wsLao.getCell(curTCellRow, 5).value = 'ຄະນະບໍດີ';
-        wsLao.getCell(curTCellRow, 5).font = { name: FONT_NAME, bold: true, size: 10 };
-        wsLao.getCell(curTCellRow, 5).alignment = { horizontal: 'center' };
-
-        // ========================================================
-        // LAYER 3: Sheet Eng_transcript (Official English Transcript)
-        // ========================================================
-        const wsEng = workbook.addWorksheet('Eng_transcript', {
-          views: [{ showGridLines: true }],
-          pageSetup: {
-            paperSize: 9, // A4
-            orientation: 'portrait',
-            fitToWidth: 1,
-            fitToHeight: 0
-          }
-        });
-
-        // Set Column Widths for English Transcript
-        wsEng.getColumn(1).width = 6;
-        wsEng.getColumn(2).width = 14;
-        wsEng.getColumn(3).width = 32;
-        wsEng.getColumn(4).width = 10;
-        wsEng.getColumn(5).width = 10;
-        wsEng.getColumn(6).width = 11;
-        wsEng.getColumn(7).width = 11;
-
-        // Embed Logo
-        if (logoImageId !== null) {
-          wsEng.addImage(logoImageId, {
-            tl: { col: 0.2, row: 0.8 },
-            ext: { width: 75, height: 75 }
-          });
-        }
-
-        // English Header Text
-        wsEng.mergeCells('B1:G1');
-        wsEng.getCell('B1').value = "LAO PEOPLE'S DEMOCRATIC REPUBLIC";
-        wsEng.getCell('B1').font = { name: FONT_FALLBACK, size: 12, bold: true };
-        wsEng.getCell('B1').alignment = { horizontal: 'center', vertical: 'middle' };
-
-        wsEng.mergeCells('B2:G2');
-        wsEng.getCell('B2').value = 'Peace Independence Democracy Unity Prosperity';
-        wsEng.getCell('B2').font = { name: FONT_FALLBACK, size: 10 };
-        wsEng.getCell('B2').alignment = { horizontal: 'center', vertical: 'middle' };
-
-        wsEng.mergeCells('B3:G3');
-        wsEng.getCell('B3').value = '---------------- *** ----------------';
-        wsEng.getCell('B3').alignment = { horizontal: 'center', vertical: 'middle' };
-
-        wsEng.mergeCells('B4:G4');
-        wsEng.getCell('B4').value = 'NATIONAL UNIVERSITY OF LAOS - FACULTY OF LETTERS';
-        wsEng.getCell('B4').font = { name: FONT_FALLBACK, size: 11, bold: true };
-        wsEng.getCell('B4').alignment = { horizontal: 'center', vertical: 'middle' };
-
-        wsEng.mergeCells('B5:G5');
-        wsEng.getCell('B5').value = deptEng;
-        wsEng.getCell('B5').font = { name: FONT_FALLBACK, size: 11, bold: true, color: { argb: 'FF1E3A8A' } };
-        wsEng.getCell('B5').alignment = { horizontal: 'center', vertical: 'middle' };
-
-        wsEng.mergeCells('A7:G7');
-        wsEng.getCell('A7').value = 'OFFICIAL ACADEMIC TRANSCRIPT';
-        wsEng.getCell('A7').font = { name: FONT_FALLBACK, size: 14, bold: true, color: { argb: 'FF1E3A8A' } };
-        wsEng.getCell('A7').alignment = { horizontal: 'center', vertical: 'middle' };
-        wsEng.getCell('A7').fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFF1F5F9' } };
-        wsEng.getRow(7).height = 28;
-
-        // Student Info Block English
-        wsEng.getCell('B9').value = 'Full Name:';
-        wsEng.getCell('B9').font = { name: FONT_FALLBACK, bold: true };
-        wsEng.mergeCells('C9:D9');
-        wsEng.getCell('C9').value = {
-          formula: `IFERROR(VLOOKUP($F$12, ${lookupRange}, 5, FALSE)&" "&VLOOKUP($F$12, ${lookupRange}, 6, FALSE), "")`,
-          result: `${appState.students[0].firstNameEng} ${appState.students[0].lastNameEng}`
-        };
-        wsEng.getCell('C9').font = { name: FONT_FALLBACK, bold: true, size: 11 };
-
-        wsEng.getCell('E9').value = 'Gender:';
-        wsEng.getCell('E9').font = { name: FONT_FALLBACK, bold: true };
-        wsEng.getCell('F9').value = {
-          formula: `IFERROR(VLOOKUP($F$12, ${lookupRange}, 2, FALSE), "")`,
-          result: appState.students[0].gender
-        };
-        wsEng.getCell('F9').alignment = { horizontal: 'center' };
-
-        wsEng.getCell('B10').value = 'Department:';
-        wsEng.getCell('B10').font = { name: FONT_FALLBACK, bold: true };
-        wsEng.mergeCells('C10:D10');
-        wsEng.getCell('C10').value = deptEng;
-
-        wsEng.getCell('E10').value = 'Date of Birth:';
-        wsEng.getCell('E10').font = { name: FONT_FALLBACK, bold: true };
-        wsEng.getCell('F10').value = {
-          formula: `IFERROR(VLOOKUP($F$12, ${lookupRange}, 7, FALSE), "")`,
-          result: appState.students[0].dob
-        };
-        wsEng.getCell('F10').alignment = { horizontal: 'center' };
-
-        wsEng.getCell('B11').value = 'Academic Year:';
-        wsEng.getCell('B11').font = { name: FONT_FALLBACK, bold: true };
-        wsEng.mergeCells('C11:D11');
-        wsEng.getCell('C11').value = `${academicYear} (${batchNo})`;
-
-        wsEng.getCell('E11').value = 'Degree:';
-        wsEng.getCell('E11').font = { name: FONT_FALLBACK, bold: true };
-        wsEng.getCell('F11').value = 'Bachelor';
-
-        // Cell F12: Student ID Lookup Input
-        wsEng.mergeCells('B12:E12');
-        const f12EngLabel = wsEng.getCell('B12');
-        f12EngLabel.value = '👉 Student ID (Enter ID in cell F12 to auto-load transcript):';
-        f12EngLabel.font = { name: FONT_FALLBACK, bold: true, color: { argb: 'FFB45309' } };
-        f12EngLabel.alignment = { horizontal: 'right', vertical: 'middle' };
-
-        const f12EngCell = wsEng.getCell('F12');
-        f12EngCell.value = 'B2023001';
-        f12EngCell.font = { name: FONT_FALLBACK, bold: true, size: 12, color: { argb: 'FF1E3A8A' } };
-        f12EngCell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFEF08A' } };
-        f12EngCell.border = {
-          top: { style: 'medium', color: { argb: 'FFD97706' } },
-          bottom: { style: 'medium', color: { argb: 'FFD97706' } },
-          left: { style: 'medium', color: { argb: 'FFD97706' } },
-          right: { style: 'medium', color: { argb: 'FFD97706' } }
-        };
-        f12EngCell.alignment = { horizontal: 'center', vertical: 'middle' };
-        wsEng.getRow(12).height = 26;
-
-        // English Table Headers
-        const engHeaders = ['No.', 'Course Code', 'Course Title', 'Credits', 'Score', 'Grade Point', 'Grade'];
-        wsEng.getRow(14).height = 24;
-        engHeaders.forEach((th, idx) => {
-          const colNum = idx + 1;
-          const cell = wsEng.getCell(14, colNum);
-          cell.value = th;
-          cell.font = { name: FONT_FALLBACK, bold: true, size: 10, color: { argb: 'FFFFFFFF' } };
-          cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF1E3A8A' } };
-          cell.alignment = { horizontal: 'center', vertical: 'middle' };
-          cell.border = thinBorder;
-        });
-
-        // Semester 1 Section Header
-        let curEngRow = 15;
-        wsEng.mergeCells(curEngRow, 1, curEngRow, 7);
-        const s1EngTitle = wsEng.getCell(curEngRow, 1);
-        s1EngTitle.value = 'FIRST SEMESTER';
-        s1EngTitle.font = { name: FONT_FALLBACK, bold: true, size: 10, color: { argb: 'FF1E3A8A' } };
-        s1EngTitle.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFDBEAFE' } };
-        s1EngTitle.alignment = { horizontal: 'left', vertical: 'middle', indent: 1 };
-        s1EngTitle.border = thinBorder;
-        wsEng.getRow(curEngRow).height = 20;
-
-        // Sem 1 Courses (Eng)
-        const s1EngStart = curEngRow + 1;
-        sem1Courses.forEach((c, cIdx) => {
-          curEngRow++;
-          const row = wsEng.getRow(curEngRow);
-          row.height = 20;
-
-          row.getCell(1).value = cIdx + 1;
-          row.getCell(1).alignment = { horizontal: 'center' };
-
-          row.getCell(2).value = c.code;
-          row.getCell(2).alignment = { horizontal: 'center' };
-          row.getCell(2).font = { bold: true };
-
-          row.getCell(3).value = c.nameEng;
-
-          row.getCell(4).value = c.credits;
-          row.getCell(4).alignment = { horizontal: 'center' };
-
-          const info = courseColMap[`1_${c.code}`];
-          const vlookupColIdx = info.scoreCol - 1;
-
-          row.getCell(5).value = {
-            formula: `IFERROR(VLOOKUP($F$12, ${lookupRange}, ${vlookupColIdx}, FALSE), 0)`,
-            result: appState.studentScores['B2023001'][1][c.code] || 80
-          };
-          row.getCell(5).alignment = { horizontal: 'right' };
-          row.getCell(5).numFmt = '0.00';
-
-          const scoreCell = `E${curEngRow}`;
-          row.getCell(6).value = {
-            formula: `IF(${scoreCell}>90,"4.00",IF(${scoreCell}>80,"3.50",IF(${scoreCell}>69,"3.00",IF(${scoreCell}>64,"2.50",IF(${scoreCell}>59,"2.00",IF(${scoreCell}>54,"1.50",IF(${scoreCell}>49,"1.00","0.00")))))))`,
-            result: calculateGradePoint(appState.studentScores['B2023001'][1][c.code] || 80)
-          };
-          row.getCell(6).alignment = { horizontal: 'center' };
-          row.getCell(6).numFmt = '0.00';
-
-          row.getCell(7).value = {
-            formula: `IF(${scoreCell}>=91,"A",IF(${scoreCell}>=81,"B+",IF(${scoreCell}>=70,"B",IF(${scoreCell}>=65,"C+",IF(${scoreCell}>=60,"C",IF(${scoreCell}>=55,"D+",IF(${scoreCell}>=50,"D",IF(${scoreCell}>=0,"F"))))))))`,
-            result: calculateLetterGrade(appState.studentScores['B2023001'][1][c.code] || 80)
-          };
-          row.getCell(7).alignment = { horizontal: 'center' };
-          row.getCell(7).font = { bold: true };
-
-          for (let col = 1; col <= 7; col++) {
-            row.getCell(col).border = thinBorder;
-            row.getCell(col).font = Object.assign({ name: FONT_FALLBACK, size: 9.5 }, row.getCell(col).font || {});
-          }
-        });
-        const s1EngEnd = curEngRow;
-
-        // Sem 1 Summary Row (Eng)
-        curEngRow++;
-        const s1EngSumRow = curEngRow;
-        wsEng.mergeCells(s1EngSumRow, 1, s1EngSumRow, 3);
-        wsEng.getCell(s1EngSumRow, 1).value = 'Total Credits & Semester 1 GPA:';
-        wsEng.getCell(s1EngSumRow, 1).font = { name: FONT_FALLBACK, bold: true, size: 9.5 };
-        wsEng.getCell(s1EngSumRow, 1).alignment = { horizontal: 'right' };
-        wsEng.getCell(s1EngSumRow, 1).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFF8FAFC' } };
-
-        wsEng.getCell(s1EngSumRow, 4).value = {
-          formula: `SUM(D${s1EngStart}:D${s1EngEnd})`,
-          result: sem1Courses.reduce((sum, c) => sum + c.credits, 0)
-        };
-        wsEng.getCell(s1EngSumRow, 4).alignment = { horizontal: 'center' };
-        wsEng.getCell(s1EngSumRow, 4).font = { bold: true };
-
-        wsEng.mergeCells(s1EngSumRow, 5, s1EngSumRow, 7);
-        const gpa1ColOffset = gpaSem1Col - 1;
-        wsEng.getCell(s1EngSumRow, 5).value = {
-          formula: `IFERROR(VLOOKUP($F$12, ${lookupRange}, ${gpa1ColOffset}, FALSE), 0)`,
-          result: calculateStudentSemGpa('B2023001', 1)
-        };
-        wsEng.getCell(s1EngSumRow, 5).alignment = { horizontal: 'center' };
-        wsEng.getCell(s1EngSumRow, 5).font = { bold: true, color: { argb: 'FF0D9488' } };
-        wsEng.getCell(s1EngSumRow, 5).numFmt = '0.00';
-
-        for (let col = 1; col <= 7; col++) {
-          wsEng.getCell(s1EngSumRow, col).border = thinBorder;
-        }
-
-        // Semester 2 Section Header
-        curEngRow++;
-        wsEng.mergeCells(curEngRow, 1, curEngRow, 7);
-        const s2EngTitle = wsEng.getCell(curEngRow, 1);
-        s2EngTitle.value = 'SECOND SEMESTER';
-        s2EngTitle.font = { name: FONT_FALLBACK, bold: true, size: 10, color: { argb: 'FF1E3A8A' } };
-        s2EngTitle.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFEDE9FE' } };
-        s2EngTitle.alignment = { horizontal: 'left', vertical: 'middle', indent: 1 };
-        s2EngTitle.border = thinBorder;
-        wsEng.getRow(curEngRow).height = 20;
-
-        // Sem 2 Courses (Eng)
-        const s2EngStart = curEngRow + 1;
-        sem2Courses.forEach((c, cIdx) => {
-          curEngRow++;
-          const row = wsEng.getRow(curEngRow);
-          row.height = 20;
-
-          row.getCell(1).value = cIdx + 1;
-          row.getCell(1).alignment = { horizontal: 'center' };
-
-          row.getCell(2).value = c.code;
-          row.getCell(2).alignment = { horizontal: 'center' };
-          row.getCell(2).font = { bold: true };
-
-          row.getCell(3).value = c.nameEng;
-
-          row.getCell(4).value = c.credits;
-          row.getCell(4).alignment = { horizontal: 'center' };
-
-          const info = courseColMap[`2_${c.code}`];
-          const vlookupColIdx = info.scoreCol - 1;
-
-          row.getCell(5).value = {
-            formula: `IFERROR(VLOOKUP($F$12, ${lookupRange}, ${vlookupColIdx}, FALSE), 0)`,
-            result: appState.studentScores['B2023001'][2][c.code] || 82
-          };
-          row.getCell(5).alignment = { horizontal: 'right' };
-          row.getCell(5).numFmt = '0.00';
-
-          const scoreCell = `E${curEngRow}`;
-          row.getCell(6).value = {
-            formula: `IF(${scoreCell}>90,"4.00",IF(${scoreCell}>80,"3.50",IF(${scoreCell}>69,"3.00",IF(${scoreCell}>64,"2.50",IF(${scoreCell}>59,"2.00",IF(${scoreCell}>54,"1.50",IF(${scoreCell}>49,"1.00","0.00")))))))`,
-            result: calculateGradePoint(appState.studentScores['B2023001'][2][c.code] || 82)
-          };
-          row.getCell(6).alignment = { horizontal: 'center' };
-          row.getCell(6).numFmt = '0.00';
-
-          row.getCell(7).value = {
-            formula: `IF(${scoreCell}>=91,"A",IF(${scoreCell}>=81,"B+",IF(${scoreCell}>=70,"B",IF(${scoreCell}>=65,"C+",IF(${scoreCell}>=60,"C",IF(${scoreCell}>=55,"D+",IF(${scoreCell}>=50,"D",IF(${scoreCell}>=0,"F"))))))))`,
-            result: calculateLetterGrade(appState.studentScores['B2023001'][2][c.code] || 82)
-          };
-          row.getCell(7).alignment = { horizontal: 'center' };
-          row.getCell(7).font = { bold: true };
-
-          for (let col = 1; col <= 7; col++) {
-            row.getCell(col).border = thinBorder;
-            row.getCell(col).font = Object.assign({ name: FONT_FALLBACK, size: 9.5 }, row.getCell(col).font || {});
-          }
-        });
-        const s2EngEnd = curEngRow;
-
-        // Sem 2 Summary Row (Eng)
-        curEngRow++;
-        const s2EngSumRow = curEngRow;
-        wsEng.mergeCells(s2EngSumRow, 1, s2EngSumRow, 3);
-        wsEng.getCell(s2EngSumRow, 1).value = 'Total Credits & Semester 2 GPA:';
-        wsEng.getCell(s2EngSumRow, 1).font = { name: FONT_FALLBACK, bold: true, size: 9.5 };
-        wsEng.getCell(s2EngSumRow, 1).alignment = { horizontal: 'right' };
-        wsEng.getCell(s2EngSumRow, 1).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFF8FAFC' } };
-
-        wsEng.getCell(s2EngSumRow, 4).value = {
-          formula: `SUM(D${s2EngStart}:D${s2EngEnd})`,
-          result: sem2Courses.reduce((sum, c) => sum + c.credits, 0)
-        };
-        wsEng.getCell(s2EngSumRow, 4).alignment = { horizontal: 'center' };
-        wsEng.getCell(s2EngSumRow, 4).font = { bold: true };
-
-        wsEng.mergeCells(s2EngSumRow, 5, s2EngSumRow, 7);
-        const gpa2ColOffset = gpaSem2Col - 1;
-        wsEng.getCell(s2EngSumRow, 5).value = {
-          formula: `IFERROR(VLOOKUP($F$12, ${lookupRange}, ${gpa2ColOffset}, FALSE), 0)`,
-          result: calculateStudentSemGpa('B2023001', 2)
-        };
-        wsEng.getCell(s2EngSumRow, 5).alignment = { horizontal: 'center' };
-        wsEng.getCell(s2EngSumRow, 5).font = { bold: true, color: { argb: 'FF0D9488' } };
-        wsEng.getCell(s2EngSumRow, 5).numFmt = '0.00';
-
-        for (let col = 1; col <= 7; col++) {
-          wsEng.getCell(s2EngSumRow, col).border = thinBorder;
-        }
-
-        // Overall CGPA Row (Eng)
-        curEngRow++;
-        const cgpaEngSumRow = curEngRow;
-        wsEng.mergeCells(cgpaEngSumRow, 1, cgpaEngSumRow, 3);
-        wsEng.getCell(cgpaEngSumRow, 1).value = 'Cumulative Credits & Cumulative GPA (CGPA):';
-        wsEng.getCell(cgpaEngSumRow, 1).font = { name: FONT_FALLBACK, bold: true, size: 10, color: { argb: 'FF1E3A8A' } };
-        wsEng.getCell(cgpaEngSumRow, 1).alignment = { horizontal: 'right' };
-        wsEng.getCell(cgpaEngSumRow, 1).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFEF3C7' } };
-
-        wsEng.getCell(cgpaEngSumRow, 4).value = {
-          formula: `D${s1EngSumRow}+D${s2EngSumRow}`,
-          result: sem1Courses.reduce((sum, c) => sum + c.credits, 0) + sem2Courses.reduce((sum, c) => sum + c.credits, 0)
-        };
-        wsEng.getCell(cgpaEngSumRow, 4).alignment = { horizontal: 'center' };
-        wsEng.getCell(cgpaEngSumRow, 4).font = { bold: true };
-        wsEng.getCell(cgpaEngSumRow, 4).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFEF3C7' } };
-
-        wsEng.mergeCells(cgpaEngSumRow, 5, cgpaEngSumRow, 7);
-        wsEng.getCell(cgpaEngSumRow, 5).value = {
-          formula: `ROUND((E${s1EngSumRow}+E${s2EngSumRow})/2, 2)`,
-          result: ((parseFloat(calculateStudentSemGpa('B2023001', 1)) + parseFloat(calculateStudentSemGpa('B2023001', 2))) / 2).toFixed(2)
-        };
-        wsEng.getCell(cgpaEngSumRow, 5).alignment = { horizontal: 'center' };
-        wsEng.getCell(cgpaEngSumRow, 5).font = { bold: true, size: 11, color: { argb: 'FFB45309' } };
-        wsEng.getCell(cgpaEngSumRow, 5).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFEF3C7' } };
-        wsEng.getCell(cgpaEngSumRow, 5).numFmt = '0.00';
-
-        for (let col = 1; col <= 7; col++) {
-          wsEng.getCell(cgpaEngSumRow, col).border = {
-            top: { style: 'medium', color: { argb: 'FFD97706' } },
-            bottom: { style: 'medium', color: { argb: 'FFD97706' } },
-            left: { style: 'thin', color: { argb: 'FFD97706' } },
-            right: { style: 'thin', color: { argb: 'FFD97706' } }
-          };
-        }
-
-        // Grading Scale Legend (English)
-        curEngRow += 2;
-        wsEng.mergeCells(curEngRow, 1, curEngRow, 7);
-        wsEng.getCell(curEngRow, 1).value = 'Grading Scale: A (91-100 = 4.00), B+ (81-90 = 3.50), B (70-80 = 3.00), C+ (65-69 = 2.50), C (60-64 = 2.00), D+ (55-59 = 1.50), D (50-54 = 1.00), F (0-49 = 0.00)';
-        wsEng.getCell(curEngRow, 1).font = { name: FONT_FALLBACK, size: 8.5, italic: true, color: { argb: 'FF64748B' } };
-        wsEng.getCell(curEngRow, 1).alignment = { horizontal: 'center' };
-
-        // English Signatures Block
-        curEngRow += 2;
-        wsEng.mergeCells(curEngRow, 5, curEngRow, 7);
-        wsEng.getCell(curEngRow, 5).value = 'Vientiane Capital, Date: ..............................';
-        wsEng.getCell(curEngRow, 5).font = { name: FONT_FALLBACK, size: 9.5 };
-        wsEng.getCell(curEngRow, 5).alignment = { horizontal: 'center' };
-
-        curEngRow += 1;
-        wsEng.mergeCells(curEngRow, 2, curEngRow, 3);
-        wsEng.getCell(curEngRow, 2).value = 'Head of Department';
-        wsEng.getCell(curEngRow, 2).font = { name: FONT_FALLBACK, bold: true, size: 10 };
-        wsEng.getCell(curEngRow, 2).alignment = { horizontal: 'center' };
-
-        wsEng.mergeCells(curEngRow, 5, curEngRow, 7);
-        wsEng.getCell(curEngRow, 5).value = 'Dean of Faculty';
-        wsEng.getCell(curEngRow, 5).font = { name: FONT_FALLBACK, bold: true, size: 10 };
-        wsEng.getCell(curEngRow, 5).alignment = { horizontal: 'center' };
-
-        // ========================================================
-        // 4. Generate Buffer & Download via FileSaver
-        // ========================================================
-        statusDiv.innerHTML = '<span style="color: #10b981;"><i class="fa-solid fa-file-arrow-down"></i> ກຳລັງ Export ຟາຍ Excel (.xlsx)...</span>';
-        
-        const buffer = await workbook.xlsx.writeBuffer();
-        const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-        const fileName = `Calculate_${deptLao.replace(/\s+/g, '_')}_${academicYear}.xlsx`;
-
-        if (typeof saveAs !== 'undefined') {
-          saveAs(blob, fileName);
-        } else {
-          // Native browser download fallback
-          const url = window.URL.createObjectURL(blob);
-          const a = document.createElement('a');
-          a.href = url;
-          a.download = fileName;
-          document.body.appendChild(a);
-          a.click();
-          window.URL.revokeObjectURL(url);
-          document.body.removeChild(a);
-        }
-
-        statusDiv.innerHTML = `<span style="color: #4ade80; font-weight: 700;"><i class="fa-solid fa-circle-check"></i> ດາວໂຫຼດສຳເລັດແລ້ວ! ຟາຍ: ${fileName}</span>`;
-
-      } catch (err) {
-        console.error('Export Error:', err);
-        statusDiv.innerHTML = `<span style="color: #f87171;"><i class="fa-solid fa-triangle-exclamation"></i> ເກີດຂໍ້ຜິດພາດ: ${err.message}</span>`;
-        alert(`ເກີດຂໍ້ຜິດພາດໃນການສ້າງໄຟລ໌ Excel:\n${err.message}`);
-      } finally {
-        btn.disabled = false;
-        btn.innerHTML = '<i class="fa-solid fa-file-excel fa-lg"></i> <span>ສ້າງ ແລະ ດາວໂຫຼດໄຟລ໌ Excel (.xlsx)</span>';
-      }
-    }
-
-    // Helper: Grade Point evaluator
-    function calculateGradePoint(score) {
-      score = Number(score) || 0;
-      if (score > 90) return '4.00';
-      if (score > 80) return '3.50';
-      if (score > 69) return '3.00';
-      if (score > 64) return '2.50';
-      if (score > 59) return '2.00';
-      if (score > 54) return '1.50';
-      if (score > 49) return '1.00';
-      return '0.00';
-    }
-
-    // Helper: Letter Grade evaluator
-    function calculateLetterGrade(score) {
-      score = Number(score) || 0;
-      if (score >= 91) return 'A';
-      if (score >= 81) return 'B+';
-      if (score >= 70) return 'B';
-      if (score >= 65) return 'C+';
-      if (score >= 60) return 'C';
-      if (score >= 55) return 'D+';
-      if (score >= 50) return 'D';
-      return 'F';
-    }
-
-    // Helper: Calculate Student GPA for a semester
-    function calculateStudentSemGpa(studentId, sem) {
-      const courses = appState.semesters[sem] || [];
-      const scores = (appState.studentScores[studentId] && appState.studentScores[studentId][sem]) || {};
-      let totalW = 0;
-      let totalPoints = 0;
-      courses.forEach(c => {
-        const raw = scores[c.code] || 75;
-        const gp = parseFloat(calculateGradePoint(raw));
-        totalPoints += gp * c.credits;
-        totalW += c.credits;
-      });
-      return totalW > 0 ? (totalPoints / totalW).toFixed(2) : '0.00';
-    }
-  </script>
 </body>
 </html>
