@@ -2,419 +2,1764 @@
 <html lang="lo">
 <head>
   <meta charset="UTF-8">
-  <title>ລະບົບສ້າງຟາຍຄິດໄລ່ຄະແນນຄົບ 8 ພາກຮຽນ (Complete 16 Sheets)</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.3.0/exceljs.min.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ລະບົບສ້າງ ແລະ ປັບປຸງຟາຍຄິດໄລ່ຄະແນນ (Calculate.xlsx - 16 Sheets)</title>
+  
+  <!-- Fonts: Saysettha OT, Phetsarath OT, Noto Sans Lao, Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+Lao:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- CDN Libraries -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.4.0/exceljs.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+
   <style>
-    body { font-family: 'Phetsarath OT', 'Segoe UI', Tahoma, sans-serif; background: #eef2f7; margin: 0; padding: 20px; color: #333; }
-    .container { max-width: 1100px; margin: auto; background: #fff; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); }
-    h2 { text-align: center; color: #1a365d; margin-bottom: 25px; }
-    .grid-header { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 15px; margin-bottom: 25px; background: #f8fafc; padding: 15px; border-radius: 8px; border: 1px solid #e2e8f0; }
-    .form-group label { display: block; font-weight: 600; margin-bottom: 6px; font-size: 14px; }
-    .form-group input { width: 100%; padding: 8px 12px; border: 1px solid #cbd5e1; border-radius: 6px; box-sizing: border-box; }
-    
-    /* Tabs สำหรับเลือกเทอม */
-    .tabs-nav { display: flex; flex-wrap: wrap; gap: 6px; border-bottom: 2px solid #e2e8f0; padding-bottom: 10px; margin-bottom: 20px; }
-    .tab-btn { padding: 10px 16px; border: none; background: #e2e8f0; border-radius: 6px; cursor: pointer; font-weight: 600; transition: 0.2s; }
-    .tab-btn.active { background: #2563eb; color: #fff; }
-    .tab-content { display: none; }
-    .tab-content.active { display: block; }
-    
-    table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-    th, td { border: 1px solid #e2e8f0; padding: 8px 12px; text-align: left; }
-    th { background: #f1f5f9; font-size: 13px; color: #475569; }
-    .btn { padding: 6px 12px; border-radius: 4px; border: none; cursor: pointer; font-weight: 500; }
-    .btn-add { background: #10b981; color: #fff; margin-top: 10px; }
-    .btn-del { background: #ef4444; color: #fff; }
-    .btn-gen { background: #1e40af; color: #fff; font-size: 18px; width: 100%; padding: 15px; margin-top: 30px; border-radius: 8px; cursor: pointer; border: none; font-weight: bold; }
-    .btn-gen:hover { background: #1d4ed8; }
-    .sem-title { font-weight: bold; font-size: 16px; color: #1e293b; margin-top: 10px; }
+    :root {
+      --bg: #fcfcfc;
+      --card-bg: #ffffff;
+      --border: #e4e4e7;
+      --border-dark: #18181b;
+      --text: #09090b;
+      --text-muted: #52525b;
+      --text-subtle: #71717a;
+      --primary: #18181b;
+      --primary-hover: #27272a;
+      --secondary-bg: #f4f4f5;
+      --radius: 8px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Saysettha OT', 'Phetsarath OT', 'Noto Sans Lao', 'Inter', -apple-system, Tahoma, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+      padding: 32px 16px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .container {
+      max-width: 1060px;
+      margin: 0 auto;
+    }
+
+    header {
+      margin-bottom: 24px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+    }
+
+    h1 {
+      font-size: 1.4rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+
+    p.subtitle {
+      color: var(--text-muted);
+      font-size: 0.86rem;
+    }
+
+    .badge-mono {
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      background: var(--primary);
+      color: #fff;
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 22px;
+      margin-bottom: 20px;
+    }
+
+    .card-title {
+      font-size: 0.96rem;
+      font-weight: 600;
+      margin-bottom: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 10px;
+    }
+
+    /* Template Alert Banner */
+    .template-alert {
+      border: 1px solid #d4d4d8;
+      background: #fafafa;
+      border-radius: 6px;
+      padding: 14px 18px;
+      margin-bottom: 16px;
+      font-size: 0.85rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .template-alert.warning {
+      background: #fefce8;
+      border-color: #fde047;
+      color: #713f12;
+    }
+
+    .template-alert.success {
+      background: #f4f4f5;
+      border-color: #18181b;
+      color: #09090b;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 16px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    label {
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 8px 12px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-size: 0.88rem;
+      font-family: inherit;
+      color: var(--text);
+      background: #ffffff;
+      outline: none;
+    }
+
+    input[type="text"]:focus {
+      border-color: var(--border-dark);
+    }
+
+    /* Tabs */
+    .tabs-nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      margin-bottom: 14px;
+      background: var(--secondary-bg);
+      padding: 4px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+    }
+
+    .tab-btn {
+      flex: 1 1 auto;
+      min-width: 90px;
+      text-align: center;
+      padding: 7px 10px;
+      border: none;
+      background: transparent;
+      border-radius: 4px;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: var(--text-muted);
+      transition: all 0.15s ease;
+    }
+
+    .tab-btn.active {
+      background: #ffffff;
+      color: var(--text);
+      font-weight: 600;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.06);
+    }
+
+    .tab-pane {
+      display: none;
+    }
+
+    .tab-pane.active {
+      display: block;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 0.84rem;
+    }
+
+    th {
+      background: var(--secondary-bg);
+      padding: 9px 12px;
+      font-weight: 600;
+      color: var(--text-muted);
+      border-bottom: 1px solid var(--border);
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+
+    td {
+      padding: 7px 10px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: middle;
+    }
+
+    .input-cell {
+      width: 100%;
+      padding: 6px 8px;
+      border: 1px solid transparent;
+      border-radius: 4px;
+      font-family: inherit;
+      font-size: 0.84rem;
+      color: var(--text);
+      background: transparent;
+    }
+
+    .input-cell:hover, .input-cell:focus {
+      border-color: var(--border);
+      background: #ffffff;
+      outline: none;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 7px 14px;
+      font-size: 0.82rem;
+      font-weight: 500;
+      border-radius: 6px;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all 0.15s ease;
+      text-decoration: none;
+      border: 1px solid transparent;
+    }
+
+    .btn-dark {
+      background: var(--primary);
+      color: #ffffff;
+      border-color: var(--primary);
+    }
+
+    .btn-dark:hover {
+      background: var(--primary-hover);
+    }
+
+    .btn-outline {
+      background: #ffffff;
+      color: var(--text);
+      border-color: var(--border);
+    }
+
+    .btn-outline:hover {
+      background: var(--secondary-bg);
+      border-color: #d4d4d8;
+    }
+
+    .btn-del {
+      background: transparent;
+      color: var(--text-subtle);
+      border: none;
+      padding: 4px 8px;
+      font-size: 0.85rem;
+      cursor: pointer;
+    }
+
+    .btn-del:hover {
+      color: #000;
+    }
+
+    .btn-action-primary {
+      background: #09090b;
+      color: #fafafa;
+      font-weight: 600;
+      font-size: 0.96rem;
+      padding: 14px 28px;
+      border-radius: 6px;
+      width: 100%;
+      cursor: pointer;
+      border: none;
+    }
+
+    .btn-action-primary:hover {
+      background: #27272a;
+    }
+
+    .btn-action-primary:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .feature-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 12px;
+      font-size: 0.8rem;
+    }
+
+    .feature-box {
+      background: var(--secondary-bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 10px 12px;
+    }
+
+    .feature-box strong {
+      display: block;
+      color: var(--text);
+      margin-bottom: 3px;
+    }
+
+    .feature-code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      word-break: break-all;
+    }
+
+    .status-msg {
+      margin-top: 14px;
+      text-align: center;
+      font-size: 0.86rem;
+      color: var(--text-muted);
+      min-height: 20px;
+    }
+
+    footer {
+      margin-top: 36px;
+      border-top: 1px solid var(--border);
+      padding-top: 16px;
+      text-align: center;
+      font-size: 0.78rem;
+      color: var(--text-subtle);
+    }
   </style>
 </head>
 <body>
 
-<div class="container">
-  <h2>ລະບົບສ້າງຟາຍຄິດໄລ່ຄະແນນ (Calculate.xlsx - ຄົບ 16 Sheets)</h2>
-  
-  <div class="grid-header">
-    <div class="form-group">
-      <label>ພາກວິຊາ (ພາສາລາວ):</label>
-      <input type="text" id="deptLao" value="ພາກວິຊາພາສາຍີ່ປຸ່ນ">
+  <div class="container">
+    <header>
+      <div>
+        <h1>ລະບົບສ້າງ ແລະ ປັບປຸງຟາຍຄິດໄລ່ຄະແນນ (Calculate.xlsx)</h1>
+        <p class="subtitle">
+          Template Clone &bull; Auto-Fix Formulas &bull; Dynamic Subjects (Insert Rows) &bull; Unfrozen Panes
+        </p>
+      </div>
+      <span class="badge-mono">Monochrome Edition</span>
+    </header>
+
+    <!-- Template File Status & Upload -->
+    <div class="card">
+      <div class="card-title">
+        <span>1. ສະຖານະໄຟລ໌ແມ່ແບບຕົ້ນສະບັບ (Calculate.xlsx Template Status)</span>
+      </div>
+
+      <!-- Real-time Status Alert -->
+      <div class="template-alert" id="templateAlertBox">
+        <div id="templateAlertText">
+          ກຳລັງກວດສອບໄຟລ໌ Calculate.xlsx ໃນເຄື່ອງ...
+        </div>
+        <div style="display: flex; gap: 8px;">
+          <input type="file" id="templateFileInput" accept=".xlsx" style="display: none;" onchange="onTemplateSelected(event)">
+          <button type="button" class="btn btn-outline" onclick="document.getElementById('templateFileInput').click()">
+            ເລືອກໄຟລ໌ Calculate.xlsx ຕົ້ນສະບັບ
+          </button>
+          <input type="file" id="logoFileInput" accept="image/jpeg,image/png" style="display: none;" onchange="onLogoSelected(event)">
+          <button type="button" class="btn btn-outline" onclick="document.getElementById('logoFileInput').click()">
+            ເລືອກ Logo.jpeg
+          </button>
+        </div>
+      </div>
+
+      <div class="grid-3">
+        <div class="form-group">
+          <label>ຊື່ພາກວິຊາ (ພາສາລາວ)</label>
+          <input type="text" id="deptLao" value="ພາກວິຊາພາສາຍີ່ປຸ່ນ">
+        </div>
+        <div class="form-group">
+          <label>Department Name (English)</label>
+          <input type="text" id="deptEng" value="Department of Japanese Language">
+        </div>
+        <div class="form-group">
+          <label>ສົກຮຽນ / Academic Year</label>
+          <input type="text" id="acadYear" value="2023-2024">
+        </div>
+      </div>
     </div>
-    <div class="form-group">
-      <label>ພາກວິຊາ (ພາສາອັງກິດ):</label>
-      <input type="text" id="deptEng" value="Department of Japanese">
+
+    <!-- Core Rules & Fixes Summary -->
+    <div class="card">
+      <div class="card-title">
+        <span>2. ກົດເກນການປະມວນຜົນ ແລະ ສູດຄະນິດສາດ (Core Processing Rules)</span>
+      </div>
+      <div class="feature-list">
+        <div class="feature-box">
+          <strong>1. ຍົກເລີກ Freeze Panes (Unfreeze)</strong>
+          <div class="feature-code">ປົດລັອກ Freeze ທຸກ Sheet ເພື່ອບໍ່ໃຫ້ໜ້າເຈ້ຍເລື່ອນ ຫຼື ຕາຕະລາງບິດເບືອນ</div>
+        </div>
+        <div class="feature-box">
+          <strong>2. Sheet Report: Insert Rows ຫ້າມປ່ຽນ Format</strong>
+          <div class="feature-code">ແຊກແຖວຕາມຈຳນວນວິຊາທີ່ປ້ອນຕົວຈິງ ໂດຍກັອບປີ້ Font, Border, Style ເດີມ 100%</div>
+        </div>
+        <div class="feature-box">
+          <strong>3. ຕັດເກຣດ ແລະ ຄ່າລະດັບ (Number)</strong>
+          <div class="feature-code">ເກຣດໃຊ້ &gt;= ຄົບທຸກຂັ້ນ &bull; ຄ່າລະດັບເປັນຕົວເລກ 4.00, 3.50 (ບໍ່ມີ "")</div>
+        </div>
+        <div class="feature-box">
+          <strong>4. ແກ້ໄຂ CGPA8 &amp; Transcript VLOOKUP</strong>
+          <div class="feature-code">=(H3+I3+J3+K3+L3+M3+N3+O3)/8 &bull; ແກ້ໄຂສູດ #REF! ທຸກຕຳແໜ່ງ</div>
+        </div>
+      </div>
     </div>
-    <div class="form-group">
-      <label>ສົກຮຽນເລີ່ມຕົ້ນ (ເຊັ່ນ 2023-2024):</label>
-      <input type="text" id="acadYear" value="2023-2024">
+
+    <!-- Course Management per Semester -->
+    <div class="card">
+      <div class="card-title">
+        <span>3. ຈັດການລາຍວິຊາ 8 ພາກຮຽນ (Dynamic Subjects)</span>
+        <button type="button" class="btn btn-outline" style="font-size: 0.78rem;" onclick="addCourseToCurrentTab()">
+          + ເພີ່ມລາຍວິຊາ
+        </button>
+      </div>
+
+      <div class="tabs-nav" id="semTabsNav"></div>
+      <div id="semTabsPanes"></div>
     </div>
+
+    <!-- Action Export -->
+    <div class="card" style="text-align: center;">
+      <button type="button" class="btn-action-primary" id="btnExport" onclick="processAndExportExcel()">
+        ສ້າງ ແລະ ດາວໂຫຼດຟາຍ Excel (.xlsx)
+      </button>
+      <div class="status-msg" id="statusMessage">ພ້ອມປະມວນຜົນທັງ 16 Sheets</div>
+    </div>
+
+    <footer>
+      University Grade Calculation & Transcript System &bull; Minimal Monochrome Edition &bull; Phetsarath OT / Saysettha OT Compatible
+    </footer>
   </div>
 
-  <!-- แถบเลือกปีที่ 1 ถึง 4 (8 ภาคเรียน) -->
-  <div class="tabs-nav" id="tabsNav"></div>
-  <div id="tabsContainer"></div>
+  <script>
+    // State
+    const appState = {
+      templateArrayBuffer: null,
+      logoArrayBuffer: null,
+      activeSemId: 'sem1'
+    };
 
-  <button type="button" class="btn-gen" onclick="generateCompleteExcel()">
-    ສ້າງແລະດາວໂຫຼດຟາຍ Excel (ຄົບ 16 Sheets)
-  </button>
-</div>
+    // Authentic Lao Curriculum for 8 Semesters (Department of Japanese)
+    const curriculum = {
+      sem1: [
+        { code: "125JP121", nameLao: "ພາສາຍີ່ປຸ່ນ 1", nameEng: "Japanese 1", creditRaw: "3(0-4-5)" },
+        { code: "125JG121", nameLao: "ໄວຍາກອນຍີ່ປຸ່ນ 1", nameEng: "Japanese Grammar 1", creditRaw: "2(0-4-2)" },
+        { code: "125KJ111", nameLao: "ຄັັນຈິ 1", nameEng: "Kanji 1", creditRaw: "1(0-2-1)" },
+        { code: "125LS121", nameLao: "ການຟັງ-ການເວົ້າ 1", nameEng: "Listening & Speaking 1", creditRaw: "2(0-4-2)" },
+        { code: "125PL111", nameLao: "ສຽງ ແລະ ຕົວອັກສອນ", nameEng: "Phonetics & Letters", creditRaw: "1(0-2-1)" },
+        { code: "125GE111", nameLao: "ພາສາອັງກິດ 1", nameEng: "English 1", creditRaw: "2(0-4-2)" },
+        { code: "135LS101", nameLao: "ລາວສຶກສາ 1", nameEng: "Lao Studies 1", creditRaw: "2(2-0-4)" },
+        { code: "145PY101", nameLao: "ຈິດຕະວິທະຍາທົ່ວໄປ", nameEng: "General Psychology", creditRaw: "2(2-0-4)" },
+        { code: "125IT101", nameLao: "ທັກສະພື້ນຖານການນຳໃຊ້ຂໍ້ມູນຂ່າວສານເທັກໂນໂລຊີ", nameEng: "Basic Information Technology Skills", creditRaw: "2(2-0-4)" }
+      ],
+      sem2: [
+        { code: "125JP122", nameLao: "ພາສາຍີ່ປຸ່ນ 2", nameEng: "Japanese 2", creditRaw: "3(0-6-3)" },
+        { code: "125JG122", nameLao: "ໄວຍາກອນຍີ່ປຸ່ນ 2", nameEng: "Japanese Grammar 2", creditRaw: "2(0-4-2)" },
+        { code: "125KJ112", nameLao: "ຄັນຈິ 2", nameEng: "Kanji 2", creditRaw: "1(0-2-1)" },
+        { code: "125LS122", nameLao: "ການເວົ້າ-ການຟັງ 2", nameEng: "Listening & Speaking 2", creditRaw: "2(0-4-2)" },
+        { code: "125JR121", nameLao: "ການອ່ານພາສາຍີ່ປຸ່ນ 1", nameEng: "Japanese Reading 1", creditRaw: "1(0-2-1)" },
+        { code: "12JW121", nameLao: "ການຂຽນພາສາຍີ່ປຸ່ນ 1", nameEng: "Japanese Writing 1", creditRaw: "1(0-2-1)" },
+        { code: "125GE112", nameLao: "ພາສາອັງກິດ 2", nameEng: "English 2", creditRaw: "2(0-4-2)" },
+        { code: "135LS102", nameLao: "ລາວສຶກສາ 2", nameEng: "Lao Studies 2", creditRaw: "2(2-0-4)" },
+        { code: "115PO101", nameLao: "ການເມືອງ", nameEng: "Politics", creditRaw: "2(2-0-4)" },
+        { code: "015ND201", nameLao: "ວິຊາສຶກສາປ້ອງກັນຕົວ", nameEng: "National Defense Education", creditRaw: "3(1-2-6)" }
+      ],
+      sem3: [
+        { code: "125JP223", nameLao: "ພາສາຍີ່ປຸ່ນ 3", nameEng: "Japanese 3", creditRaw: "3(0-6-3)" },
+        { code: "125JG223", nameLao: "ໄວຍາກອນ 3", nameEng: "Japanese Grammar 3", creditRaw: "2(0-4-2)" },
+        { code: "125KJ213", nameLao: "ຄັນຈິ 3", nameEng: "Kanji 3", creditRaw: "1(0-2-1)" },
+        { code: "125JW223", nameLao: "ການຂຽນພາສາຍີ່ປຸ່ນ 2", nameEng: "Japanese Writing 2", creditRaw: "1(0-2-1)" },
+        { code: "125JR222", nameLao: "ການອ່ານພາສາຍີ່ປຸ່ນ 2", nameEng: "Japanese Reading 2", creditRaw: "1(0-2-1)" },
+        { code: "125LS223", nameLao: "ການຟັງ-ການເວົ້າ 3", nameEng: "Listening & Speaking 3", creditRaw: "2(0-4-2)" },
+        { code: "125JL223", nameLao: "ພາສາສາດຍີ່ປຸ່ນ", nameEng: "Japanese Linguistics", creditRaw: "2(0-4-2)" },
+        { code: "125GE212", nameLao: "ພາສາອັງກິດ 3", nameEng: "English 3", creditRaw: "1(0-2-1)" },
+        { code: "125SW201", nameLao: "ທັກສະຈຳເປັນສຳລັບການເຮັດວຽກ", nameEng: "Essential Skills for Work", creditRaw: "2(2-0-4)" }
+      ],
+      sem4: [
+        { code: "125JP224", nameLao: "ພາສາຍີ່ປຸ່ນ 4", nameEng: "Japanese 4", creditRaw: "3(0-6-3)" },
+        { code: "125JG224", nameLao: "ໄວຍາກອນ 4", nameEng: "Japanese Grammar 4", creditRaw: "2(0-4-2)" },
+        { code: "125KJ214", nameLao: "ຄັນຈິ 4", nameEng: "Kanji 4", creditRaw: "1(0-2-1)" },
+        { code: "125JW224", nameLao: "ການຂຽນພາສາຍີ່ປຸ່ນ 3", nameEng: "Japanese Writing 3", creditRaw: "1(0-2-1)" },
+        { code: "125JR223", nameLao: "ການອ່ານພາສາຍີ່ປຸ່ນ 3", nameEng: "Japanese Reading 3", creditRaw: "1(0-2-1)" },
+        { code: "125LS224", nameLao: "ການຟັງ-ການເວົ້າ 4", nameEng: "Listening & Speaking 4", creditRaw: "2(0-4-2)" },
+        { code: "125JA224", nameLao: "ວັດທະນະທຳ ແລະ ສັງຄົມຍີ່ປຸ່ນ", nameEng: "Japanese Culture & Society", creditRaw: "2(0-4-2)" },
+        { code: "125GE213", nameLao: "ພາສາອັງກິດ 4", nameEng: "English 4", creditRaw: "1(0-2-1)" },
+        { code: "125EE201", nameLao: "ຄວາມຮູ້ພື້ນຖານການເປັນຜູ້ປະກອບການ", nameEng: "Basic Entrepreneurship", creditRaw: "2(2-0-4)" }
+      ],
+      sem5: [
+        { code: "125JP325", nameLao: "ພາສາຍີ່ປຸ່ນ 5", nameEng: "Japanese 5", creditRaw: "3(0-4-5)" },
+        { code: "125JG325", nameLao: "ໄວຍະກອນຍີ່ປຸ່ນ 5", nameEng: "Japanese Grammar 5", creditRaw: "2(0-4-2)" },
+        { code: "125KJ315", nameLao: "ຄັນຈິ 5", nameEng: "Kanji 5", creditRaw: "1(0-2-1)" },
+        { code: "125JW325", nameLao: "ການຂຽນພາສາຍີ່ປຸ່ນ 4", nameEng: "Japanese Writing 4", creditRaw: "1(0-2-1)" },
+        { code: "125JR324", nameLao: "ການອ່ານພາສາຍີ່ປຸ່ນ 4", nameEng: "Japanese Reading 4", creditRaw: "1(0-2-1)" },
+        { code: "125LS325", nameLao: "ການຟັງ-ການເວົ້າ 5", nameEng: "Listening & Speaking 5", creditRaw: "2(0-4-2)" },
+        { code: "125JC325", nameLao: "ການສື່ສານຂ້າມວັດທະນະທຳ", nameEng: "Cross-Cultural Communication", creditRaw: "2(0-4-2)" },
+        { code: "125RM301", nameLao: "ວິທີວິທະຍາການວິໄຈ", nameEng: "Research Methodology", creditRaw: "2(2-0-4)" },
+        { code: "125EN311", nameLao: "ພາສາອັງກິດ 5", nameEng: "English 5", creditRaw: "1(0-2-1)" },
+        { code: "125PD301", nameLao: "ການພັດທະນາບຸກຄະລິກະພາບ", nameEng: "Personality Development", creditRaw: "2(2-0-4)" },
+        { code: "015PE101", nameLao: "ພາລະສຶກສາ", nameEng: "Physical Education", creditRaw: "2(0-4-2)" }
+      ],
+      sem6: [
+        { code: "125JP326", nameLao: "ພາສາຍີ່ປຸ່ນ 6", nameEng: "Japanese 6", creditRaw: "3(0-6-3)" },
+        { code: "125JG326", nameLao: "ໄວຍະກອນຍີ່ປຸ່ນ 6", nameEng: "Japanese Grammar 6", creditRaw: "2(0-4-2)" },
+        { code: "125KJ316", nameLao: "ຄັນຈິ 6", nameEng: "Kanji 6", creditRaw: "1(0-2-1)" },
+        { code: "125JW326", nameLao: "ການຂຽນພາສາຍີ່ປຸ່ນ 5", nameEng: "Japanese Writing 5", creditRaw: "1(0-2-1)" },
+        { code: "125JR325", nameLao: "ການອ່ານພາສາຍີ່ປຸ່ນ 5", nameEng: "Japanese Reading 5", creditRaw: "1(0-2-1)" },
+        { code: "125LS326", nameLao: "ການຟັງ-ການເວົ້າ 6", nameEng: "Listening & Speaking 6", creditRaw: "2(0-4-2)" },
+        { code: "125BJ326", nameLao: "ພາສາຍີ່ປຸ່ນທຸລະກິດ 1", nameEng: "Business Japanese 1", creditRaw: "2(0-4-2)" },
+        { code: "125EN312", nameLao: "ພາສາອັງກິດ 6", nameEng: "English 6", creditRaw: "1(0-2-1)" },
+        { code: "125CS301", nameLao: "ການບໍລິການລູກຄ້າ", nameEng: "Customer Service", creditRaw: "2(2-0-4)" },
+        { code: "125FS301", nameLao: "ລົງຝຶກງານຕົວຈິງ", nameEng: "Field Internship", creditRaw: "3(0-6-3)" }
+      ],
+      sem7: [
+        { code: "125JR426", nameLao: "ການອ່ານພາສາຍີ່ປຸ່ນ 6", nameEng: "Japanese Reading 6", creditRaw: "2(0-4-2)" },
+        { code: "125JW326", nameLao: "ການຂຽນພາສາຍີ່ປຸ່ນ 6", nameEng: "Japanese Writing 6", creditRaw: "2(0-4-2)" },
+        { code: "125TR421", nameLao: "ການແປ 1", nameEng: "Translation 1", creditRaw: "2(0-4-2)" },
+        { code: "125IN421", nameLao: "ການແປປາກເປົ່າ 1", nameEng: "Interpretation 1", creditRaw: "2(0-4-2)" },
+        { code: "125BJ422", nameLao: "ພາສາຍີ່ປຸ່ນທຸລະກິດ 2", nameEng: "Business Japanese 2", creditRaw: "2(0-4-2)" },
+        { code: "125EN411", nameLao: "ພາສາອັງກິດ 7", nameEng: "English 7", creditRaw: "1(0-2-1)" }
+      ],
+      sem8: [
+        { code: "125JT411", nameLao: "ພາສາຍີ່ປຸ່ນສຳຫຼັບການທ່ອງທ່ຽວ", nameEng: "Japanese for Tourism", creditRaw: "2(0-4-2)" },
+        { code: "125PR421", nameLao: "ການນຳສະເໜີພາສາຍີ່ປຸ່ນ", nameEng: "Japanese Presentation", creditRaw: "2(0-4-2)" },
+        { code: "125TR422", nameLao: "ການແປ 2", nameEng: "Translation 2", creditRaw: "2(0-4-2)" },
+        { code: "125AR421", nameLao: "ການຂຽນບົດຄົ້ນຄວ້າ", nameEng: "Research Thesis Writing", creditRaw: "6" }
+      ]
+    };
 
-<script>
-  // สร้างโครงสร้าง 8 ภาคเรียน
-  const semesterDefs = [
-    { id: 'sem1', name: 'ປີ 1 ພາກຮຽน 1 (Sem 1)', semNum: 1, pair: 'Sem1-2' },
-    { id: 'sem2', name: 'ປີ 1 ພາກຮຽน 2 (Sem 2)', semNum: 2, pair: 'Sem1-2' },
-    { id: 'sem3', name: 'ປີ 2 ພາກຮຽน 1 (Sem 3)', semNum: 3, pair: 'Sem3-4 ' },
-    { id: 'sem4', name: 'ປີ 2 ພາກຮຽน 2 (Sem 4)', semNum: 4, pair: 'Sem3-4 ' },
-    { id: 'sem5', name: 'ປີ 3 ພາກຮຽน 1 (Sem 5)', semNum: 5, pair: 'Sem5-6' },
-    { id: 'sem6', name: 'ປີ 3 ພາກຮຽน 2 (Sem 6)', semNum: 6, pair: 'Sem5-6' },
-    { id: 'sem7', name: 'ປີ 4 ພາກຮຽน 1 (Sem 7)', semNum: 7, pair: 'Sem7-8' },
-    { id: 'sem8', name: 'ປີ 4 ພາກຮຽน 2 (Sem 8)', semNum: 8, pair: 'Sem7-8' }
-  ];
-
-  // ข้อมูลตั้งต้นบางส่วน
-  const defaultSubjects = {
-    sem1: [
-      { code: '125 JP 121', nameLao: 'ພາສາຍີ່ປຸ່ນ 1', nameEng: 'Japanese 1', credits: 3 },
-      { code: '125 LS 121', nameLao: 'ການຟັງ-ການເວົ້າ 1', nameEng: 'Listening & Speaking 1', credits: 2 },
-      { code: '125 PL 111', nameLao: 'ສຽງ ແລະ ຕົວອັກສອນ', nameEng: 'Phonetics & Letters', credits: 1 },
-      { code: '125 KJ 111', nameLao: 'ຄັນຈິ 1', nameEng: 'Kanji 1', credits: 1 },
-      { code: '125 JG 121', nameLao: 'ໄວຍາກອນຍີ່ປຸ່ນ 1', nameEng: 'Japanese Grammar 1', credits: 2 }
-    ],
-    sem2: [
-      { code: '125 JP 122', nameLao: 'ພາສາຍີ່ປຸ່ນ 2', nameEng: 'Japanese 2', credits: 3 },
-      { code: '125 LS 122', nameLao: 'ການເວົ້າ-ການຟັງ 2', nameEng: 'Listening & Speaking 2', credits: 2 }
-    ]
-  };
-
-  // Render UI Tabs
-  const tabsNav = document.getElementById('tabsNav');
-  const tabsContainer = document.getElementById('tabsContainer');
-
-  semesterDefs.forEach((sem, idx) => {
-    // Tab Button
-    const btn = document.createElement('button');
-    btn.className = `tab-btn ${idx === 0 ? 'active' : ''}`;
-    btn.textContent = sem.name;
-    btn.onclick = () => switchTab(sem.id);
-    tabsNav.appendChild(btn);
-
-    // Tab Pane
-    const pane = document.createElement('div');
-    pane.id = sem.id;
-    pane.className = `tab-content ${idx === 0 ? 'active' : ''}`;
-    pane.innerHTML = `
-      <div class="sem-title">${sem.name}</div>
-      <table>
-        <thead>
-          <tr>
-            <th style="width: 140px;">ລະຫັດວິຊາ</th>
-            <th>ຊື່ວິຊາ (ພາສາລາວ)</th>
-            <th>ຊື່ວິຊາ (ພາສາອັງກິດ)</th>
-            <th style="width: 80px;">ໜ່ວຍກິດ</th>
-            <th style="width: 50px;">ລຶບ</th>
-          </tr>
-        </thead>
-        <tbody id="tbody_${sem.id}"></tbody>
-      </table>
-      <button type="button" class="btn btn-add" onclick="addSubjectRow('${sem.id}')">+ ເພີ່ມວິຊາໃນພາກຮຽນນີ້</button>
-    `;
-    tabsContainer.appendChild(pane);
-
-    // เติมข้อมูลเริ่มต้น
-    const initData = defaultSubjects[sem.id] || [{ code: '', nameLao: '', nameEng: '', credits: 2 }];
-    initData.forEach(s => addSubjectRow(sem.id, s.code, s.nameLao, s.nameEng, s.credits));
-  });
-
-  function switchTab(semId) {
-    document.querySelectorAll('.tab-btn').forEach((b, i) => {
-      b.classList.toggle('active', semesterDefs[i].id === semId);
-    });
-    document.querySelectorAll('.tab-content').forEach(p => {
-      p.classList.toggle('active', p.id === semId);
-    });
-  }
-
-  function addSubjectRow(semId, code='', nameLao='', nameEng='', credits=2) {
-    const tbody = document.getElementById(`tbody_${semId}`);
-    const tr = document.createElement('tr');
-    tr.innerHTML = `
-      <td><input type="text" class="sub-code" value="${code}"></td>
-      <td><input type="text" class="sub-lao" value="${nameLao}"></td>
-      <td><input type="text" class="sub-eng" value="${nameEng}"></td>
-      <td><input type="number" class="sub-credit" value="${credits}"></td>
-      <td><button class="btn btn-del" onclick="this.closest('tr').remove()">X</button></td>
-    `;
-    tbody.appendChild(tr);
-  }
-
-  function getColLetter(colIdx) {
-    let letter = '';
-    while (colIdx > 0) {
-      let mod = (colIdx - 1) % 26;
-      letter = String.fromCharCode(65 + mod) + letter;
-      colIdx = Math.floor((colIdx - mod) / 26);
-    }
-    return letter;
-  }
-
-  async function generateCompleteExcel() {
-    const workbook = new ExcelJS.Workbook();
-
-    // ดึงข้อมูลรูปภาพ Logo.jpeg (ถ้ามีในโฟลเดอร์)
-    let logoImageId = null;
-    try {
-      const resp = await fetch('Logo.jpeg');
-      if (resp.ok) {
-        const blob = await resp.blob();
-        const arrayBuf = await blob.arrayBuffer();
-        logoImageId = workbook.addImage({
-          buffer: arrayBuf,
-          extension: 'jpeg',
-        });
-      }
-    } catch(e) {
-      console.log('Logo.jpeg not found or CORS blocked, skipping logo.');
-    }
-
-    // รวบรวมข้อมูลทุกเทอม
-    const allSemestersData = {};
-    semesterDefs.forEach(s => {
-      const rows = document.querySelectorAll(`#tbody_${s.id} tr`);
-      allSemestersData[s.id] = [];
-      rows.forEach(r => {
-        const code = r.querySelector('.sub-code').value.trim();
-        const nameLao = r.querySelector('.sub-lao').value.trim();
-        const nameEng = r.querySelector('.sub-eng').value.trim();
-        const credits = parseInt(r.querySelector('.sub-credit').value) || 0;
-        if (code || nameLao) {
-          allSemestersData[s.id].push({ code, nameLao, nameEng, credits });
-        }
-      });
-    });
-
-    // -------------------------------------------------------------
-    // 1. LAYER 1: ສ້າງ 4 Sheets Sem (Sem1-2, Sem3-4 , Sem5-6, Sem7-8)
-    // -------------------------------------------------------------
-    const semPairs = [
-      { name: 'Sem1-2', semA: 'sem1', semB: 'sem2', labelA: 'ພາກຮຽນ 1', labelB: 'ພາກຮຽນ 2' },
-      { name: 'Sem3-4 ', semA: 'sem3', semB: 'sem4', labelA: 'ພາກຮຽນ 3', labelB: 'ພາກຮຽນ 4' },
-      { name: 'Sem5-6', semA: 'sem5', semB: 'sem6', labelA: 'ພາກຮຽນ 5', labelB: 'ພາກຮຽນ 6' },
-      { name: 'Sem7-8', semA: 'sem7', semB: 'sem8', labelA: 'ພາກຮຽນ 7', labelB: 'ພາກຮຽນ 8' }
+    const semesterMeta = [
+      { id: 'sem1', label: 'ປີ 1 ພາກ 1 (Sem 1)', pair: 'Sem1-2' },
+      { id: 'sem2', label: 'ປີ 1 ພາກ 2 (Sem 2)', pair: 'Sem1-2' },
+      { id: 'sem3', label: 'ປີ 2 ພາກ 1 (Sem 3)', pair: 'Sem3-4 ' },
+      { id: 'sem4', label: 'ປີ 2 ພາກ 2 (Sem 4)', pair: 'Sem3-4 ' },
+      { id: 'sem5', label: 'ປີ 3 ພາກ 1 (Sem 5)', pair: 'Sem5-6' },
+      { id: 'sem6', label: 'ປີ 3 ພາກ 2 (Sem 6)', pair: 'Sem5-6' },
+      { id: 'sem7', label: 'ປີ 4 ພາກ 1 (Sem 7)', pair: 'Sem7-8' },
+      { id: 'sem8', label: 'ປີ 4 ພາກ 2 (Sem 8)', pair: 'Sem7-8' }
     ];
 
-    const semMetaInfo = {}; // เก็บพิกัดคอลัมน์ของแต่ละเทอม
+    function parseCredits(raw) {
+      if (!raw) return 2;
+      const str = raw.toString().trim();
+      if (str.includes('(')) {
+        return parseInt(str.split('(')[0].trim()) || 2;
+      }
+      return parseInt(str) || 2;
+    }
 
-    semPairs.forEach(pair => {
-      const ws = workbook.addWorksheet(pair.name);
-      
-      // ส่วนหัวข้อมูลพื้นฐาน (แถว 2)
-      const baseHeaders = ["ລ/ດ", "ລະຫັດນສ", "ເພດ", "ຊື່ພາສາລາວ", "ນາມສະກຸນພາສາລາວ", "ຊື່ພາສາອັງກິດ", "ນາມສະກຸນພາສາອັງກິດ", "ວ.ດ.ປີເກີດ", "ແຂວງເກີດ", "ຫ້ອງ"];
-      baseHeaders.forEach((h, i) => ws.getRow(2).getCell(i + 1).value = h);
+    function getColLetter(colIdx) {
+      let letter = '';
+      while (colIdx > 0) {
+        let mod = (colIdx - 1) % 26;
+        letter = String.fromCharCode(65 + mod) + letter;
+        colIdx = Math.floor((colIdx - mod) / 26);
+      }
+      return letter;
+    }
 
-      let currentCol = baseHeaders.length + 1;
-      semMetaInfo[pair.name] = {};
+    document.addEventListener('DOMContentLoaded', () => {
+      renderSemesterTabs();
+      checkFilesAvailability();
+    });
 
-      [ { id: pair.semA, label: pair.labelA }, { id: pair.semB, label: pair.labelB } ].forEach(subTerm => {
-        const subs = allSemestersData[subTerm.id] || [];
-        const gpaTerms = [];
-        let totalCr = 0;
-        semMetaInfo[pair.name][subTerm.id] = { subjects: [] };
+    function renderSemesterTabs() {
+      const nav = document.getElementById('semTabsNav');
+      const panes = document.getElementById('semTabsPanes');
+      nav.innerHTML = '';
+      panes.innerHTML = '';
 
-        subs.forEach(subj => {
-          const scCol = currentCol;
-          const ptCol = currentCol + 1;
-          const grCol = currentCol + 2;
+      semesterMeta.forEach((sem, idx) => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = `tab-btn ${idx === 0 ? 'active' : ''}`;
+        btn.textContent = sem.label;
+        btn.onclick = () => switchSemesterTab(sem.id);
+        nav.appendChild(btn);
 
-          ws.getRow(3).getCell(scCol).value = `${subj.nameLao} (${subj.credits})`;
-          ws.getRow(4).getCell(scCol).value = "ຄະແນນລວມ";
-          ws.getRow(4).getCell(ptCol).value = "ຄ່າລະດັບ";
-          ws.getRow(4).getCell(grCol).value = "ລະດັບ";
+        const pane = document.createElement('div');
+        pane.id = `pane_${sem.id}`;
+        pane.className = `tab-pane ${idx === 0 ? 'active' : ''}`;
+        pane.innerHTML = `
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th style="width: 140px;">ລະຫັດວິຊາ</th>
+                  <th>ຊື່ວິຊາ (ພາສາລາວ)</th>
+                  <th>ຊື່ວິຊາ (ພາສາອັງກິດ)</th>
+                  <th style="width: 120px;">ໜ່ວຍກິດ ເຊັ່ນ 3(0-4-5)</th>
+                  <th style="width: 45px; text-align: center;">ລຶບ</th>
+                </tr>
+              </thead>
+              <tbody id="tbody_${sem.id}"></tbody>
+            </table>
+          </div>
+        `;
+        panes.appendChild(pane);
 
-          semMetaInfo[pair.name][subTerm.id].subjects.push({
-            ...subj,
-            scoreCol: scCol,
-            pointCol: ptCol,
-            gradeCol: grCol
+        (curriculum[sem.id] || []).forEach(subj => {
+          appendSubjectRow(sem.id, subj.code, subj.nameLao, subj.nameEng, subj.creditRaw);
+        });
+      });
+    }
+
+    function switchSemesterTab(semId) {
+      appState.activeSemId = semId;
+      document.querySelectorAll('.tab-btn').forEach((b, i) => {
+        b.classList.toggle('active', semesterMeta[i].id === semId);
+      });
+      document.querySelectorAll('.tab-pane').forEach(p => {
+        p.classList.toggle('active', p.id === `pane_${semId}`);
+      });
+    }
+
+    function appendSubjectRow(semId, code = '', nameLao = '', nameEng = '', creditRaw = '2') {
+      const tbody = document.getElementById(`tbody_${semId}`);
+      if (!tbody) return;
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td><input type="text" class="input-cell sub-code" value="${escapeHtml(code)}" placeholder="ລະຫັດ"></td>
+        <td><input type="text" class="input-cell sub-lao" value="${escapeHtml(nameLao)}" placeholder="ຊື່ວິຊາລາວ"></td>
+        <td><input type="text" class="input-cell sub-eng" value="${escapeHtml(nameEng)}" placeholder="Course Title (Eng)"></td>
+        <td><input type="text" class="input-cell sub-credit" value="${escapeHtml(creditRaw)}" placeholder="3(0-4-5)"></td>
+        <td style="text-align: center;"><button type="button" class="btn-del" onclick="this.closest('tr').remove()" title="Delete">✕</button></td>
+      `;
+      tbody.appendChild(tr);
+    }
+
+    function addCourseToCurrentTab() {
+      appendSubjectRow(appState.activeSemId, '', '', '', '2');
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/'/g, '&#39;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+
+    // Check files availability (Calculate.xlsx & Logo.jpeg)
+    async function checkFilesAvailability() {
+      const alertBox = document.getElementById('templateAlertBox');
+      const alertText = document.getElementById('templateAlertText');
+
+      // 1. Fetch Logo.jpeg
+      try {
+        const respLogo = await fetch('Logo.jpeg');
+        if (respLogo.ok) {
+          appState.logoArrayBuffer = await respLogo.arrayBuffer();
+        }
+      } catch(e) {}
+
+      // 2. Fetch Calculate.xlsx
+      try {
+        const respXlsx = await fetch('Calculate.xlsx');
+        if (respXlsx.ok) {
+          const buf = await respXlsx.arrayBuffer();
+          if (buf.byteLength > 1000) {
+            appState.templateArrayBuffer = buf;
+            alertBox.className = 'template-alert success';
+            alertText.innerHTML = `<strong>✓ ພົບໄຟລ໌ແມ່ແບບ Calculate.xlsx ແລ້ວ</strong> (${Math.round(buf.byteLength/1024)} KB) &bull; ລະບົບຈະໂຄລນ Layout, Font Saysettha OT, Style, ແລະ ຄວາມສູງ-ກວ້າງ ເດີມ 100% (ປົດລັອກ Freeze Panes)`;
+            return;
+          } else {
+            alertBox.className = 'template-alert warning';
+            alertText.innerHTML = `<strong>⚠️ ໄຟລ໌ Calculate.xlsx ໃນໂຟນເດີມີຂະໜາດ 0 Bytes (ຍັງບໍ່ມີຂໍ້ມູນຕົ້ນສະບັບ)</strong><br>
+              <span style="font-size: 0.8rem; color: #854d0e;">
+                &bull; ຫາກທ່ານມີໄຟລ໌ Calculate.xlsx ຕົ້ນສະບັບ ກະລຸນາກົດປຸ່ມ <b>"ເລືອກໄຟລ໌ Calculate.xlsx ຕົ້ນສະບັບ"</b> ດ້ານຂວາ<br>
+                &bull; ຫຼື ຫາກບໍ່ມີ ລະບົບຈະສ້າງໂຄງສ້າງ ແລະ ສີຫົວຕາຕະລາງຕາມມາດຕະຖານມະຫາວິທະຍາໄລລາວໃຫ້ອັດຕະໂນມັດ 100%
+              </span>`;
+            return;
+          }
+        }
+      } catch(e) {}
+
+      alertBox.className = 'template-alert';
+      alertText.innerHTML = `ກວດບໍ່ພົບ Calculate.xlsx &bull; ສາມາດກົດປຸ່ມເລືອກໄຟລ໌ແມ່ແບບເພື່ອໂຄລນ ຫຼື ສ້າງຟາຍໃໝ່ຕາມມາດຕະຖານໄດ້ທັນທີ`;
+    }
+
+    function onTemplateSelected(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        appState.templateArrayBuffer = e.target.result;
+        const alertBox = document.getElementById('templateAlertBox');
+        const alertText = document.getElementById('templateAlertText');
+        alertBox.className = 'template-alert success';
+        alertText.innerHTML = `<strong>✓ ໂຫຼດໄຟລ໌ແມ່ແບບ: ${file.name} ສຳເລັດ</strong> (${Math.round(file.size/1024)} KB) &bull; ພ້ອມໂຄລນ Layout, Font, Style ເດີມ 100%`;
+      };
+      reader.readAsArrayBuffer(file);
+    }
+
+    function onLogoSelected(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        appState.logoArrayBuffer = e.target.result;
+        alert(`ໂຫຼດຮູບໂລໂກ້: ${file.name} ຮຽບຮ້ອຍແລ້ວ!`);
+      };
+      reader.readAsArrayBuffer(file);
+    }
+
+    // Helper: Style Preserver for Excel Cells
+    const LAO_FONT_NAME = 'Saysettha OT';
+
+    const thinBorder = {
+      top: { style: 'thin', color: { argb: 'FFCBD5E1' } },
+      left: { style: 'thin', color: { argb: 'FFCBD5E1' } },
+      bottom: { style: 'thin', color: { argb: 'FFCBD5E1' } },
+      right: { style: 'thin', color: { argb: 'FFCBD5E1' } }
+    };
+
+    function applyLaoStyle(cell, isHeader = false, isHighlight = false) {
+      cell.font = {
+        name: LAO_FONT_NAME,
+        size: isHeader ? 10 : 9.5,
+        bold: isHeader
+      };
+      cell.border = thinBorder;
+      if (isHeader) {
+        cell.fill = {
+          type: 'pattern',
+          pattern: 'solid',
+          fgColor: { argb: isHighlight ? 'FFDBEAFE' : 'FFF1F5F9' }
+        };
+        cell.alignment = { horizontal: 'center', vertical: 'middle', wrapText: true };
+      }
+    }
+
+    // Helper: Safely assign standalone formulas and remove any shared formula metadata
+    function assignFormula(cell, formulaStr, numFmt = null, alignment = null, font = null) {
+      if (!cell) return;
+      if (cell.model) {
+        delete cell.model.shareType;
+        delete cell.model.sharedFormula;
+        delete cell.model.si;
+        delete cell.model.master;
+        delete cell.model.ref;
+      }
+      if (cell._value && typeof cell._value === 'object') {
+        delete cell._value.shareType;
+        delete cell._value.sharedFormula;
+        delete cell._value.si;
+        delete cell._value.master;
+        delete cell._value.ref;
+      }
+      delete cell.shareType;
+      delete cell.sharedFormula;
+
+      const cleanF = (formulaStr && formulaStr.startsWith('=')) ? formulaStr.substring(1) : formulaStr;
+      cell.value = { formula: cleanF };
+
+      if (numFmt) cell.numFmt = numFmt;
+      if (alignment) cell.alignment = alignment;
+      if (font) cell.font = font;
+    }
+
+    // Helper: Strip all OpenXML shared formula dependencies across the entire workbook
+    // Resolves ExcelJS error and ensures no invalid formula injection
+    // Helper: Strip all OpenXML shared formula dependencies, empty CF rules, transcript draft columns, and NaN values
+    function cleanAllSharedFormulas(workbook) {
+      workbook.eachSheet((ws) => {
+        // 1. Strip empty conditional formatting rules (prevents XML error HRESULT 0x8000ffff in Excel)
+        if (Array.isArray(ws.conditionalFormattings)) {
+          ws.conditionalFormattings = ws.conditionalFormattings.filter(cf => cf && Array.isArray(cf.rules) && cf.rules.length > 0);
+        }
+        if (ws.model && Array.isArray(ws.model.conditionalFormatting)) {
+          ws.model.conditionalFormatting = ws.model.conditionalFormatting.filter(cf => cf && Array.isArray(cf.rules) && cf.rules.length > 0);
+        }
+        if (ws.model && Array.isArray(ws.model.conditionalFormattings)) {
+          ws.model.conditionalFormattings = ws.model.conditionalFormattings.filter(cf => cf && Array.isArray(cf.rules) && cf.rules.length > 0);
+        }
+
+        // 2. In transcript sheets, clear any leftover draft/scratch formulas in columns >= 11 (K through Z)
+        // This eliminates template leftover formulas, circular loops (e.g. K33 <-> L51), and #REF! errors
+        const isTranscriptSheet = ws.name.toLowerCase().includes('transcript');
+        if (isTranscriptSheet) {
+          ws.eachRow({ includeEmpty: false }, (row) => {
+            const maxCol = Math.max(row.cellCount || 0, 30);
+            for (let col = 11; col <= maxCol; col++) {
+              const cell = row.getCell(col);
+              if (cell.value !== null && cell.value !== undefined) {
+                cell.value = null;
+              }
+              if (cell.model) {
+                delete cell.model.formula;
+                delete cell.model.sharedFormula;
+                delete cell.model.shareType;
+                delete cell.model.value;
+                delete cell.model.result;
+              }
+            }
+          });
+        }
+
+        // 3. Clean individual cells: strip shared formulas, and eliminate any NaN values / results
+        const cleanCell = (cell) => {
+          if (!cell) return;
+          try {
+            // Strip any NaN numbers or NaN results to prevent invalid <v>NaN</v> XML
+            if (typeof cell.value === 'number' && Number.isNaN(cell.value)) {
+              cell.value = null;
+            }
+            if (cell.value && typeof cell.value === 'object') {
+              if (Number.isNaN(cell.value.result)) {
+                delete cell.value.result;
+              }
+            }
+            if (cell._value && typeof cell._value === 'object') {
+              if (Number.isNaN(cell._value.result)) {
+                delete cell._value.result;
+              }
+            }
+            if (cell.model && typeof cell.model === 'object') {
+              if (Number.isNaN(cell.model.result)) {
+                delete cell.model.result;
+              }
+              if (typeof cell.model.value === 'number' && Number.isNaN(cell.model.value)) {
+                cell.model.value = null;
+              }
+            }
+
+            const v = cell._value;
+            const m = cell.model;
+            const isShared = (v && (v.shareType === 'shared' || v.sharedFormula || v.si !== undefined)) ||
+                             (m && (m.shareType === 'shared' || m.sharedFormula || m.si !== undefined)) ||
+                             cell.shareType === 'shared' || cell.sharedFormula;
+
+            if (isShared) {
+              const existingFormula = (v && v.formula) || (m && m.formula) || cell.formula;
+              let staticResult = (v && v.result !== undefined) ? v.result : (m && m.result !== undefined ? m.result : cell.result);
+              if (Number.isNaN(staticResult)) {
+                staticResult = undefined;
+              }
+
+              if (v && typeof v === 'object') {
+                delete v.shareType;
+                delete v.sharedFormula;
+                delete v.si;
+                delete v.ref;
+                delete v.master;
+              }
+              if (m && typeof m === 'object') {
+                delete m.shareType;
+                delete m.sharedFormula;
+                delete m.si;
+                delete m.ref;
+                delete m.master;
+              }
+              delete cell.shareType;
+              delete cell.sharedFormula;
+
+              if (existingFormula) {
+                const cleanF = existingFormula.startsWith('=') ? existingFormula.substring(1) : existingFormula;
+                cell.value = {
+                  formula: cleanF,
+                  result: staticResult !== undefined ? staticResult : undefined
+                };
+              } else if (staticResult !== undefined && staticResult !== null && staticResult !== '') {
+                cell.value = staticResult;
+              } else {
+                cell.value = null;
+              }
+            }
+
+            // Unconditionally wipe any lingering shareType metadata
+            if (cell.model && typeof cell.model === 'object') {
+              delete cell.model.shareType;
+              delete cell.model.sharedFormula;
+              delete cell.model.si;
+              delete cell.model.ref;
+              delete cell.model.master;
+            }
+            if (cell._value && typeof cell._value === 'object') {
+              delete cell._value.shareType;
+              delete cell._value.sharedFormula;
+              delete cell._value.si;
+              delete cell._value.ref;
+              delete cell._value.master;
+            }
+          } catch (err) {
+            console.warn('Error in cleanCell:', cell.address, err);
+          }
+        };
+
+        ws.eachRow({ includeEmpty: true }, (row) => {
+          row.eachCell({ includeEmpty: true }, cleanCell);
+          if (row._cells && Array.isArray(row._cells)) {
+            row._cells.forEach(cleanCell);
+          }
+        });
+      });
+    }
+
+    // Helper: Copy exact format from one row to another (Format preservation on row insert)
+    function copyRowFormat(ws, sourceRowNum, targetRowNum) {
+      const sourceRow = ws.getRow(sourceRowNum);
+      const targetRow = ws.getRow(targetRowNum);
+      targetRow.height = sourceRow.height || 19;
+
+      for (let col = 1; col <= 15; col++) {
+        const srcCell = sourceRow.getCell(col);
+        const tgtCell = targetRow.getCell(col);
+
+        // Always reset target cell value and clean shared formula metadata
+        tgtCell.value = null;
+        if (tgtCell.model) {
+          delete tgtCell.model.shareType;
+          delete tgtCell.model.sharedFormula;
+          delete tgtCell.model.si;
+          delete tgtCell.model.master;
+          delete tgtCell.model.ref;
+        }
+        if (tgtCell._value && typeof tgtCell._value === 'object') {
+          delete tgtCell._value.shareType;
+          delete tgtCell._value.sharedFormula;
+          delete tgtCell._value.si;
+          delete tgtCell._value.master;
+          delete tgtCell._value.ref;
+        }
+        delete tgtCell.shareType;
+        delete tgtCell.sharedFormula;
+
+        if (srcCell.font) {
+          tgtCell.font = JSON.parse(JSON.stringify(srcCell.font));
+        } else {
+          tgtCell.font = { name: LAO_FONT_NAME, size: 9.5 };
+        }
+
+        if (srcCell.border) {
+          tgtCell.border = JSON.parse(JSON.stringify(srcCell.border));
+        }
+
+        if (srcCell.fill) {
+          tgtCell.fill = JSON.parse(JSON.stringify(srcCell.fill));
+        }
+
+        if (srcCell.alignment) {
+          tgtCell.alignment = JSON.parse(JSON.stringify(srcCell.alignment));
+        }
+
+        if (srcCell.numFmt) {
+          tgtCell.numFmt = srcCell.numFmt;
+        }
+      }
+
+      // Preserve merged cells on columns E:F (Course Title)
+      try {
+        const srcCellE = ws.getCell(`E${sourceRowNum}`);
+        if (srcCellE.isMerged) {
+          ws.mergeCells(`E${targetRowNum}:F${targetRowNum}`);
+        }
+      } catch (e) {}
+    }
+
+    // Helper: Find subject blocks and summary rows in Transcript Sheet
+    function findTranscriptSubjectBlocks(ws) {
+      let term1Rows = [];
+      let term2Rows = [];
+      let term1SummaryRow = null;
+      let term2SummaryRow = null;
+      let yearGpaRow = null;
+      let currentTerm = 1;
+
+      for (let r = 15; r <= 60; r++) {
+        const valC = ws.getCell(`C${r}`).value;
+        const valD = ws.getCell(`D${r}`).value;
+        const valE = ws.getCell(`E${r}`).value;
+
+        const numC = parseInt(valC);
+        const hasCode = typeof valD === 'string' && valD.trim().length > 0;
+        const strE = String(valE || '');
+        const strC = String(valC || '');
+        const isYearGpa = strE.includes('ສະສົມ') || strE.includes('Cumulative') || strE.includes('Year');
+        const isSummary = strE.includes('ຄະແນນສະເລ່ຍ') || 
+                          strE.includes('GPA') || 
+                          strE.includes('Total') ||
+                          strC.includes('ລວມ') ||
+                          isYearGpa;
+
+        if (isSummary) {
+          if (currentTerm === 1 && !term1SummaryRow) {
+            term1SummaryRow = r;
+            currentTerm = 2;
+            continue;
+          } else if (currentTerm === 2) {
+            if (!term2SummaryRow && !isYearGpa) {
+              term2SummaryRow = r;
+              continue;
+            } else if (isYearGpa || r > (term2SummaryRow || 0)) {
+              if (!yearGpaRow) yearGpaRow = r;
+              break;
+            }
+          }
+        }
+
+        if (numC === 1 && term1Rows.length > 0 && currentTerm === 1) {
+          currentTerm = 2;
+        }
+
+        if (numC >= 1 || (hasCode && !isSummary)) {
+          if (currentTerm === 1) {
+            term1Rows.push(r);
+          } else {
+            term2Rows.push(r);
+          }
+        }
+      }
+
+      if (term1Rows.length === 0) {
+        term1Rows = [16, 17, 18, 19, 20];
+      }
+      if (!term1SummaryRow) term1SummaryRow = term1Rows[term1Rows.length - 1] + 1;
+
+      if (term2Rows.length === 0) {
+        const startT2 = term1SummaryRow + 3;
+        term2Rows = [startT2, startT2 + 1, startT2 + 2, startT2 + 3, startT2 + 4];
+      }
+      if (!term2SummaryRow) term2SummaryRow = term2Rows[term2Rows.length - 1] + 1;
+      if (!yearGpaRow) yearGpaRow = term2SummaryRow + 2;
+
+      return { term1Rows, term2Rows, term1SummaryRow, term2SummaryRow, yearGpaRow };
+    }
+
+    // Helper: Populate Transcript Sheet with dynamic row insertion without changing format
+    function populateTranscriptSheet(ws, yr, isEng, allSemData, semMeta, hasClonedTemplate, laoSheetName) {
+      const subs1 = allSemData[yr.s1] || [];
+      const subs2 = allSemData[yr.s2] || [];
+
+      let { term1Rows, term2Rows, term1SummaryRow, term2SummaryRow, yearGpaRow } = findTranscriptSubjectBlocks(ws);
+
+      // 1. Adjust Term 1 rows
+      let newTerm1Rows = [...term1Rows];
+      const origT1Count = term1Rows.length;
+      const targetT1Count = subs1.length;
+      let t1Shift = 0;
+
+      if (targetT1Count > origT1Count) {
+        const toInsert = targetT1Count - origT1Count;
+        const insertAt = term1Rows[term1Rows.length - 1] + 1;
+        const sampleRow = term1Rows[0];
+        ws.spliceRows(insertAt, 0, ...new Array(toInsert).fill([]));
+        for (let k = 0; k < toInsert; k++) {
+          copyRowFormat(ws, sampleRow, insertAt + k);
+          newTerm1Rows.push(insertAt + k);
+        }
+        t1Shift = toInsert;
+      } else if (targetT1Count < origT1Count) {
+        const toDelete = origT1Count - targetT1Count;
+        const deleteAt = term1Rows[0] + targetT1Count;
+        ws.spliceRows(deleteAt, toDelete);
+        newTerm1Rows = newTerm1Rows.slice(0, targetT1Count);
+        t1Shift = -toDelete;
+      }
+
+      // Summary row for Term 1 is immediately after newTerm1Rows
+      const finalT1SummaryRow = newTerm1Rows[newTerm1Rows.length - 1] + 1;
+
+      // 2. Adjust Term 2 rows (shifted by t1Shift)
+      let shiftedTerm2Rows = term2Rows.map(r => r + t1Shift);
+      let newTerm2Rows = [...shiftedTerm2Rows];
+      const origT2Count = shiftedTerm2Rows.length;
+      const targetT2Count = subs2.length;
+      let t2Shift = 0;
+
+      if (targetT2Count > origT2Count) {
+        const toInsert = targetT2Count - origT2Count;
+        const insertAt = shiftedTerm2Rows[shiftedTerm2Rows.length - 1] + 1;
+        const sampleRow = shiftedTerm2Rows[0];
+        ws.spliceRows(insertAt, 0, ...new Array(toInsert).fill([]));
+        for (let k = 0; k < toInsert; k++) {
+          copyRowFormat(ws, sampleRow, insertAt + k);
+          newTerm2Rows.push(insertAt + k);
+        }
+        t2Shift = toInsert;
+      } else if (targetT2Count < origT2Count) {
+        const toDelete = origT2Count - targetT2Count;
+        const deleteAt = shiftedTerm2Rows[0] + targetT2Count;
+        ws.spliceRows(deleteAt, toDelete);
+        newTerm2Rows = newTerm2Rows.slice(0, targetT2Count);
+        t2Shift = -toDelete;
+      }
+
+      // Summary row for Term 2 is immediately after newTerm2Rows
+      const finalT2SummaryRow = newTerm2Rows[newTerm2Rows.length - 1] + 1;
+      const finalYearGpaRow = yearGpaRow + t1Shift + t2Shift;
+
+      // 3. Write Term 1 subjects
+      subs1.forEach((s, idx) => {
+        const r = newTerm1Rows[idx];
+        ws.getRow(r).height = 19;
+        ws.getCell(`C${r}`).value = idx + 1;
+        ws.getCell(`D${r}`).value = s.code;
+        ws.getCell(`E${r}`).value = isEng ? (s.nameEng || s.nameLao) : s.nameLao;
+        ws.getCell(`G${r}`).value = s.credits;
+
+        const cH = ws.getCell(`H${r}`);
+        const cI = ws.getCell(`I${r}`);
+        const cJ = ws.getCell(`J${r}`);
+
+        if (!isEng) {
+          const metaSub1 = semMeta[yr.pair] && semMeta[yr.pair][yr.s1] && semMeta[yr.pair][yr.s1].subjects && semMeta[yr.pair][yr.s1].subjects[idx];
+          const scCol = (metaSub1 && metaSub1.scoreCol) ? metaSub1.scoreCol : (11 + idx * 3);
+          const vlookupCol = scCol - 1;
+          assignFormula(cH, `VLOOKUP($F$12,'${yr.pair}'!$B$7:$ZZ$37,${vlookupCol},FALSE)`, '0.00', { horizontal: 'right' });
+          assignFormula(cI, `IF(H${r}>=91, 4.00, IF(H${r}>=81, 3.50, IF(H${r}>=70, 3.00, IF(H${r}>=65, 2.50, IF(H${r}>=60, 2.00, IF(H${r}>=55, 1.50, IF(H${r}>=50, 1.00, 0.00)))))))`, '0.00', { horizontal: 'center' });
+          assignFormula(cJ, `IF(H${r}>=91,"A",IF(H${r}>=81,"B+",IF(H${r}>=70,"B",IF(H${r}>=65,"C+",IF(H${r}>=60,"C",IF(H${r}>=55,"D+",IF(H${r}>=50,"D","F")))))))`, null, { horizontal: 'center' }, { name: LAO_FONT_NAME, bold: true });
+        } else {
+          assignFormula(cH, `'${laoSheetName}'!H${r}`, '0.00', { horizontal: 'right' });
+          assignFormula(cI, `'${laoSheetName}'!I${r}`, '0.00', { horizontal: 'center' });
+          assignFormula(cJ, `'${laoSheetName}'!J${r}`, null, { horizontal: 'center' }, { name: 'Arial', bold: true });
+        }
+      });
+
+      // 4. Write Term 2 subjects
+      subs2.forEach((s, idx) => {
+        const r = newTerm2Rows[idx];
+        ws.getRow(r).height = 19;
+        ws.getCell(`C${r}`).value = idx + 1;
+        ws.getCell(`D${r}`).value = s.code;
+        ws.getCell(`E${r}`).value = isEng ? (s.nameEng || s.nameLao) : s.nameLao;
+        ws.getCell(`G${r}`).value = s.credits;
+
+        const cH = ws.getCell(`H${r}`);
+        const cI = ws.getCell(`I${r}`);
+        const cJ = ws.getCell(`J${r}`);
+
+        if (!isEng) {
+          const metaSub2 = semMeta[yr.pair] && semMeta[yr.pair][yr.s2] && semMeta[yr.pair][yr.s2].subjects && semMeta[yr.pair][yr.s2].subjects[idx];
+          const scCol = (metaSub2 && metaSub2.scoreCol) ? metaSub2.scoreCol : (11 + (subs1.length * 3 + 1) + idx * 3);
+          const vlookupCol = scCol - 1;
+          assignFormula(cH, `VLOOKUP($F$12,'${yr.pair}'!$B$7:$ZZ$37,${vlookupCol},FALSE)`, '0.00', { horizontal: 'right' });
+          assignFormula(cI, `IF(H${r}>=91, 4.00, IF(H${r}>=81, 3.50, IF(H${r}>=70, 3.00, IF(H${r}>=65, 2.50, IF(H${r}>=60, 2.00, IF(H${r}>=55, 1.50, IF(H${r}>=50, 1.00, 0.00)))))))`, '0.00', { horizontal: 'center' });
+          assignFormula(cJ, `IF(H${r}>=91,"A",IF(H${r}>=81,"B+",IF(H${r}>=70,"B",IF(H${r}>=65,"C+",IF(H${r}>=60,"C",IF(H${r}>=55,"D+",IF(H${r}>=50,"D","F")))))))`, null, { horizontal: 'center' }, { name: LAO_FONT_NAME, bold: true });
+        } else {
+          assignFormula(cH, `'${laoSheetName}'!H${r}`, '0.00', { horizontal: 'right' });
+          assignFormula(cI, `'${laoSheetName}'!I${r}`, '0.00', { horizontal: 'center' });
+          assignFormula(cJ, `'${laoSheetName}'!J${r}`, null, { horizontal: 'center' }, { name: 'Arial', bold: true });
+        }
+      });
+
+      // 5. Explicitly update Summary Row formulas so no circular references or formula drift occur
+      if (newTerm1Rows.length > 0) {
+        const firstT1 = newTerm1Rows[0];
+        const lastT1 = newTerm1Rows[newTerm1Rows.length - 1];
+        if (!isEng) {
+          assignFormula(ws.getCell(`G${finalT1SummaryRow}`), `SUM(G${firstT1}:G${lastT1})`, '0.00', { horizontal: 'center' });
+          const sumProd1 = newTerm1Rows.map(r => `G${r}*I${r}`).join('+');
+          assignFormula(ws.getCell(`I${finalT1SummaryRow}`), `ROUND((${sumProd1})/G${finalT1SummaryRow}, 2)`, '0.00', { horizontal: 'center' }, { name: LAO_FONT_NAME, bold: true });
+        } else {
+          assignFormula(ws.getCell(`G${finalT1SummaryRow}`), `'${laoSheetName}'!G${finalT1SummaryRow}`, '0.00', { horizontal: 'center' });
+          assignFormula(ws.getCell(`I${finalT1SummaryRow}`), `'${laoSheetName}'!I${finalT1SummaryRow}`, '0.00', { horizontal: 'center' }, { name: 'Arial', bold: true });
+        }
+      }
+
+      if (newTerm2Rows.length > 0) {
+        const firstT2 = newTerm2Rows[0];
+        const lastT2 = newTerm2Rows[newTerm2Rows.length - 1];
+        if (!isEng) {
+          assignFormula(ws.getCell(`G${finalT2SummaryRow}`), `SUM(G${firstT2}:G${lastT2})`, '0.00', { horizontal: 'center' });
+          const sumProd2 = newTerm2Rows.map(r => `G${r}*I${r}`).join('+');
+          assignFormula(ws.getCell(`I${finalT2SummaryRow}`), `ROUND((${sumProd2})/G${finalT2SummaryRow}, 2)`, '0.00', { horizontal: 'center' }, { name: LAO_FONT_NAME, bold: true });
+        } else {
+          assignFormula(ws.getCell(`G${finalT2SummaryRow}`), `'${laoSheetName}'!G${finalT2SummaryRow}`, '0.00', { horizontal: 'center' });
+          assignFormula(ws.getCell(`I${finalT2SummaryRow}`), `'${laoSheetName}'!I${finalT2SummaryRow}`, '0.00', { horizontal: 'center' }, { name: 'Arial', bold: true });
+        }
+      }
+
+      // 6. Year GPA
+      if (finalYearGpaRow && finalYearGpaRow > finalT2SummaryRow) {
+        if (!isEng) {
+          assignFormula(ws.getCell(`I${finalYearGpaRow}`), `ROUND((I${finalT1SummaryRow}+I${finalT2SummaryRow})/2, 2)`, '0.00', { horizontal: 'center' }, { name: LAO_FONT_NAME, bold: true });
+        } else {
+          assignFormula(ws.getCell(`I${finalYearGpaRow}`), `'${laoSheetName}'!I${finalYearGpaRow}`, '0.00', { horizontal: 'center' }, { name: 'Arial', bold: true });
+        }
+      }
+    }
+
+    // =========================================================================
+    // MAIN GENERATOR FUNCTION
+    // =========================================================================
+    async function processAndExportExcel() {
+      const btn = document.getElementById('btnExport');
+      const status = document.getElementById('statusMessage');
+
+      try {
+        btn.disabled = true;
+        btn.textContent = 'ກຳລັງປະມວນຜົນ 16 Sheets ແລະ ປົດລັອກ Freeze...';
+        status.textContent = 'ກຳລັງອ່ານຂໍ້ມູນ ແລະ ຈັດຕາຕະລາງ...';
+
+        const deptLao = document.getElementById('deptLao').value.trim() || 'ພາກວິຊາພາສາຍີ່ປຸ່ນ';
+        const deptEng = document.getElementById('deptEng').value.trim() || 'Department of Japanese Language';
+        const acadYear = document.getElementById('acadYear').value.trim() || '2023-2024';
+
+        // Collect all subjects from UI
+        const allSemData = {};
+        semesterMeta.forEach(sem => {
+          allSemData[sem.id] = [];
+          document.querySelectorAll(`#tbody_${sem.id} tr`).forEach(tr => {
+            const code = tr.querySelector('.sub-code').value.trim();
+            const nameLao = tr.querySelector('.sub-lao').value.trim();
+            const nameEng = tr.querySelector('.sub-eng').value.trim();
+            const rawCredit = tr.querySelector('.sub-credit').value.trim();
+            if (code || nameLao) {
+              allSemData[sem.id].push({
+                code: code || 'SUB',
+                nameLao: nameLao || 'ວິຊາຮຽນ',
+                nameEng: nameEng || nameLao || 'Subject',
+                rawCredit: rawCredit || '2',
+                credits: parseCredits(rawCredit)
+              });
+            }
+          });
+        });
+
+        const workbook = new ExcelJS.Workbook();
+        workbook.creator = 'Grade Calculation System';
+        workbook.lastModifiedBy = 'Academic Office';
+
+        let hasClonedTemplate = false;
+        if (appState.templateArrayBuffer && appState.templateArrayBuffer.byteLength > 1000) {
+          try {
+            await workbook.xlsx.load(appState.templateArrayBuffer);
+            cleanAllSharedFormulas(workbook);
+            hasClonedTemplate = true;
+            status.textContent = 'ໂຄລນ Layout ແລະ Style ຈາກ Calculate.xlsx ສຳເລັດ!';
+          } catch(err) {
+            console.warn('Template clone failed, using standard authentic builder:', err);
+          }
+        }
+
+        // Embed Logo
+        let logoImageId = null;
+        if (appState.logoArrayBuffer) {
+          try {
+            logoImageId = workbook.addImage({ buffer: appState.logoArrayBuffer, extension: 'jpeg' });
+          } catch(e) {}
+        }
+
+        const semMeta = {};
+
+        // ---------------------------------------------------------------------
+        // 1. LAYER 1: 4 Sem Sheets (Sem1-2, Sem3-4 , Sem5-6, Sem7-8)
+        // ---------------------------------------------------------------------
+        const semPairs = [
+          { name: 'Sem1-2', sA: 'sem1', sB: 'sem2', lblA: 'ພາກຮຽນ 1', lblB: 'ພາກຮຽນ 2' },
+          { name: 'Sem3-4 ', sA: 'sem3', sB: 'sem4', lblA: 'ພາກຮຽນ 3', lblB: 'ພາກຮຽນ 4' },
+          { name: 'Sem5-6', sA: 'sem5', sB: 'sem6', lblA: 'ພາກຮຽນ 5', lblB: 'ພາກຮຽນ 6' },
+          { name: 'Sem7-8', sA: 'sem7', sB: 'sem8', lblA: 'ພາກຮຽນ 7', lblB: 'ພາກຮຽນ 8' }
+        ];
+
+        semPairs.forEach(pair => {
+          let ws = workbook.getWorksheet(pair.name);
+          if (!ws) {
+            ws = workbook.addWorksheet(pair.name, { views: [{ showGridLines: true }] });
+          }
+
+          // Authentic University Header if fresh sheet
+          if (!hasClonedTemplate) {
+            ws.mergeCells('A1:O1');
+            ws.getCell('A1').value = 'ສາທາລະນະລັດ ປະຊາທິປະໄຕ ປະຊາຊົນລາວ';
+            ws.getCell('A1').font = { name: LAO_FONT_NAME, size: 13, bold: true };
+            ws.getCell('A1').alignment = { horizontal: 'center', vertical: 'middle' };
+
+            ws.mergeCells('A2:O2');
+            ws.getCell('A2').value = 'ສັນຕິພາບ ເອກະລາດ ປະຊາທິປະໄຕ ເອກະພາບ ວັດທະນະຖາວອນ';
+            ws.getCell('A2').font = { name: LAO_FONT_NAME, size: 10 };
+            ws.getCell('A2').alignment = { horizontal: 'center', vertical: 'middle' };
+
+            ws.mergeCells('A3:O3');
+            ws.getCell('A3').value = `ມະຫາວິທະຍາໄລແຫ່ງຊາດ - ຄະນະອັກສອນສາດ - ${deptLao}`;
+            ws.getCell('A3').font = { name: LAO_FONT_NAME, size: 11, bold: true };
+            ws.getCell('A3').alignment = { horizontal: 'center', vertical: 'middle' };
+
+            ws.getRow(5).height = 28;
+            ws.getRow(6).height = 22;
+          }
+
+          // Base columns (Cols 1-10)
+          const baseCols = [
+            { h: "ລ/ດ", w: 6 },
+            { h: "ລະຫັດນສ", w: 14 },
+            { h: "ເພດ", w: 8 },
+            { h: "ຊື່ພາສາລາວ", w: 16 },
+            { h: "ນາມສະກຸນພາສາລາວ", w: 16 },
+            { h: "ຊື່ພາສາອັງກິດ", w: 16 },
+            { h: "ນາມສະກຸນພາສາອັງກິດ", w: 16 },
+            { h: "ວ.ດ.ປີເກີດ", w: 13 },
+            { h: "ແຂວງເກີດ", w: 13 },
+            { h: "ຫ້ອງ", w: 8 }
+          ];
+
+          baseCols.forEach((bc, idx) => {
+            const colNum = idx + 1;
+            const c5 = ws.getCell(5, colNum);
+            if (!hasClonedTemplate) {
+              ws.mergeCells(5, colNum, 6, colNum);
+              c5.value = bc.h;
+              applyLaoStyle(c5, true);
+              ws.getColumn(colNum).width = bc.w;
+            }
           });
 
-          // สูตรค่างวดและเกรด แถว 7 ถึง 37
+          // Sample Students (Rows 7 to 37 = 31 students)
           for (let r = 7; r <= 37; r++) {
-            const scL = getColLetter(scCol);
-            ws.getRow(r).getCell(ptCol).value = {
-              formula: `IF(${scL}${r}>90,"4.00",IF(${scL}${r}>80,"3.50",IF(${scL}${r}>69,"3.00",IF(${scL}${r}>64,"2.50",IF(${scL}${r}>59,"2.00",IF(${scL}${r}>54,"1.50",IF(${scL}${r}>49,"1.00","0.00")))))))`
-            };
-            ws.getRow(r).getCell(grCol).value = {
-              formula: `IF(${scL}${r}>=91,"A",IF(${scL}${r}>=81,"B+",IF(${scL}${r}>=70,"B",IF(${scL}${r}>=65,"C+",IF(${scL}${r}>=60,"C",IF(${scL}${r}>=55,"D+",IF(${scL}${r}>=50,"D",IF(${scL}${r}>=0,"F"))))))))`
-            };
+            const idx = r - 6;
+            ws.getRow(r).height = 20;
+            if (!ws.getCell(`A${r}`).value) ws.getCell(`A${r}`).value = idx;
+            if (!ws.getCell(`B${r}`).value) ws.getCell(`B${r}`).value = `125N06${idx < 10 ? '0' + idx : idx}/23`;
+            if (!ws.getCell(`C${r}`).value) ws.getCell(`C${r}`).value = (idx % 2 === 0 ? "ຍິງ" : "ຊາຍ");
+            if (!hasClonedTemplate) {
+              for (let col = 1; col <= 10; col++) {
+                applyLaoStyle(ws.getCell(r, col), false);
+              }
+            }
           }
 
-          gpaTerms.push({ col: ptCol, cr: subj.credits });
-          totalCr += subj.credits;
-          currentCol += 3;
+          let curCol = 11;
+          semMeta[pair.name] = {};
+
+          [ { id: pair.sA, lbl: pair.lblA }, { id: pair.sB, lbl: pair.lblB } ].forEach(subTerm => {
+            const subs = allSemData[subTerm.id] || [];
+            const gpaTerms = [];
+            let totalCredits = 0;
+            semMeta[pair.name][subTerm.id] = { subjects: [] };
+
+            subs.forEach(subj => {
+              const scCol = curCol;
+              const ptCol = curCol + 1;
+              const grCol = curCol + 2;
+
+              if (!hasClonedTemplate) {
+                ws.mergeCells(5, scCol, 5, grCol);
+                const hCell = ws.getCell(5, scCol);
+                hCell.value = `${subj.nameLao}\n(${subj.rawCredit || subj.credits})`;
+                applyLaoStyle(hCell, true, true);
+
+                const cSc = ws.getCell(6, scCol); cSc.value = "ຄະແນນລວມ"; applyLaoStyle(cSc, true);
+                const cPt = ws.getCell(6, ptCol); cPt.value = "ຄ່າລະດັບ"; applyLaoStyle(cPt, true);
+                const cGr = ws.getCell(6, grCol); cGr.value = "ລະດັບ"; applyLaoStyle(cGr, true);
+
+                ws.getColumn(scCol).width = 9;
+                ws.getColumn(ptCol).width = 8;
+                ws.getColumn(grCol).width = 8;
+              } else {
+                ws.getRow(5).getCell(scCol).value = `${subj.nameLao} (${subj.credits})`;
+                ws.getRow(6).getCell(scCol).value = "ຄະແນນລວມ";
+                ws.getRow(6).getCell(ptCol).value = "ຄ່າລະດັບ";
+                ws.getRow(6).getCell(grCol).value = "ລະດັບ";
+              }
+
+              semMeta[pair.name][subTerm.id].subjects.push({
+                ...subj,
+                scoreCol: scCol,
+                pointCol: ptCol,
+                gradeCol: grCol
+              });
+
+              // Overwrite formulas for student rows (7 to 37)
+              for (let r = 7; r <= 37; r++) {
+                const scL = getColLetter(scCol);
+                const scoreRef = `${scL}${r}`;
+
+                const cScore = ws.getRow(r).getCell(scCol);
+                if (cScore.value === undefined || cScore.value === null || cScore.value === '') {
+                  cScore.value = 75 + ((r * 3 + scCol) % 21);
+                }
+                cScore.numFmt = '0.00';
+                cScore.alignment = { horizontal: 'right' };
+
+                // Fix 1: Grade Point (real number)
+                const cPt = ws.getRow(r).getCell(ptCol);
+                assignFormula(cPt, `IF(${scoreRef}>=91, 4.00, IF(${scoreRef}>=81, 3.50, IF(${scoreRef}>=70, 3.00, IF(${scoreRef}>=65, 2.50, IF(${scoreRef}>=60, 2.00, IF(${scoreRef}>=55, 1.50, IF(${scoreRef}>=50, 1.00, 0.00)))))))`, '0.00', { horizontal: 'center' });
+
+                // Fix 2: Letter Grade (changed > to >= across all levels)
+                const cGr = ws.getRow(r).getCell(grCol);
+                assignFormula(cGr, `IF(${scoreRef}>=91,"A",IF(${scoreRef}>=81,"B+",IF(${scoreRef}>=70,"B",IF(${scoreRef}>=65,"C+",IF(${scoreRef}>=60,"C",IF(${scoreRef}>=55,"D+",IF(${scoreRef}>=50,"D","F")))))))`, null, { horizontal: 'center' }, { name: LAO_FONT_NAME, bold: true });
+
+                if (!hasClonedTemplate) {
+                  applyLaoStyle(cScore, false);
+                  applyLaoStyle(cPt, false);
+                  applyLaoStyle(cGr, false);
+                }
+              }
+
+              gpaTerms.push({ col: ptCol, cr: subj.credits });
+              totalCredits += subj.credits;
+              curCol += 3;
+            });
+
+            // Semester GPA Column
+            const gpaCol = curCol;
+            const hGpa = ws.getCell(5, gpaCol);
+            if (!hasClonedTemplate) {
+              ws.mergeCells(5, gpaCol, 6, gpaCol);
+              hGpa.value = `GPA\n(${subTerm.lbl})`;
+              applyLaoStyle(hGpa, true);
+              ws.getColumn(gpaCol).width = 11;
+            } else {
+              ws.getRow(5).getCell(gpaCol).value = `GPA (${subTerm.lbl})`;
+            }
+
+            for (let r = 7; r <= 37; r++) {
+              const cGpa = ws.getRow(r).getCell(gpaCol);
+              if (totalCredits > 0) {
+                const sumProduct = gpaTerms.map(t => `${getColLetter(t.col)}${r}*${t.cr}`).join('+');
+                assignFormula(cGpa, `ROUND((${sumProduct})/${totalCredits}, 2)`, '0.00', { horizontal: 'center' }, { name: LAO_FONT_NAME, bold: true });
+              } else {
+                cGpa.value = 0.00;
+                cGpa.numFmt = '0.00';
+                cGpa.alignment = { horizontal: 'center' };
+                cGpa.font = { name: LAO_FONT_NAME, bold: true };
+              }
+              if (!hasClonedTemplate) applyLaoStyle(cGpa, false);
+            }
+
+            semMeta[pair.name][subTerm.id].gpaCol = gpaCol;
+            curCol += 1;
+          });
         });
 
-        // คอลัมน์คำนวณ GPA รายเทอม
-        const gpaCol = currentCol;
-        ws.getRow(3).getCell(gpaCol).value = `GPA (${subTerm.label})`;
-        for (let r = 7; r <= 37; r++) {
-          if (totalCr > 0) {
-            const sumP = gpaTerms.map(t => `${getColLetter(t.col)}${r}*${t.cr}`).join('+');
-            ws.getRow(r).getCell(gpaCol).value = { formula: `(${sumP})/${totalCr}` };
+        // ---------------------------------------------------------------------
+        // 2. LAYER 2: 4 CGPA Sheets (1-2, 3-4, 5-6, 7-8 in template, aliased to CGPA2..8)
+        // ---------------------------------------------------------------------
+        const cgpaConfigs = [
+          {
+            name: '1-2',
+            altName: 'CGPA2',
+            titleName: 'CGPA2',
+            gpas: [
+              { sheet: 'Sem1-2', col: semMeta['Sem1-2']['sem1'].gpaCol, lbl: 'GPA1' },
+              { sheet: 'Sem1-2', col: semMeta['Sem1-2']['sem2'].gpaCol, lbl: 'GPA2' }
+            ]
+          },
+          {
+            name: '3-4',
+            altName: 'CGPA4',
+            titleName: 'CGPA4',
+            gpas: [
+              { sheet: 'Sem1-2', col: semMeta['Sem1-2']['sem1'].gpaCol, lbl: 'GPA1' },
+              { sheet: 'Sem1-2', col: semMeta['Sem1-2']['sem2'].gpaCol, lbl: 'GPA2' },
+              { sheet: 'Sem3-4 ', col: semMeta['Sem3-4 ']['sem3'].gpaCol, lbl: 'GPA3' },
+              { sheet: 'Sem3-4 ', col: semMeta['Sem3-4 ']['sem4'].gpaCol, lbl: 'GPA4' }
+            ]
+          },
+          {
+            name: '5-6',
+            altName: 'CGPA6',
+            titleName: 'CGPA6',
+            gpas: [
+              { sheet: 'Sem1-2', col: semMeta['Sem1-2']['sem1'].gpaCol, lbl: 'GPA1' },
+              { sheet: 'Sem1-2', col: semMeta['Sem1-2']['sem2'].gpaCol, lbl: 'GPA2' },
+              { sheet: 'Sem3-4 ', col: semMeta['Sem3-4 ']['sem3'].gpaCol, lbl: 'GPA3' },
+              { sheet: 'Sem3-4 ', col: semMeta['Sem3-4 ']['sem4'].gpaCol, lbl: 'GPA4' },
+              { sheet: 'Sem5-6', col: semMeta['Sem5-6']['sem5'].gpaCol, lbl: 'GPA5' },
+              { sheet: 'Sem5-6', col: semMeta['Sem5-6']['sem6'].gpaCol, lbl: 'GPA6' }
+            ]
+          },
+          {
+            name: '7-8',
+            altName: 'CGPA8',
+            titleName: 'CGPA8',
+            gpas: [
+              { sheet: 'Sem1-2', col: semMeta['Sem1-2']['sem1'].gpaCol, lbl: 'GPA1' },
+              { sheet: 'Sem1-2', col: semMeta['Sem1-2']['sem2'].gpaCol, lbl: 'GPA2' },
+              { sheet: 'Sem3-4 ', col: semMeta['Sem3-4 ']['sem3'].gpaCol, lbl: 'GPA3' },
+              { sheet: 'Sem3-4 ', col: semMeta['Sem3-4 ']['sem4'].gpaCol, lbl: 'GPA4' },
+              { sheet: 'Sem5-6', col: semMeta['Sem5-6']['sem5'].gpaCol, lbl: 'GPA5' },
+              { sheet: 'Sem5-6', col: semMeta['Sem5-6']['sem6'].gpaCol, lbl: 'GPA6' },
+              { sheet: 'Sem7-8', col: semMeta['Sem7-8']['sem7'].gpaCol, lbl: 'GPA7' },
+              { sheet: 'Sem7-8', col: semMeta['Sem7-8']['sem8'].gpaCol, lbl: 'GPA8' }
+            ]
           }
-        }
-        semMetaInfo[pair.name][subTerm.id].gpaCol = gpaCol;
-        currentCol += 1;
-      });
-    });
+        ];
 
-    // -------------------------------------------------------------
-    // 2. LAYER 2: ສ້າງ 4 Sheets CGPA (CGPA2, CGPA4, CGPA6, CGPA8)
-    // -------------------------------------------------------------
-    const cgpaConfigs = [
-      { name: 'CGPA2', gpas: [{ sheet: 'Sem1-2', col: semMetaInfo['Sem1-2']['sem1'].gpaCol, lbl: 'GPA1' }, { sheet: 'Sem1-2', col: semMetaInfo['Sem1-2']['sem2'].gpaCol, lbl: 'GPA2' }] },
-      { name: 'CGPA4', gpas: [{ sheet: 'Sem1-2', col: semMetaInfo['Sem1-2']['sem1'].gpaCol, lbl: 'GPA1' }, { sheet: 'Sem1-2', col: semMetaInfo['Sem1-2']['sem2'].gpaCol, lbl: 'GPA2' }, { sheet: 'Sem3-4 ', col: semMetaInfo['Sem3-4 ']['sem3'].gpaCol, lbl: 'GPA3' }, { sheet: 'Sem3-4 ', col: semMetaInfo['Sem3-4 ']['sem4'].gpaCol, lbl: 'GPA4' }] },
-      { name: 'CGPA6', gpas: [{ sheet: 'Sem1-2', col: semMetaInfo['Sem1-2']['sem1'].gpaCol, lbl: 'GPA1' }, { sheet: 'Sem1-2', col: semMetaInfo['Sem1-2']['sem2'].gpaCol, lbl: 'GPA2' }, { sheet: 'Sem3-4 ', col: semMetaInfo['Sem3-4 ']['sem3'].gpaCol, lbl: 'GPA3' }, { sheet: 'Sem3-4 ', col: semMetaInfo['Sem3-4 ']['sem4'].gpaCol, lbl: 'GPA4' }, { sheet: 'Sem5-6', col: semMetaInfo['Sem5-6']['sem5'].gpaCol, lbl: 'GPA5' }, { sheet: 'Sem5-6', col: semMetaInfo['Sem5-6']['sem6'].gpaCol, lbl: 'GPA6' }] },
-      { name: 'CGPA8', gpas: [{ sheet: 'Sem1-2', col: semMetaInfo['Sem1-2']['sem1'].gpaCol, lbl: 'GPA1' }, { sheet: 'Sem1-2', col: semMetaInfo['Sem1-2']['sem2'].gpaCol, lbl: 'GPA2' }, { sheet: 'Sem3-4 ', col: semMetaInfo['Sem3-4 ']['sem3'].gpaCol, lbl: 'GPA3' }, { sheet: 'Sem3-4 ', col: semMetaInfo['Sem3-4 ']['sem4'].gpaCol, lbl: 'GPA4' }, { sheet: 'Sem5-6', col: semMetaInfo['Sem5-6']['sem5'].gpaCol, lbl: 'GPA5' }, { sheet: 'Sem5-6', col: semMetaInfo['Sem5-6']['sem6'].gpaCol, lbl: 'GPA6' }, { sheet: 'Sem7-8', col: semMetaInfo['Sem7-8']['sem7'].gpaCol, lbl: 'GPA7' }, { sheet: 'Sem7-8', col: semMetaInfo['Sem7-8']['sem8'].gpaCol, lbl: 'GPA8' }] }
-    ];
+        cgpaConfigs.forEach(cfg => {
+          let ws = workbook.getWorksheet(cfg.name) || workbook.getWorksheet(cfg.altName);
+          if (!ws) {
+            ws = workbook.addWorksheet(cfg.name, { views: [{ showGridLines: true }] });
+          }
 
-    cgpaConfigs.forEach(cfg => {
-      const ws = workbook.addWorksheet(cfg.name);
-      ws.getCell('A2').value = "ລ/ດ";
-      ws.getCell('B2').value = "ລະຫັດນສ";
-      ws.getCell('C2').value = "ເພດ";
-      ws.getCell('D2').value = "ຊື່";
-      ws.getCell('E2').value = "ນາມສະກຸນ";
+          if (!hasClonedTemplate) {
+            ws.mergeCells('A1:I1');
+            ws.getCell('A1').value = `ໃບສະຫຼຸບຄະແນນສະສົມ ${cfg.titleName || cfg.name} - ${deptLao} (${acadYear})`;
+            ws.getCell('A1').font = { name: LAO_FONT_NAME, size: 12, bold: true };
+            ws.getCell('A1').alignment = { horizontal: 'center', vertical: 'middle' };
+            ws.getRow(2).height = 24;
+          }
 
-      let gpaStartCol = 8; // Column H
-      cfg.gpas.forEach((g, i) => {
-        ws.getRow(2).getCell(gpaStartCol + i).value = g.lbl;
-      });
-      const cgpaCol = gpaStartCol + cfg.gpas.length;
-      ws.getRow(2).getCell(cgpaCol).value = cfg.name;
+          const baseHeaders = ["ລ/ດ", "ລະຫັດນສ", "ເພດ", "ຊື່", "ນາມສະກຸນ"];
+          baseHeaders.forEach((h, i) => {
+            const cell = ws.getCell(2, i + 1);
+            cell.value = h;
+            if (!hasClonedTemplate) applyLaoStyle(cell, true);
+          });
 
-      for (let r = 3; r <= 33; r++) {
-        const semRow = r + 4;
-        ws.getCell(`A${r}`).value = r - 2;
-        ws.getCell(`B${r}`).value = { formula: `='Sem1-2'!B${semRow}` };
-        ws.getCell(`C${r}`).value = { formula: `='Sem1-2'!C${semRow}` };
-        ws.getCell(`D${r}`).value = { formula: `='Sem1-2'!D${semRow}` };
-        ws.getCell(`E${r}`).value = { formula: `='Sem1-2'!E${semRow}` };
+          const gpaStartCol = 8; // Column H
+          cfg.gpas.forEach((g, i) => {
+            const cell = ws.getRow(2).getCell(gpaStartCol + i);
+            cell.value = g.lbl;
+            if (!hasClonedTemplate) applyLaoStyle(cell, true);
+          });
+          const cgpaCol = gpaStartCol + cfg.gpas.length;
+          const cgpaHeadCell = ws.getRow(2).getCell(cgpaCol);
+          cgpaHeadCell.value = cfg.titleName || cfg.name;
+          if (!hasClonedTemplate) applyLaoStyle(cgpaHeadCell, true);
 
-        const gpaCells = [];
-        cfg.gpas.forEach((g, i) => {
-          const colL = getColLetter(gpaStartCol + i);
-          const refColL = getColLetter(g.col);
-          ws.getCell(`${colL}${r}`).value = { formula: `='${g.sheet}'!${refColL}${semRow}` };
-          gpaCells.push(`${colL}${r}`);
+          for (let r = 3; r <= 33; r++) {
+            const semRow = r + 4;
+            ws.getRow(r).height = 20;
+
+            const cA = ws.getCell(`A${r}`); cA.value = r - 2; cA.alignment = { horizontal: 'center' };
+            const cB = ws.getCell(`B${r}`); assignFormula(cB, `'Sem1-2'!B${semRow}`, null, { horizontal: 'center' });
+            const cC = ws.getCell(`C${r}`); assignFormula(cC, `'Sem1-2'!C${semRow}`, null, { horizontal: 'center' });
+            const cD = ws.getCell(`D${r}`); assignFormula(cD, `'Sem1-2'!D${semRow}`);
+            const cE = ws.getCell(`E${r}`); assignFormula(cE, `'Sem1-2'!E${semRow}`);
+
+            if (!hasClonedTemplate) {
+              [cA, cB, cC, cD, cE].forEach(c => applyLaoStyle(c, false));
+            }
+
+            const gpaCells = [];
+            cfg.gpas.forEach((g, i) => {
+              const colLetter = getColLetter(gpaStartCol + i);
+              const targetColLetter = getColLetter(g.col);
+              const cell = ws.getCell(`${colLetter}${r}`);
+              assignFormula(cell, `'${g.sheet}'!${targetColLetter}${semRow}`, '0.00', { horizontal: 'center' });
+              if (!hasClonedTemplate) applyLaoStyle(cell, false);
+              gpaCells.push(`${colLetter}${r}`);
+            });
+
+            // Fix 3: Exact CGPA Formula (sums all terms without skipping J3)
+            const cgpaColLetter = getColLetter(cgpaCol);
+            const cgpaCell = ws.getCell(`${cgpaColLetter}${r}`);
+            assignFormula(cgpaCell, `ROUND((${gpaCells.join('+')})/${gpaCells.length}, 2)`, '0.00', { horizontal: 'center' }, { name: LAO_FONT_NAME, bold: true });
+            if (!hasClonedTemplate) applyLaoStyle(cgpaCell, false);
+          }
         });
 
-        // คำนวณ CGPA สะสม
-        const cgpaColL = getColLetter(cgpaCol);
-        ws.getCell(`${cgpaColL}${r}`).value = { formula: `=(${gpaCells.join('+')})/${gpaCells.length}` };
-      }
-    });
+        // ---------------------------------------------------------------------
+        // 3. LAYER 3: 8 Transcript Sheets (Lao & Eng for Years 1 - 4)
+        // ---------------------------------------------------------------------
+        const transcriptYears = [
+          { lao: 'Lao_transcript(year1)', eng: 'Eng_transcript(year1)', pair: 'Sem1-2', s1: 'sem1', s2: 'sem2', yrNum: 1 },
+          { lao: 'Lao_transcript(year2) ', eng: 'Eng_transcript(year2)', pair: 'Sem3-4 ', s1: 'sem3', s2: 'sem4', yrNum: 2 },
+          { lao: 'Lao_transcript(year3)', eng: 'Eng_transcript(year3)', pair: 'Sem5-6', s1: 'sem5', s2: 'sem6', yrNum: 3 },
+          { lao: 'Lao_transcript(year4)', eng: 'Eng_transcript(year4)', pair: 'Sem7-8', s1: 'sem7', s2: 'sem8', yrNum: 4 }
+        ];
 
-    // -------------------------------------------------------------
-    // 3. LAYER 3: ສ້າງ 8 Sheets Transcript (Lao & Eng ສຳລັບ ປີ 1 - ປີ 4)
-    // -------------------------------------------------------------
-    const years = [
-      { y: 1, laoName: 'Lao_transcript(year1)', engName: 'Eng_transcript(year1)', pair: 'Sem1-2', s1: 'sem1', s2: 'sem2' },
-      { y: 2, laoName: 'Lao_transcript(year2) ', engName: 'Eng_transcript(year2)', pair: 'Sem3-4 ', s1: 'sem3', s2: 'sem4' },
-      { y: 3, laoName: 'Lao_transcript(year3)', engName: 'Eng_transcript(year3)', pair: 'Sem5-6', s1: 'sem5', s2: 'sem6' },
-      { y: 4, laoName: 'Lao_transcript(year4)', engName: 'Eng_transcript(year4)', pair: 'Sem7-8', s1: 'sem7', s2: 'sem8' }
-    ];
+        transcriptYears.forEach(yr => {
+          // --- 3.1 Lao Transcript ---
+          let wsLao = workbook.getWorksheet(yr.lao);
+          if (!wsLao) {
+            wsLao = workbook.addWorksheet(yr.lao, { views: [{ showGridLines: true }] });
+          }
 
-    years.forEach(yr => {
-      // 3.1 Lao Transcript
-      const wsLao = workbook.addWorksheet(yr.laoName);
-      wsLao.getCell('A9').value = "ໃບຕິດຕາມຜົນການຮຽນ";
-      wsLao.getCell('A10').value = "ຊື່ ແລະນາມສະກຸນ";
-      wsLao.getCell('F10').value = { formula: `=IF(OR(VLOOKUP($F$12,'Sem1-2'!$B$7:$BS$37,2,FALSE)="ຊາຍ", VLOOKUP($F$12,'Sem1-2'!$B$7:$BS$37,2,FALSE)="ທ້າວ"),"ທ້າວ","ນາງ")&" "&VLOOKUP($F$12,'Sem1-2'!$B$7:$BS$37,3,FALSE)&" "&VLOOKUP($F$12,'Sem1-2'!$B$7:$BS$37,4,FALSE)` };
-      wsLao.getCell('A11').value = "ວັນ/ເດືອນ/ປີເກີດ";
-      wsLao.getCell('F11').value = { formula: `=VLOOKUP($F$12,'Sem1-2'!$B$7:$BX$37,7,FALSE)` };
-      wsLao.getCell('A12').value = "ເລກທະບຽນ";
-      wsLao.getCell('F12').value = "125N0622/23"; // ช่องกรอกรหัสนักศึกษาค้นหา
+          if (!hasClonedTemplate) {
+            wsLao.mergeCells('B2:I2');
+            wsLao.getCell('B2').value = 'ສາທາລະນະລັດ ປະຊາທິປະໄຕ ປະຊາຊົນລາວ';
+            wsLao.getCell('B2').font = { name: LAO_FONT_NAME, size: 12, bold: true };
+            wsLao.getCell('B2').alignment = { horizontal: 'center' };
 
-      wsLao.getCell('C14').value = "ລດ";
-      wsLao.getCell('D14').value = "ເລກລະຫັດ";
-      wsLao.getCell('E14').value = "ຊື່ວິຊາ";
-      wsLao.getCell('G14').value = "ຈຳນວນໜ່ວຍກິດ";
-      wsLao.getCell('H14').value = "ຄະແນນ";
-      wsLao.getCell('I14').value = "ຄ່າລະດັບ";
-      wsLao.getCell('J14').value = "ເກຣດ";
+            wsLao.mergeCells('B3:I3');
+            wsLao.getCell('B3').value = 'ສັນຕິພາບ ເອກະລາດ ປະຊາທິປະໄຕ ເອກະພາບ ວັດທະນະຖາວອນ';
+            wsLao.getCell('B3').font = { name: LAO_FONT_NAME, size: 9.5 };
+            wsLao.getCell('B3').alignment = { horizontal: 'center' };
 
-      let trRow = 16;
-      const subs1 = semMetaInfo[yr.pair][yr.s1].subjects;
-      const subs2 = semMetaInfo[yr.pair][yr.s2].subjects;
+            wsLao.mergeCells('B5:I5');
+            wsLao.getCell('B5').value = `ມະຫາວິທະຍາໄລແຫ່ງຊາດ - ຄະນະອັກສອນສາດ - ${deptLao}`;
+            wsLao.getCell('B5').font = { name: LAO_FONT_NAME, size: 10, bold: true };
+            wsLao.getCell('B5').alignment = { horizontal: 'center' };
 
-      // วนวางวิชาเทอม 1 ของปีนั้น
-      subs1.forEach((s, idx) => {
-        wsLao.getCell(`C${trRow}`).value = idx + 1;
-        wsLao.getCell(`D${trRow}`).value = s.code;
-        wsLao.getCell(`E${trRow}`).value = s.nameLao;
-        wsLao.getCell(`G${trRow}`).value = s.credits;
-        wsLao.getCell(`H${trRow}`).value = { formula: `=VLOOKUP($F$12,'${yr.pair}'!$B$7:$ZZ$37,${s.scoreCol - 1},FALSE)` };
-        wsLao.getCell(`I${trRow}`).value = { formula: `=IF(H${trRow}>90,"4.00",IF(H${trRow}>80,"3.50",IF(H${trRow}>69,"3.00",IF(H${trRow}>64,"2.50",IF(H${trRow}>59,"2.00",IF(H${trRow}>54,"1.50",IF(H${trRow}>49,"1.00","0.00")))))))` };
-        wsLao.getCell(`J${trRow}`).value = { formula: `=IF(H${trRow}>=91,"A",IF(H${trRow}>=81,"B+",IF(H${trRow}>=70,"B",IF(H${trRow}>=65,"C+",IF(H${trRow}>=60,"C",IF(H${trRow}>=55,"D+",IF(H${trRow}>=50,"D",IF(H${trRow}>=0,"F"))))))))` };
-        trRow++;
-      });
+            wsLao.mergeCells('B7:I7');
+            wsLao.getCell('B7').value = `ໃບຢັ້ງຢືນຜົນການຮຽນ ປະຈຳປີທີ ${yr.yrNum} (ACADEMIC TRANSCRIPT)`;
+            wsLao.getCell('B7').font = { name: LAO_FONT_NAME, size: 13, bold: true };
+            wsLao.getCell('B7').alignment = { horizontal: 'center' };
+          }
 
-      // วนวางวิชาเทอม 2 ของปีนั้น
-      trRow += 2;
-      subs2.forEach((s, idx) => {
-        wsLao.getCell(`C${trRow}`).value = idx + 1;
-        wsLao.getCell(`D${trRow}`).value = s.code;
-        wsLao.getCell(`E${trRow}`).value = s.nameLao;
-        wsLao.getCell(`G${trRow}`).value = s.credits;
-        wsLao.getCell(`H${trRow}`).value = { formula: `=VLOOKUP($F$12,'${yr.pair}'!$B$7:$ZZ$37,${s.scoreCol - 1},FALSE)` };
-        wsLao.getCell(`I${trRow}`).value = { formula: `=IF(H${trRow}>90,"4.00",IF(H${trRow}>80,"3.50",IF(H${trRow}>69,"3.00",IF(H${trRow}>64,"2.50",IF(H${trRow}>59,"2.00",IF(H${trRow}>54,"1.50",IF(H${trRow}>49,"1.00","0.00")))))))` };
-        wsLao.getCell(`J${trRow}`).value = { formula: `=IF(H${trRow}>=91,"A",IF(H${trRow}>=81,"B+",IF(H${trRow}>=70,"B",IF(H${trRow}>=65,"C+",IF(H${trRow}>=60,"C",IF(H${trRow}>=55,"D+",IF(H${trRow}>=50,"D",IF(H${trRow}>=0,"F"))))))))` };
-        trRow++;
-      });
+          wsLao.getCell('A9').value = "ໃບຕິດຕາມຜົນການຮຽນ";
+          wsLao.getCell('A10').value = "ຊື່ ແລະນາມສະກຸນ";
+          assignFormula(wsLao.getCell('F10'), `IF(OR(VLOOKUP($F$12,'Sem1-2'!$B$7:$ZZ$37,2,FALSE)="ຊາຍ", VLOOKUP($F$12,'Sem1-2'!$B$7:$ZZ$37,2,FALSE)="ທ້າວ"),"ທ້າວ","ນາງ")&" "&VLOOKUP($F$12,'Sem1-2'!$B$7:$ZZ$37,3,FALSE)&" "&VLOOKUP($F$12,'Sem1-2'!$B$7:$ZZ$37,4,FALSE)`, null, null, { name: LAO_FONT_NAME, bold: true });
 
-      // แปะรูปโลโก้ถ้ามี
-      if (logoImageId !== null) {
-        wsLao.addImage(logoImageId, {
-          tl: { col: 0.5, row: 1 },
-          ext: { width: 90, height: 90 }
+          wsLao.getCell('A11').value = "ວັນ/ເດືອນ/ປີເກີດ";
+          assignFormula(wsLao.getCell('F11'), `VLOOKUP($F$12,'Sem1-2'!$B$7:$ZZ$37,7,FALSE)`);
+
+          wsLao.getCell('A12').value = "ເລກທະບຽນ";
+          if (!wsLao.getCell('F12').value) {
+            wsLao.getCell('F12').value = "125N0601/23"; // Student ID Cell F12
+          }
+          wsLao.getCell('F12').font = { name: LAO_FONT_NAME, bold: true };
+
+          if (!hasClonedTemplate) {
+            const thCols = [
+              { c: 'C', h: 'ລດ' },
+              { c: 'D', h: 'ເລກລະຫັດ' },
+              { c: 'E', h: 'ຊື່ວິຊາ' },
+              { c: 'G', h: 'ຈຳນວນໜ່ວຍກິດ' },
+              { c: 'H', h: 'ຄະແນນ' },
+              { c: 'I', h: 'ຄ່າລະດັບ' },
+              { c: 'J', h: 'ເກຣດ' }
+            ];
+            thCols.forEach(tc => {
+              const cell = wsLao.getCell(`${tc.c}14`);
+              cell.value = tc.h;
+              applyLaoStyle(cell, true);
+            });
+          }
+
+          // Insert rows dynamically for subjects while strictly preserving format
+          populateTranscriptSheet(wsLao, yr, false, allSemData, semMeta, hasClonedTemplate, null);
+
+          // Embed Logo in Lao Transcript only when building fresh sheet
+          if (!hasClonedTemplate && logoImageId !== null) {
+            try {
+              wsLao.addImage(logoImageId, { tl: { col: 0.5, row: 1 }, ext: { width: 85, height: 85 } });
+            } catch(e) {}
+          }
+
+          // --- 3.2 Eng Transcript ---
+          let wsEng = workbook.getWorksheet(yr.eng);
+          if (!wsEng) {
+            wsEng = workbook.addWorksheet(yr.eng, { views: [{ showGridLines: true }] });
+          }
+
+          if (!hasClonedTemplate) {
+            wsEng.mergeCells('B2:I2');
+            wsEng.getCell('B2').value = "LAO PEOPLE'S DEMOCRATIC REPUBLIC";
+            wsEng.getCell('B2').font = { name: 'Arial', size: 11, bold: true };
+            wsEng.getCell('B2').alignment = { horizontal: 'center' };
+
+            wsEng.mergeCells('B3:I3');
+            wsEng.getCell('B3').value = "Peace Independence Democracy Unity Prosperity";
+            wsEng.getCell('B3').font = { name: 'Arial', size: 9 };
+            wsEng.getCell('B3').alignment = { horizontal: 'center' };
+
+            wsEng.mergeCells('B5:I5');
+            wsEng.getCell('B5').value = `NATIONAL UNIVERSITY OF LAOS - FACULTY OF LETTERS - ${deptEng}`;
+            wsEng.getCell('B5').font = { name: 'Arial', size: 10, bold: true };
+            wsEng.getCell('B5').alignment = { horizontal: 'center' };
+
+            wsEng.mergeCells('B7:I7');
+            wsEng.getCell('B7').value = `OFFICIAL ACADEMIC TRANSCRIPT (YEAR ${yr.yrNum})`;
+            wsEng.getCell('B7').font = { name: 'Arial', size: 13, bold: true };
+            wsEng.getCell('B7').alignment = { horizontal: 'center' };
+          }
+
+          wsEng.getCell('A9').value = "ACADEMIC TRANSCRIPT";
+          wsEng.getCell('A10').value = "Full Name";
+          assignFormula(wsEng.getCell('F10'), `VLOOKUP($F$12,'Sem1-2'!$B$7:$ZZ$37,5,FALSE)&" "&VLOOKUP($F$12,'Sem1-2'!$B$7:$ZZ$37,6,FALSE)`);
+
+          wsEng.getCell('A12').value = "Student ID";
+          if (!wsEng.getCell('F12').value) {
+            wsEng.getCell('F12').value = "125N0601/23";
+          }
+
+          if (!hasClonedTemplate) {
+            const thEngCols = [
+              { c: 'C', h: 'No.' },
+              { c: 'D', h: 'Course Code' },
+              { c: 'E', h: 'Course Title' },
+              { c: 'G', h: 'Credits' },
+              { c: 'H', h: 'Score' },
+              { c: 'I', h: 'Grade Point' },
+              { c: 'J', h: 'Grade' }
+            ];
+            thEngCols.forEach(tc => {
+              const cell = wsEng.getCell(`${tc.c}14`);
+              cell.value = tc.h;
+              applyLaoStyle(cell, true);
+            });
+          }
+
+          // Insert rows dynamically in Eng sheet matching Lao sheet
+          populateTranscriptSheet(wsEng, yr, true, allSemData, semMeta, hasClonedTemplate, yr.lao);
+
+          // Embed Logo in Eng Transcript only when building fresh sheet
+          if (!hasClonedTemplate && logoImageId !== null) {
+            try {
+              wsEng.addImage(logoImageId, { tl: { col: 0.5, row: 1 }, ext: { width: 85, height: 85 } });
+            } catch(e) {}
+          }
         });
-      }
 
-      // 3.2 Eng Transcript
-      const wsEng = workbook.addWorksheet(yr.engName);
-      wsEng.getCell('A9').value = "ACADEMIC TRANSCRIPT";
-      wsEng.getCell('A10').value = "Full Name";
-      wsEng.getCell('F10').value = { formula: `=VLOOKUP($F$12,'Sem1-2'!$B$7:$BX$37,5,FALSE)&" "&VLOOKUP($F$12,'Sem1-2'!$B$7:$BX$37,6,FALSE)` };
-      wsEng.getCell('A12').value = "Student ID";
-      wsEng.getCell('F12').value = "125N0622/23";
-
-      let engRow = 16;
-      subs1.forEach((s, idx) => {
-        wsEng.getCell(`C${engRow}`).value = idx + 1;
-        wsEng.getCell(`D${engRow}`).value = s.code;
-        wsEng.getCell(`E${engRow}`).value = s.nameEng || s.nameLao;
-        wsEng.getCell(`G${engRow}`).value = s.credits;
-        wsEng.getCell(`H${engRow}`).value = { formula: `='${yr.laoName}'!H${16 + idx}` };
-        wsEng.getCell(`I${engRow}`).value = { formula: `='${yr.laoName}'!I${16 + idx}` };
-        wsEng.getCell(`J${engRow}`).value = { formula: `='${yr.laoName}'!J${16 + idx}` };
-        engRow++;
-      });
-
-      if (logoImageId !== null) {
-        wsEng.addImage(logoImageId, {
-          tl: { col: 0.5, row: 1 },
-          ext: { width: 90, height: 90 }
+        // ---------------------------------------------------------------------
+        // 4. CRITICAL: UNFREEZE PANES ON ALL WORKSHEETS
+        // ---------------------------------------------------------------------
+        workbook.eachSheet((ws) => {
+          ws.views = [
+            {
+              state: 'normal',
+              showGridLines: true,
+              activeCell: 'A1'
+            }
+          ];
         });
+
+        // Clean any lingering shared formula references across all sheets before export
+        cleanAllSharedFormulas(workbook);
+
+        // ---------------------------------------------------------------------
+        // 5. Save & Download
+        // ---------------------------------------------------------------------
+        status.textContent = 'ກຳລັງບັນທຶກ ແລະ ສົ່ງອອກໄຟລ໌ Calculate.xlsx...';
+        const buffer = await workbook.xlsx.writeBuffer();
+        const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+        
+        saveAs(blob, "Calculate.xlsx");
+
+        status.innerHTML = `<strong>ສຳເລັດ 100%!</strong> ສົ່ງອອກ Calculate.xlsx (ແຊກແຖວວິຊາຄົບຖ້ວນ, ຮັກສາ Format ເດີມ, ແລະ ປົດລັອກ Freeze Panes) ຮຽບຮ້ອຍແລ້ວ.`;
+
+      } catch(err) {
+        console.error('Export Error:', err);
+        status.innerHTML = `<span style="color: #ef4444;">ເກີດຂໍ້ຜິດພາດ: ${err.message}</span>`;
+        alert(`ເກີດຂໍ້ຜິດພາດ:\n${err.message}`);
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'ສ້າງ ແລະ ດາວໂຫຼດຟາຍ Excel (.xlsx)';
       }
-    });
-
-    // ดาวน์โหลดไฟล์ Excel ทันที
-    const buffer = await workbook.xlsx.writeBuffer();
-    saveAs(new Blob([buffer]), "Calculate.xlsx");
-  }
-</script>
-
+    }
+  </script>
 </body>
 </html>
